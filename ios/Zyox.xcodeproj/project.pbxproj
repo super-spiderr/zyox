@@ -1,0 +1,622 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0219BF7E75AA4776A0A87980 /* MeeraInimai-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6B4C98053AD4DC28BE00D9E /* MeeraInimai-Regular.ttf */; };
+		062EC6E9A41C4C8581C55479 /* Urbanist-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 14C9097AD1DA4ED09717FE7D /* Urbanist-Light.ttf */; };
+		0B97743882EE41D9AD0506CA /* Urbanist-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8EE02907A77C40559F963A97 /* Urbanist-LightItalic.ttf */; };
+		0C80B921A6F3F58F76C31292 /* libPods-Zyox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Zyox.a */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		1B4866CD42E64B0B850E6754 /* Urbanist-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D9CCCDA28F5E442A9EC40917 /* Urbanist-Bold.ttf */; };
+		24659E71527C7243EAA945FF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		2C24B8D81F764304AC23A790 /* Urbanist-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C58C1F9A5464AF3AD759E2E /* Urbanist-SemiBold.ttf */; };
+		324F7352485A4712AA67AB5E /* TiroTamil-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 82E665368B4E4E2AA1374687 /* TiroTamil-Italic.ttf */; };
+		3354452EAAA34D57ACD52B9B /* MuktaMalar-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DD00FBE991C4ED7904215B3 /* MuktaMalar-SemiBold.ttf */; };
+		40E5EF87422A401B9BC163F7 /* Urbanist-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DEC518D524845449A47966A /* Urbanist-Regular.ttf */; };
+		46C23F02F10C41D9A7CFEE12 /* MuktaMalar-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D588B918B144F998BF2590C /* MuktaMalar-Regular.ttf */; };
+		46DFA6546A8445AE917C4CAC /* Urbanist-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6834B31FA247AFA725A3C9 /* Urbanist-MediumItalic.ttf */; };
+		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		7B7829D94BF542C9912ED177 /* Urbanist-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04AE952EC8D84B9BB67E3F29 /* Urbanist-ExtraBold.ttf */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		87D92681DF4A4F35B4513034 /* MuktaMalar-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F08BCB8816D4B20A23470A5 /* MuktaMalar-ExtraLight.ttf */; };
+		9C10DCEFDB54487EB754102D /* Urbanist-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67792085430B464DB36F267E /* Urbanist-BlackItalic.ttf */; };
+		9FCA532A95BA4BCD91DBDCA6 /* MuktaMalar-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE599CDC57124978BF6B7F7B /* MuktaMalar-Medium.ttf */; };
+		A1A580F02B2940FD9EDE59CB /* Urbanist-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAD249892C3248A0BBEF6231 /* Urbanist-ExtraLight.ttf */; };
+		A482A06449BD48FBB94912D7 /* TiroTamil-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AEC4E229505E4F20B3B86589 /* TiroTamil-Regular.ttf */; };
+		B002CC671A3746308917F661 /* Urbanist-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DBBBCC6385CC438089DA9650 /* Urbanist-Black.ttf */; };
+		BBFE9ADEB25C416E8F9F3747 /* Urbanist-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D74FDA0BF99F4271B5DEAFFB /* Urbanist-Thin.ttf */; };
+		C23710B4A5454E5FAEFC7568 /* Urbanist-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DDE88DBABF754F6FAC70B915 /* Urbanist-BoldItalic.ttf */; };
+		C2DF015BEEA64277A32FED15 /* MuktaMalar-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55BC20AE8DC24EDEBEBF259E /* MuktaMalar-Light.ttf */; };
+		C33ED562D5A641F190D3D137 /* Urbanist-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9AE13E4FBFD54212B1174987 /* Urbanist-ExtraBoldItalic.ttf */; };
+		C7040C2923614F6287602776 /* Urbanist-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5D787F8EEE35471ABD7AD0A6 /* Urbanist-SemiBoldItalic.ttf */; };
+		CFE86C83A6004F95AE058A17 /* Urbanist-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D155F9F937CB48709FD339E9 /* Urbanist-ExtraLightItalic.ttf */; };
+		D8FA7C13B6FC4ADC83AB9AEC /* Urbanist-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 544B0DB907AB4623A28B7EA0 /* Urbanist-Italic.ttf */; };
+		F23FBC3DB3834011B154A212 /* MuktaMalar-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D7C8BC9938442F6B770FEAF /* MuktaMalar-Bold.ttf */; };
+		F8F6C92DDDF6465F93A9CFC9 /* Urbanist-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1E1C722D21FD4F55B291F4CE /* Urbanist-ThinItalic.ttf */; };
+		FF8DF9E9B034480F9170E345 /* Urbanist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A27C278D8FB4368955FA801 /* Urbanist-Medium.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04AE952EC8D84B9BB67E3F29 /* Urbanist-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-ExtraBold.ttf"; path = "../src/assets/fonts/static/Urbanist-ExtraBold.ttf"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* Zyox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zyox.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Zyox/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Zyox/Info.plist; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Zyox/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		14C9097AD1DA4ED09717FE7D /* Urbanist-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Light.ttf"; path = "../src/assets/fonts/static/Urbanist-Light.ttf"; sourceTree = "<group>"; };
+		1E1C722D21FD4F55B291F4CE /* Urbanist-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-ThinItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-ThinItalic.ttf"; sourceTree = "<group>"; };
+		3B4392A12AC88292D35C810B /* Pods-Zyox.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zyox.debug.xcconfig"; path = "Target Support Files/Pods-Zyox/Pods-Zyox.debug.xcconfig"; sourceTree = "<group>"; };
+		3F08BCB8816D4B20A23470A5 /* MuktaMalar-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MuktaMalar-ExtraLight.ttf"; path = "../src/assets/fonts/MuktaMalar-ExtraLight.ttf"; sourceTree = "<group>"; };
+		4DD00FBE991C4ED7904215B3 /* MuktaMalar-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MuktaMalar-SemiBold.ttf"; path = "../src/assets/fonts/MuktaMalar-SemiBold.ttf"; sourceTree = "<group>"; };
+		544B0DB907AB4623A28B7EA0 /* Urbanist-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Italic.ttf"; path = "../src/assets/fonts/static/Urbanist-Italic.ttf"; sourceTree = "<group>"; };
+		55BC20AE8DC24EDEBEBF259E /* MuktaMalar-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MuktaMalar-Light.ttf"; path = "../src/assets/fonts/MuktaMalar-Light.ttf"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-Zyox.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Zyox.release.xcconfig"; path = "Target Support Files/Pods-Zyox/Pods-Zyox.release.xcconfig"; sourceTree = "<group>"; };
+		5A27C278D8FB4368955FA801 /* Urbanist-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Medium.ttf"; path = "../src/assets/fonts/Urbanist-Medium.ttf"; sourceTree = "<group>"; };
+		5D787F8EEE35471ABD7AD0A6 /* Urbanist-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-SemiBoldItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-Zyox.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Zyox.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67792085430B464DB36F267E /* Urbanist-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-BlackItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-BlackItalic.ttf"; sourceTree = "<group>"; };
+		6C58C1F9A5464AF3AD759E2E /* Urbanist-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-SemiBold.ttf"; path = "../src/assets/fonts/static/Urbanist-SemiBold.ttf"; sourceTree = "<group>"; };
+		6DEC518D524845449A47966A /* Urbanist-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Regular.ttf"; path = "../src/assets/fonts/static/Urbanist-Regular.ttf"; sourceTree = "<group>"; };
+		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Zyox/AppDelegate.swift; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Zyox/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		82E665368B4E4E2AA1374687 /* TiroTamil-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TiroTamil-Italic.ttf"; path = "../src/assets/fonts/TiroTamil-Italic.ttf"; sourceTree = "<group>"; };
+		8EE02907A77C40559F963A97 /* Urbanist-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-LightItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-LightItalic.ttf"; sourceTree = "<group>"; };
+		9AE13E4FBFD54212B1174987 /* Urbanist-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		9D588B918B144F998BF2590C /* MuktaMalar-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MuktaMalar-Regular.ttf"; path = "../src/assets/fonts/MuktaMalar-Regular.ttf"; sourceTree = "<group>"; };
+		9D7C8BC9938442F6B770FEAF /* MuktaMalar-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MuktaMalar-Bold.ttf"; path = "../src/assets/fonts/MuktaMalar-Bold.ttf"; sourceTree = "<group>"; };
+		AEC4E229505E4F20B3B86589 /* TiroTamil-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TiroTamil-Regular.ttf"; path = "../src/assets/fonts/TiroTamil-Regular.ttf"; sourceTree = "<group>"; };
+		BE599CDC57124978BF6B7F7B /* MuktaMalar-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MuktaMalar-Medium.ttf"; path = "../src/assets/fonts/MuktaMalar-Medium.ttf"; sourceTree = "<group>"; };
+		D155F9F937CB48709FD339E9 /* Urbanist-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-ExtraLightItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		D6B4C98053AD4DC28BE00D9E /* MeeraInimai-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "MeeraInimai-Regular.ttf"; path = "../src/assets/fonts/MeeraInimai-Regular.ttf"; sourceTree = "<group>"; };
+		D74FDA0BF99F4271B5DEAFFB /* Urbanist-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Thin.ttf"; path = "../src/assets/fonts/static/Urbanist-Thin.ttf"; sourceTree = "<group>"; };
+		D9CCCDA28F5E442A9EC40917 /* Urbanist-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Bold.ttf"; path = "../src/assets/fonts/static/Urbanist-Bold.ttf"; sourceTree = "<group>"; };
+		DBBBCC6385CC438089DA9650 /* Urbanist-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-Black.ttf"; path = "../src/assets/fonts/static/Urbanist-Black.ttf"; sourceTree = "<group>"; };
+		DC6834B31FA247AFA725A3C9 /* Urbanist-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-MediumItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-MediumItalic.ttf"; sourceTree = "<group>"; };
+		DDE88DBABF754F6FAC70B915 /* Urbanist-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-BoldItalic.ttf"; path = "../src/assets/fonts/static/Urbanist-BoldItalic.ttf"; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FAD249892C3248A0BBEF6231 /* Urbanist-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Urbanist-ExtraLight.ttf"; path = "../src/assets/fonts/static/Urbanist-ExtraLight.ttf"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C80B921A6F3F58F76C31292 /* libPods-Zyox.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		13B07FAE1A68108700A75B9A /* Zyox */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				761780EC2CA45674006654EE /* AppDelegate.swift */,
+				13B07FB61A68108700A75B9A /* Info.plist */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+			);
+			name = Zyox;
+			sourceTree = "<group>";
+		};
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-Zyox.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		72BF1DC71FFF4236B37A9687 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AEC4E229505E4F20B3B86589 /* TiroTamil-Regular.ttf */,
+				82E665368B4E4E2AA1374687 /* TiroTamil-Italic.ttf */,
+				D6B4C98053AD4DC28BE00D9E /* MeeraInimai-Regular.ttf */,
+				4DD00FBE991C4ED7904215B3 /* MuktaMalar-SemiBold.ttf */,
+				D9CCCDA28F5E442A9EC40917 /* Urbanist-Bold.ttf */,
+				6DEC518D524845449A47966A /* Urbanist-Regular.ttf */,
+				9D7C8BC9938442F6B770FEAF /* MuktaMalar-Bold.ttf */,
+				BE599CDC57124978BF6B7F7B /* MuktaMalar-Medium.ttf */,
+				6C58C1F9A5464AF3AD759E2E /* Urbanist-SemiBold.ttf */,
+				9D588B918B144F998BF2590C /* MuktaMalar-Regular.ttf */,
+				8EE02907A77C40559F963A97 /* Urbanist-LightItalic.ttf */,
+				D155F9F937CB48709FD339E9 /* Urbanist-ExtraLightItalic.ttf */,
+				9AE13E4FBFD54212B1174987 /* Urbanist-ExtraBoldItalic.ttf */,
+				D74FDA0BF99F4271B5DEAFFB /* Urbanist-Thin.ttf */,
+				DC6834B31FA247AFA725A3C9 /* Urbanist-MediumItalic.ttf */,
+				544B0DB907AB4623A28B7EA0 /* Urbanist-Italic.ttf */,
+				DBBBCC6385CC438089DA9650 /* Urbanist-Black.ttf */,
+				67792085430B464DB36F267E /* Urbanist-BlackItalic.ttf */,
+				14C9097AD1DA4ED09717FE7D /* Urbanist-Light.ttf */,
+				5D787F8EEE35471ABD7AD0A6 /* Urbanist-SemiBoldItalic.ttf */,
+				DDE88DBABF754F6FAC70B915 /* Urbanist-BoldItalic.ttf */,
+				04AE952EC8D84B9BB67E3F29 /* Urbanist-ExtraBold.ttf */,
+				5A27C278D8FB4368955FA801 /* Urbanist-Medium.ttf */,
+				FAD249892C3248A0BBEF6231 /* Urbanist-ExtraLight.ttf */,
+				1E1C722D21FD4F55B291F4CE /* Urbanist-ThinItalic.ttf */,
+				55BC20AE8DC24EDEBEBF259E /* MuktaMalar-Light.ttf */,
+				3F08BCB8816D4B20A23470A5 /* MuktaMalar-ExtraLight.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		83CBB9F61A601CBA00E9B192 = {
+			isa = PBXGroup;
+			children = (
+				13B07FAE1A68108700A75B9A /* Zyox */,
+				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				83CBBA001A601CBA00E9B192 /* Products */,
+				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				72BF1DC71FFF4236B37A9687 /* Resources */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
+		};
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07F961A680F5B00A75B9A /* Zyox.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3B4392A12AC88292D35C810B /* Pods-Zyox.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-Zyox.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		13B07F861A680F5B00A75B9A /* Zyox */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Zyox" */;
+			buildPhases = (
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				13B07F871A680F5B00A75B9A /* Sources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
+				13B07F8E1A680F5B00A75B9A /* Resources */,
+				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Zyox;
+			productName = Zyox;
+			productReference = 13B07F961A680F5B00A75B9A /* Zyox.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Zyox" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83CBB9F61A601CBA00E9B192;
+			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				13B07F861A680F5B00A75B9A /* Zyox */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				24659E71527C7243EAA945FF /* PrivacyInfo.xcprivacy in Resources */,
+				A482A06449BD48FBB94912D7 /* TiroTamil-Regular.ttf in Resources */,
+				324F7352485A4712AA67AB5E /* TiroTamil-Italic.ttf in Resources */,
+				0219BF7E75AA4776A0A87980 /* MeeraInimai-Regular.ttf in Resources */,
+				3354452EAAA34D57ACD52B9B /* MuktaMalar-SemiBold.ttf in Resources */,
+				1B4866CD42E64B0B850E6754 /* Urbanist-Bold.ttf in Resources */,
+				40E5EF87422A401B9BC163F7 /* Urbanist-Regular.ttf in Resources */,
+				F23FBC3DB3834011B154A212 /* MuktaMalar-Bold.ttf in Resources */,
+				9FCA532A95BA4BCD91DBDCA6 /* MuktaMalar-Medium.ttf in Resources */,
+				2C24B8D81F764304AC23A790 /* Urbanist-SemiBold.ttf in Resources */,
+				46C23F02F10C41D9A7CFEE12 /* MuktaMalar-Regular.ttf in Resources */,
+				0B97743882EE41D9AD0506CA /* Urbanist-LightItalic.ttf in Resources */,
+				CFE86C83A6004F95AE058A17 /* Urbanist-ExtraLightItalic.ttf in Resources */,
+				C33ED562D5A641F190D3D137 /* Urbanist-ExtraBoldItalic.ttf in Resources */,
+				BBFE9ADEB25C416E8F9F3747 /* Urbanist-Thin.ttf in Resources */,
+				46DFA6546A8445AE917C4CAC /* Urbanist-MediumItalic.ttf in Resources */,
+				D8FA7C13B6FC4ADC83AB9AEC /* Urbanist-Italic.ttf in Resources */,
+				B002CC671A3746308917F661 /* Urbanist-Black.ttf in Resources */,
+				9C10DCEFDB54487EB754102D /* Urbanist-BlackItalic.ttf in Resources */,
+				062EC6E9A41C4C8581C55479 /* Urbanist-Light.ttf in Resources */,
+				C7040C2923614F6287602776 /* Urbanist-SemiBoldItalic.ttf in Resources */,
+				C23710B4A5454E5FAEFC7568 /* Urbanist-BoldItalic.ttf in Resources */,
+				7B7829D94BF542C9912ED177 /* Urbanist-ExtraBold.ttf in Resources */,
+				FF8DF9E9B034480F9170E345 /* Urbanist-Medium.ttf in Resources */,
+				A1A580F02B2940FD9EDE59CB /* Urbanist-ExtraLight.ttf in Resources */,
+				F8F6C92DDDF6465F93A9CFC9 /* Urbanist-ThinItalic.ttf in Resources */,
+				C2DF015BEEA64277A32FED15 /* MuktaMalar-Light.ttf in Resources */,
+				87D92681DF4A4F35B4513034 /* MuktaMalar-ExtraLight.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"\\\"$WITH_ENVIRONMENT\\\" \\\"$REACT_NATIVE_XCODE\\\"\"\n";
+		};
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zyox/Pods-Zyox-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zyox/Pods-Zyox-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Zyox/Pods-Zyox-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Zyox-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zyox/Pods-Zyox-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Zyox/Pods-Zyox-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Zyox/Pods-Zyox-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		13B07F871A680F5B00A75B9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-Zyox.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3TPUBSX747;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = Zyox/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = Zyox;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-Zyox.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3TPUBSX747;
+				INFOPLIST_FILE = Zyox/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = Zyox;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				PODFILE_DIR = "$(SRCROOT)";
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
+				USE_HERMES = true;
+			};
+			name = Debug;
+		};
+		83CBBA211A601CBA00E9B192 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+					"-DRCT_REMOVE_LEGACY_ARCH=1",
+				);
+				PODFILE_DIR = "$(SRCROOT)";
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
+				USE_HERMES = true;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Zyox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B07F941A680F5B00A75B9A /* Debug */,
+				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Zyox" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+}

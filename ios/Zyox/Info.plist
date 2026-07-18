@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Zyox</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string/>
+	<key>RCTNewArchEnabled</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>NSContactsUsageDescription</key>
+	<string>This app requires access to your contacts to allow you to select and import client details easily.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your photos to let you attach images to products, packages, and categories.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires access to save images to your photo library.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Urbanist-Thin.ttf</string>
+		<string>Urbanist-Light.ttf</string>
+		<string>TiroTamil-Regular.ttf</string>
+		<string>TiroTamil-Italic.ttf</string>
+		<string>MeeraInimai-Regular.ttf</string>
+		<string>MuktaMalar-SemiBold.ttf</string>
+		<string>Urbanist-Bold.ttf</string>
+		<string>Urbanist-Regular.ttf</string>
+		<string>MuktaMalar-Bold.ttf</string>
+		<string>MuktaMalar-Medium.ttf</string>
+		<string>Urbanist-SemiBold.ttf</string>
+		<string>MuktaMalar-Regular.ttf</string>
+		<string>Urbanist-LightItalic.ttf</string>
+		<string>Urbanist-ExtraLightItalic.ttf</string>
+		<string>Urbanist-ExtraBoldItalic.ttf</string>
+		<string>Urbanist-MediumItalic.ttf</string>
+		<string>Urbanist-Italic.ttf</string>
+		<string>Urbanist-Black.ttf</string>
+		<string>Urbanist-BlackItalic.ttf</string>
+		<string>Urbanist-SemiBoldItalic.ttf</string>
+		<string>Urbanist-BoldItalic.ttf</string>
+		<string>Urbanist-ExtraBold.ttf</string>
+		<string>Urbanist-Medium.ttf</string>
+		<string>Urbanist-ExtraLight.ttf</string>
+		<string>Urbanist-ThinItalic.ttf</string>
+		<string>MuktaMalar-Light.ttf</string>
+		<string>MuktaMalar-ExtraLight.ttf</string>
+	</array>
+</dict>
+</plist>
