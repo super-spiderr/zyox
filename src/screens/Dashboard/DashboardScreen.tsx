@@ -12,7 +12,6 @@ import { useProfile, useDashboard } from '@/hooks/queries';
 import { useAppTheme } from '@/theme';
 import DashboardHeader from './components/DashboardHeader';
 import StatsCard from './components/StatsCard';
-import DashboardQuickActions from './components/DashboardQuickActions';
 import DashboardFooter from './components/DashboardFooter';
 import RevenueTrendChart from './components/RevenueTrendChart/RevenueTrendChart';
 import RecentOrders from './components/RecentOrders/RecentOrders';
@@ -22,7 +21,7 @@ type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList>
 >;
 
-export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
+export const DashboardScreen: React.FC<Props> = () => {
   const styles = useStyles(getStyles);
 
   const { theme, isDark } = useAppTheme();
@@ -40,16 +39,22 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
         style={styles.screen}
         statusBarStyle={isDark ? 'light-content' : 'dark-content'}
       >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       </ScreenContainer>
     );
   }
 
-  const totalRevenue = dashboardData?.overview?.totalRevenue ?? 0;
+  const totalCollected = dashboardData?.overview?.totalCollected ?? 0;
+  const totalPending = dashboardData?.overview?.totalPending ?? 0;
   const totalOrdersCount = dashboardData?.overview?.totalOrdersCount ?? 0;
-  const totalCustomersCount = dashboardData?.overview?.totalCustomersCount ?? 0;
+  // const upcomingCount = dashboardData?.orderStatusDistribution?.CONFIRMED ?? 0;
+  const unpaidOrdersCount =
+    (dashboardData?.paymentStatusDistribution?.PENDING ?? 0) +
+    (dashboardData?.paymentStatusDistribution?.PARTIAL ?? 0);
+  const upcomingGuestCount = dashboardData?.recentOrders?.[0]?.attributes?.guestCount ?? 0;
+  const upcomingDate = dashboardData?.recentOrders?.[0]?.deliveryDate ?? '';
 
   return (
     <ScreenContainer
@@ -61,19 +66,16 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     >
       <DashboardHeader firstName={firstName} />
       <StatsCard
-        totalRevenue={totalRevenue}
-        activeOrdersCount={totalOrdersCount}
-        activeCustomersCount={totalCustomersCount}
+        totalCollected={totalCollected}
+        totalOrdersCount={totalOrdersCount}
+        totalPending={totalPending}
+        unpaidOrdersCount={unpaidOrdersCount}
+        upcomingGuestCount={upcomingGuestCount}
+        upcomingDate={upcomingDate}
+        revenueTrend={dashboardData?.revenueTrend || []}
+        recentOrders={dashboardData?.recentOrders || []}
       />
       <RevenueTrendChart data={dashboardData?.revenueTrend || []} />
-      <DashboardQuickActions
-        onNewOrderPress={() => navigation.navigate('CreateOrder')}
-        onCategoriesPress={() => navigation.navigate('Categories')}
-        onProductsPress={() => navigation.navigate('Products')}
-        onCustomersPress={() => navigation.navigate('Customers')}
-        onPackagesPress={() => navigation.navigate('Packages')}
-      />
-
       <RecentOrders orders={dashboardData?.recentOrders || []} />
       <DashboardFooter />
     </ScreenContainer>

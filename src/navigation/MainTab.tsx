@@ -40,10 +40,10 @@ const CreatePlaceholderScreen = () => null;
 // Each creation action gets its own accent so the sheet reads at a glance
 // instead of five identical monochrome tiles.
 const CREATE_ORDER_GRADIENT = [palette.primary500, palette.primary600];
-const CREATE_CUSTOMER_GRADIENT = [palette.secondary500, palette.secondary700];
-const CREATE_PRODUCT_GRADIENT = [palette.warning500, palette.warning700];
-const CREATE_PACKAGE_GRADIENT = [palette.purple500, palette.purple600];
-const CREATE_CATEGORY_GRADIENT = [palette.rose400, palette.rose700];
+const CREATE_CUSTOMER_GRADIENT = [palette.yellow500, palette.yellow600];
+const CREATE_PRODUCT_GRADIENT = [palette.primary600, palette.primary700];
+const CREATE_PACKAGE_GRADIENT = [palette.yellow600, palette.yellow700];
+const CREATE_CATEGORY_GRADIENT = [palette.primary400, palette.primary500];
 
 interface ActionTileProps {
   visible: boolean;
@@ -127,7 +127,13 @@ const TabBg: React.FC<TabBgProps> = ({ width, height, theme }) => {
     <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
       <Defs>
         <Filter id="dropShadow" height="100%" width="100%">
-          <FeDropShadow dx="5" dy="-2" stdDeviation="8" floodColor={palette.black} floodOpacity="0.5" />
+          <FeDropShadow
+            dx="5"
+            dy="-2"
+            stdDeviation="8"
+            floodColor={palette.black}
+            floodOpacity="0.5"
+          />
         </Filter>
       </Defs>
       {/* Plugs the notch gap so scrolled content never peeks through behind the FAB */}
@@ -353,7 +359,7 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({
               </View>
 
               <Text
-                variant="semiBold"
+                variant="tiroTamilRegular"
                 fontSize={widthScale(10)}
                 style={[
                   styles.labelText,

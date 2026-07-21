@@ -15,7 +15,9 @@ const queryClient = new QueryClient({
     },
   },
 });
-
+if (__DEV__) {
+  require('../ReactotronConfig');
+}
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>

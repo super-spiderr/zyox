@@ -198,7 +198,7 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
       style={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'dark-content' : 'light-content'}
+      statusBarStyle={'light-content'}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -337,9 +337,7 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
           <View style={styles.switchRow}>
             <View style={styles.switchLabelWrap}>
               <Text style={styles.switchLabel}>{t('isActive')}</Text>
-              <Text style={styles.switchHint}>
-                {form.isActive ? t('active') : t('inactive')}
-              </Text>
+              <Text style={styles.switchHint}>{form.isActive ? t('active') : t('inactive')}</Text>
             </View>
             <Switch
               value={form.isActive}

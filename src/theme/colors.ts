@@ -11,170 +11,106 @@ export const palette = {
   gray200: '#E5E7EB',
   gray300: '#D1D5DB',
   gray400: '#9CA3AF',
+  gray450: '#959595',
   gray500: '#6B7280',
   gray600: '#4B5563',
   gray700: '#374151',
   gray800: '#1F2937',
   gray900: '#111827',
   gray950: '#030712',
-  gray450: '#959595',
 
   slate700: '#334155',
   slate800: '#1E293B',
   slate900: '#0F2042',
 
-  // Primary (Cobalt Blue theme)
-  primary50: '#EFF6FF',
-  primary100: '#DBEAFE',
-  primary200: '#BFDBFE',
-  primary300: '#93C5FD',
-  primary400: '#60A5FA',
-  primary500: '#2563EB',
-  primary600: '#1D4ED8',
-  primary700: '#1E40AF',
-  primaryDark900: '#0F2042',
+  // Primary (Hostinger Purple theme — brand base #673DE6)
+  primary50: '#F3EFFD',
+  primary100: '#E4D9FB',
+  primary200: '#C9B3F7',
+  primary300: '#A98CF0',
+  primary400: '#8A66E8',
+  primary500: '#673DE6',
+  primary600: '#5527D6',
+  primary700: '#431DB0',
+  primary800: '#31148C',
+  primary900: '#240E6B',
+  primaryDark900: '#2A1170',
+  primaryTint900: '#241847',
+  primaryTint950: '#101011',
 
-  // Secondary / Success (green)
-  secondary50: '#F0FDF4',
-  secondary100: '#DCFCE7',
-  secondary300: '#34D399',
-  secondary500: '#22C55E',
-  secondary600: '#16A34A',
-  secondary700: '#15803D',
-  secondaryDarkBg: '#062E1D',
+  // Yellow (based on login accent #febf1b)
+  yellow50: '#FFFDF2',
+  yellow100: '#FFFBE0',
+  yellow200: '#FFF4B8',
+  yellow300: '#FEE785',
+  yellow400: '#FDD752',
+  yellow500: '#febf1b',
+  yellow600: '#DB9E0D',
+  yellow700: '#B78107',
+  yellow800: '#936403',
+  yellow900: '#7A5101',
+  yellow: '#febf1b',
 
-  // Emerald (used for profile/success accents, distinct from secondary green)
-  emerald500: '#10B981',
-
-  // Mint (invoice template success chip, slightly different from secondary100)
-  mint100: '#D1FAE5',
-  emerald600: '#059669',
-
-  // Error (red)
+  // Error (red - used on login screen)
   error50: '#FEF2F2',
   error100: '#FEE2E2',
+  error200: '#FECACA',
   error300: '#F87171',
+  error400: '#EF4444',
   error500: '#EF4444',
   error600: '#DC2626',
   error700: '#B91C1C',
   errorDarkBg: '#3B1212',
 
-  // Warning (amber)
-  warning50: '#FEF3C7',
-  warning300: '#FBBF24',
-  warning500: '#F59E0B',
-  warning600: '#D97706',
-  warning700: '#B45309',
-
-  // Purple
-  purple50: '#F3E8FF',
-  purple500: '#8B5CF6',
-  purple600: '#6D28D9',
-  purpleDarkBg: '#2E1C4B',
-
-  // Sky
-  sky50: '#E0F2FE',
-  sky200: '#BAE6FD',
-  sky400: '#38BDF8',
-  sky600: '#0284C7',
-  sky700: '#0369A1',
-
-  // Rose
-  rose400: '#FB7185',
-  rose700: '#BE123C',
-
-  // Google-brand chip colors (order ticket source badges)
-  googleGreenBg: '#E6F4EA',
-  googleGreenText: '#137333',
-  googleAmberBg: '#FEF7E0',
-  googleAmberText: '#B06000',
-  googleBlueBg: '#E8F0FE',
-  googleBlueText: '#1A73E8',
-  googleRedBg: '#FCE8E6',
-  googleRedText: '#C5221F',
-
-  // Misc solid dark bg shades used behind status cards on dark theme
-  darkBgApp: '#0B0F19',
-  darkBgCustomer: '#0A1526',
-  darkBgCustomerAlt: '#0A2540',
-  darkBgPackage: '#1C3144',
-  darkBgOrderSuccess: '#0B2E1D',
-  darkBgOrderError: '#311C1C',
-
-  // Invoice template greys (kept distinct from the RN gray scale on purpose)
-  invoiceText: '#333333',
-  invoiceMuted: '#666666',
-  invoiceSubtle: '#555555',
-  invoiceBorder: '#EEEEEE',
-
-  // Splash / auth
-  loginPlaceholder: '#8F8F8F',
-  loginFieldBg: '#F0F0F0',
-  splashGray: '#2A2A2A',
-
-  // Extra shades surfaced during the color-centralization pass
-  darkBgBusiness: '#2D1A10',
-  warning400: '#FCD34D',
+  // Extra helper tags mapped to standard gray/skeleton
   skeletonDark: '#2D3748',
   skeletonLight: '#E2E8F0',
-  gray800Alt: '#1E2937',
-  amber50: '#FFFBEB',
-  amber200: '#FDE68A',
-  darkBgWarning: '#2D1F10',
-  primary900: '#1E3A8A',
-  successPastelBg: '#E6F7ED',
-  infoPastelBg: '#EBF3FF',
-  warningPastelBg: '#FFF7EC',
-  successPastelText: '#2E7D32',
-  infoPastelText: '#1565C0',
-  warningPastelText: '#E65100',
-  blue500: '#3B82F6',
 };
 
 export const lightColors = {
-  background: '#FFFFFF',
+  background: '#EDEDF7',
   surface: '#F6F6F6',
   surfaceBorder: '#E2E2E2',
   text: '#000000',
   textSecondary: '#5E5E5E',
   textMuted: '#8F8F8F',
 
-  primary: '#000000',
-  primaryLight: '#F3F3F3',
+  primary: palette.primary500,
+  primaryLight: palette.primary50,
   primaryText: '#FFFFFF',
 
   secondary: '#5E5E5E',
   secondaryLight: '#F6F6F6',
-  green: '#05944F',
-  error: '#E11900',
-  errorLight: '#FFF0F0',
+  green: palette.primary500,
+  error: palette.error500,
+  errorLight: palette.error50,
 
   border: '#E2E2E2',
   card: '#FFFFFF',
 
-  // Shared status/badge triads (bg / border / text)
-  successBg: palette.secondary50,
-  successBorder: palette.secondary100,
-  successText: palette.secondary700,
+  // Shared status/badge triads (bg / border / text) - aligned to primary and yellow theme
+  successBg: palette.primary50,
+  successBorder: palette.primary100,
+  successText: palette.primary700,
 
   errorBg: palette.error50,
   errorBorder: palette.error100,
   errorText: palette.error700,
 
-  warningBg: palette.warning50,
-  warningBorder: palette.warning300,
-  warningText: palette.warning700,
+  warningBg: palette.yellow50,
+  warningBorder: palette.yellow300,
+  warningText: palette.yellow700,
 
   infoBg: palette.primary50,
   infoBorder: palette.primary100,
   infoText: palette.primary600,
 
-  purpleBg: palette.purple50,
-  purpleText: palette.purple600,
+  purpleBg: palette.primary50,
+  purpleText: palette.primary600,
 
-  skyBg: palette.sky50,
-  skyBorder: palette.sky200,
-  skyText: palette.sky700,
+  skyBg: palette.primary50,
+  skyBorder: palette.primary100,
+  skyText: palette.primary700,
 
   overlay: 'rgba(0, 0, 0, 0.4)',
   overlayStrong: 'rgba(0, 0, 0, 0.6)',
@@ -186,7 +122,7 @@ export const lightColors = {
   // Card/button gradient end stop
   cardGradEnd: palette.cardGradDarkEnd,
 
-  // Per-context tinted surfaces (promoted from scattered isDark ternaries)
+  // Per-context tinted surfaces
   customerInfoBg: palette.primary50,
   infoSurfaceBg: palette.primary50,
   neutralSurfaceBg: palette.gray100,
@@ -195,16 +131,16 @@ export const lightColors = {
   mutedBorder: palette.gray200,
   mutedText: palette.gray500,
   dangerIconBg: palette.error50,
-  skySurfaceBg: palette.sky50,
-  warningSurfaceBg: palette.warning50,
-  businessBadgeBorder: palette.warning400,
-  warningTextStrong: palette.warning600,
+  skySurfaceBg: palette.primary50,
+  warningSurfaceBg: palette.yellow50,
+  businessBadgeBorder: palette.yellow400,
+  warningTextStrong: palette.yellow700,
   infoTextStrong: palette.primary500,
-  packageIconBg: palette.sky50,
+  packageIconBg: palette.primary50,
   couponEligibleBg: palette.primary50,
   couponInactiveBg: palette.gray100,
-  warningBgSoft: palette.amber50,
-  warningBorderSoft: palette.amber200,
+  warningBgSoft: palette.yellow50,
+  warningBorderSoft: palette.yellow200,
   infoBgSoft: palette.primary50,
   infoBorderSoft: palette.primary100,
   panelBg: palette.gray50,
@@ -212,52 +148,56 @@ export const lightColors = {
   linkText: palette.primary700,
   linkBorder: palette.primary100,
   skeletonBg: palette.skeletonLight,
+  yellow: palette.yellow,
+  primaryTint950: palette.primaryTint950,
+  dashboardTitle: '#1B194B',
+  inactiveChipText: '#1B194B',
 };
 
 export const darkColors = {
-  background: '#000000',
+  background: palette.primaryTint950,
   surface: '#121212',
   surfaceBorder: '#2E2E2E',
   text: '#FFFFFF',
   textSecondary: '#A6A6A6',
   textMuted: '#757575',
 
-  primary: '#FFFFFF',
-  primaryLight: '#1F1F1F',
-  primaryText: '#000000',
+  primary: palette.primary400,
+  primaryLight: palette.primaryTint900,
+  primaryText: '#FFFFFF',
 
   secondary: '#A6A6A6',
   secondaryLight: '#121212',
-  green: '#05944F',
-  error: '#E11900',
-  errorLight: '#3A1010',
+  green: palette.primary400,
+  error: palette.error500,
+  errorLight: palette.errorDarkBg,
 
   border: '#2E2E2E',
   card: '#1F1F1F',
 
-  // Shared status/badge triads (bg / border / text)
-  successBg: palette.secondaryDarkBg,
-  successBorder: palette.secondary600,
-  successText: palette.secondary300,
+  // Shared status/badge triads (bg / border / text) - aligned to primary and yellow theme
+  successBg: palette.primaryTint900,
+  successBorder: palette.primary500,
+  successText: palette.primary200,
 
   errorBg: palette.errorDarkBg,
   errorBorder: palette.error600,
   errorText: palette.error300,
 
-  warningBg: 'rgba(245, 158, 11, 0.15)',
-  warningBorder: palette.warning600,
-  warningText: palette.warning300,
+  warningBg: 'rgba(254, 191, 27, 0.15)',
+  warningBorder: palette.yellow600,
+  warningText: palette.yellow300,
 
-  infoBg: 'rgba(37, 99, 235, 0.15)',
+  infoBg: 'rgba(103, 61, 230, 0.15)',
   infoBorder: palette.primary400,
   infoText: palette.primary400,
 
-  purpleBg: palette.purpleDarkBg,
-  purpleText: palette.purple500,
+  purpleBg: palette.primaryTint900,
+  purpleText: palette.primary300,
 
-  skyBg: palette.sky700,
-  skyBorder: palette.sky600,
-  skyText: palette.sky400,
+  skyBg: palette.primaryTint900,
+  skyBorder: palette.primary400,
+  skyText: palette.primary300,
 
   overlay: 'rgba(0, 0, 0, 0.6)',
   overlayStrong: 'rgba(0, 0, 0, 0.75)',
@@ -269,25 +209,25 @@ export const darkColors = {
   // Card/button gradient end stop
   cardGradEnd: palette.cardGradLightEnd,
 
-  // Per-context tinted surfaces (promoted from scattered isDark ternaries)
-  customerInfoBg: palette.darkBgCustomer,
+  // Per-context tinted surfaces
+  customerInfoBg: palette.primaryTint900,
   infoSurfaceBg: palette.slate800,
   neutralSurfaceBg: palette.gray800,
   cardAltBg: palette.gray800,
-  mutedBg: palette.gray800Alt,
+  mutedBg: palette.gray800,
   mutedBorder: palette.gray700,
   mutedText: palette.gray400,
-  dangerIconBg: palette.darkBgOrderError,
-  skySurfaceBg: palette.darkBgCustomerAlt,
-  warningSurfaceBg: palette.darkBgBusiness,
-  businessBadgeBorder: palette.warning600,
-  warningTextStrong: palette.warning300,
+  dangerIconBg: palette.errorDarkBg,
+  skySurfaceBg: palette.primaryTint900,
+  warningSurfaceBg: palette.primaryTint900,
+  businessBadgeBorder: palette.yellow600,
+  warningTextStrong: palette.yellow300,
   infoTextStrong: palette.primary400,
-  packageIconBg: palette.darkBgPackage,
+  packageIconBg: palette.primaryTint900,
   couponEligibleBg: palette.primary900,
   couponInactiveBg: palette.gray700,
-  warningBgSoft: palette.darkBgWarning,
-  warningBorderSoft: palette.warning600,
+  warningBgSoft: palette.primaryTint900,
+  warningBorderSoft: palette.yellow600,
   infoBgSoft: palette.slate900,
   infoBorderSoft: palette.primary500,
   panelBg: palette.gray900,
@@ -295,6 +235,10 @@ export const darkColors = {
   linkText: palette.primary300,
   linkBorder: palette.slate700,
   skeletonBg: palette.skeletonDark,
+  yellow: palette.yellow,
+  primaryTint950: palette.primaryTint950,
+  dashboardTitle: palette.white,
+  inactiveChipText: '#A6A6A6',
 };
 
 export type Colors = typeof lightColors;

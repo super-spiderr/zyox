@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Theme, palette } from '@/theme';
-import { widthScale } from '@/utils/scaling';
+import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme, insets: { top: number }) => {
   return StyleSheet.create({
@@ -11,59 +11,75 @@ export const getStyles = (theme: Theme, insets: { top: number }) => {
     headerRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingTop: insets.top + widthScale(20),
+      alignItems: 'flex-start',
+      paddingTop: insets.top + widthScale(10),
     },
-    headerLeftRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: widthScale(12),
-    },
-    avatarCircle: {
-      width: widthScale(42),
-      height: widthScale(42),
-      borderRadius: widthScale(12),
-      backgroundColor: theme.colors.primary,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    avatarText: {
-      color: theme.colors.primaryText,
-    },
-    headerLeft: {
-      justifyContent: 'center',
+    greetingContainer: {
+      flexDirection: 'column',
     },
     greetingText: {
-      color: theme.colors.textSecondary,
+      color: theme.colors.dashboardTitle,
     },
     userNameText: {
-      color: theme.colors.text,
+      color: theme.colors.dashboardTitle,
+      lineHeight: widthScale(28),
     },
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: widthScale(8),
+      gap: widthScale(16),
     },
-    iconButton: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: widthScale(46),
-      width: widthScale(46),
-      borderRadius: widthScale(14),
-      backgroundColor: theme.colors.card,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
+    bellButton: {
       position: 'relative',
+      padding: widthScale(4),
     },
-    badgeDot: {
+    redBadge: {
       position: 'absolute',
-      top: widthScale(12),
-      right: widthScale(12),
+      top: widthScale(2),
+      right: widthScale(2),
       width: widthScale(8),
       height: widthScale(8),
       borderRadius: widthScale(4),
       backgroundColor: palette.error500,
-      borderWidth: 1.5,
-      borderColor: theme.colors.card,
+    },
+    avatarCircle: {
+      height: widthScale(40),
+      width: widthScale(40),
+      backgroundColor: palette.primary100,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: widthScale(20),
+    },
+    avatarText: {
+      color: palette.primary700,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      gap: widthScale(12),
+      marginTop: heightScale(16),
+      marginBottom: heightScale(10),
+      width: '100%',
+    },
+    actionButton: {
+      flex: 1,
+      height: widthScale(46),
+      borderRadius: widthScale(23),
+      backgroundColor: palette.primary600,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: widthScale(8),
+    },
+    customerButton: {
+      backgroundColor: theme.colors.card,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    buttonText: {
+      color: '#FFFFFF',
+    },
+    customerButtonText: {
+      color: theme.colors.dashboardTitle,
     },
   });
 };

@@ -5,7 +5,7 @@ import { Text } from '@/components';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
 import getStyles from './styles';
-import { Bell } from 'lucide-react-native';
+import { Bell, Plus, UserPlus } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '@/theme';
 import { widthScale } from '@/utils/scaling';
@@ -58,42 +58,80 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ firstName }) =
 
   return (
     <View style={styles.headerContainer}>
+      {/* Top Row: Greeting + Actions */}
       <View style={styles.headerRow}>
-        <View style={styles.headerLeftRow}>
+        <View style={styles.greetingContainer}>
+          <Text style={styles.greetingText} variant="semiBold" fontSize={widthScale(16)}>
+            {getGreeting()}
+          </Text>
+          <Text style={styles.userNameText} variant="bold" fontSize={widthScale(18)}>
+            {firstName}!
+          </Text>
+        </View>
+
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.bellButton}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('Notifications')}
+            accessibilityLabel={t('tabNotifications') || 'Notifications'}
+          >
+            <Bell size={24} color={theme.colors.dashboardTitle} />
+            <View style={styles.redBadge} />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={styles.avatarCircle}
             activeOpacity={0.85}
             onPress={() => navigation.navigate('Profile')}
             accessibilityLabel={t('goToProfile') || 'Go to profile'}
           >
-            <Text style={styles.avatarText}>{initials}</Text>
+            <Text style={styles.avatarText} variant="bold" fontSize={widthScale(16)}>
+              {initials}
+            </Text>
           </TouchableOpacity>
-          <View style={styles.headerLeft}>
-            <Text
-              style={styles.greetingText}
-              numberOfLines={1}
-              fontSize={widthScale(12)}
-              variant="bold"
-            >
-              {getGreeting()}
-            </Text>
-            <Text style={styles.userNameText} variant="semiBold" fontSize={widthScale(22)}>
-              {firstName}
-            </Text>
-          </View>
         </View>
+      </View>
 
-        <View style={styles.headerActions}>
-          <TouchableOpacity
-            style={styles.iconButton}
-            activeOpacity={0.7}
-            onPress={() => navigation.navigate('Notifications')}
-            accessibilityLabel={t('tabNotifications') || 'Notifications'}
+      {/* Dual action buttons */}
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('CreateOrder')}
+        >
+          <Plus size={16} color="#FFFFFF" style={{ marginRight: widthScale(4) }} />
+          <Text
+            style={styles.buttonText}
+            variant="bold"
+            fontSize={widthScale(13)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
           >
-            <Bell size={20} color={theme.colors.text} />
-            <View style={styles.badgeDot} />
-          </TouchableOpacity>
-        </View>
+            {t('orders') || 'Order'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, styles.customerButton]}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('CreateCustomer')}
+        >
+          <UserPlus
+            size={16}
+            color={theme.colors.dashboardTitle}
+            style={{ marginRight: widthScale(4) }}
+          />
+          <Text
+            style={styles.customerButtonText}
+            variant="bold"
+            fontSize={widthScale(13)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
+            {t('customer') || 'Customer'}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

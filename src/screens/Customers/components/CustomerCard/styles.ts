@@ -1,116 +1,68 @@
 import { StyleSheet } from 'react-native';
-import { Theme, palette } from '@/theme';
+import { Theme } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme) => {
   return StyleSheet.create({
     cardWrapper: {
-      marginBottom: heightScale(10),
+      marginBottom: heightScale(8),
     },
     card: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: heightScale(12),
-      borderRadius: widthScale(14),
-      borderBottomWidth: 1,
-      borderColor: theme.colors.border,
+      paddingVertical: heightScale(14),
+      paddingHorizontal: widthScale(16),
+      backgroundColor: theme.colors.card,
+      borderRadius: widthScale(16),
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.04,
+      shadowRadius: 6,
+      elevation: 2,
     },
     avatarWrap: {
-      position: 'relative',
       marginRight: widthScale(12),
     },
     avatarContainer: {
-      width: widthScale(44),
-      height: widthScale(44),
-      borderRadius: widthScale(22),
+      width: widthScale(42),
+      height: widthScale(42),
+      borderRadius: widthScale(21),
       justifyContent: 'center',
       alignItems: 'center',
     },
-    avatarContainer_individual: {
-      backgroundColor: theme.colors.skySurfaceBg,
-    },
-    avatarContainer_business: {
-      backgroundColor: theme.colors.warningSurfaceBg,
-    },
     avatarText: {
       fontSize: widthScale(15),
-    },
-    avatarText_individual: {
-      color: theme.colors.skyText,
-    },
-    avatarText_business: {
-      color: theme.colors.warningText,
-    },
-    statusDot: {
-      position: 'absolute',
-      bottom: -1,
-      right: -1,
-      width: widthScale(13),
-      height: widthScale(13),
-      borderRadius: widthScale(7),
-      borderWidth: 2,
-      borderColor: theme.colors.card,
-    },
-    statusDot_active: {
-      backgroundColor: palette.secondary500,
-    },
-    statusDot_inactive: {
-      backgroundColor: theme.colors.textMuted,
     },
     customerInfo: {
       flex: 1,
       justifyContent: 'center',
     },
-    nameRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
     nameText: {
       fontSize: widthScale(15),
       color: theme.colors.text,
-      flexShrink: 1,
     },
-    phoneRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: heightScale(4),
-    },
-    phoneIcon: {
-      marginRight: widthScale(5),
-    },
-    detailText: {
+    phoneText: {
       fontSize: widthScale(12),
       color: theme.colors.textSecondary,
+      marginTop: heightScale(2),
     },
-    trailing: {
-      alignItems: 'flex-end',
-      marginLeft: widthScale(8),
+    actions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: widthScale(2),
     },
-    badge: {
-      paddingHorizontal: widthScale(8),
-      paddingVertical: heightScale(2),
-      borderRadius: widthScale(12),
-      borderWidth: 1,
-      marginBottom: heightScale(6),
+    actionBtn: {
+      width: widthScale(36),
+      height: widthScale(36),
+      borderRadius: widthScale(18),
+      justifyContent: 'center',
+      alignItems: 'center',
     },
-    badgeText: {
-      fontSize: widthScale(9),
-      textTransform: 'uppercase',
-      letterSpacing: 0.3,
+    callBtn: {
+      backgroundColor: '#EAE8FF',
     },
-    badge_individual: {
-      backgroundColor: theme.colors.skySurfaceBg,
-      borderColor: theme.colors.skyBorder,
-    },
-    badge_business: {
-      backgroundColor: theme.colors.warningSurfaceBg,
-      borderColor: theme.colors.businessBadgeBorder,
-    },
-    badgeText_individual: {
-      color: theme.colors.skyText,
-    },
-    badgeText_business: {
-      color: theme.colors.warningText,
+    waBtn: {
+      backgroundColor: '#E6F4EA',
     },
   });
 };

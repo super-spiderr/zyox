@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useAppTheme, palette } from '@/theme';
+import { TypographyVariant } from '@/theme/typography';
 import Text from './Text';
 
 interface MarqueeProps {
@@ -17,6 +18,8 @@ interface MarqueeProps {
   variant?: 'default' | 'sticker' | 'transparent';
   textColor?: string;
   fontSize?: number;
+  textVariant?: TypographyVariant;
+  separator?: string;
 }
 
 export const Marquee: React.FC<MarqueeProps> = ({
@@ -26,6 +29,8 @@ export const Marquee: React.FC<MarqueeProps> = ({
   variant = 'default',
   textColor,
   fontSize,
+  textVariant = 'light',
+  separator = '   ·   ',
 }) => {
   const { theme } = useAppTheme();
 
@@ -34,21 +39,18 @@ export const Marquee: React.FC<MarqueeProps> = ({
   const [ready, setReady] = useState(false);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
-  // Repeat text for the sticker tape or transparent variant to ensure a continuous stream
-
-  const displayText = `${text} · ${text} · ${text} · ${text}`;
+  // Repeat text to make a single loopable unit
+  const singleText = `${text}${separator}`;
 
   useEffect(() => {
     if (!ready || containerWidthRef.current === 0 || textWidthRef.current === 0) return;
 
-    const containerWidth = containerWidthRef.current;
     const textWidth = textWidthRef.current;
 
-    // Reset animated value to start from the right boundary of the container
-    animatedValue.setValue(containerWidth);
+    // Start translation from 0 for a seamless continuous flow
+    animatedValue.setValue(0);
 
-    const distance = containerWidth + textWidth;
-    const duration = (distance / speed) * 1000;
+    const duration = (textWidth / speed) * 1000;
 
     const animation = Animated.loop(
       Animated.timing(animatedValue, {
@@ -64,7 +66,7 @@ export const Marquee: React.FC<MarqueeProps> = ({
     return () => {
       animation.stop();
     };
-  }, [displayText, speed, ready, animatedValue]);
+  }, [text, speed, ready, animatedValue]);
 
   const handleContainerLayout = (e: LayoutChangeEvent) => {
     containerWidthRef.current = e.nativeEvent.layout.width;
@@ -127,7 +129,7 @@ export const Marquee: React.FC<MarqueeProps> = ({
         >
           <Text
             onLayout={handleTextLayout}
-            variant="light"
+            variant={textVariant}
             fontSize={resolvedFontSize}
             style={[
               styles.defaultText,
@@ -138,8 +140,25 @@ export const Marquee: React.FC<MarqueeProps> = ({
             numberOfLines={1}
             ellipsizeMode="clip"
           >
-            {displayText}
+            {singleText}
           </Text>
+          {[...Array(6)].map((_, i) => (
+            <Text
+              key={i}
+              variant={textVariant}
+              fontSize={resolvedFontSize}
+              style={[
+                styles.defaultText,
+                {
+                  color: marqueeTextColor,
+                },
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="clip"
+            >
+              {singleText}
+            </Text>
+          ))}
         </Animated.View>
       </View>
     </View>

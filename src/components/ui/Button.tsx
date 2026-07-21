@@ -3,6 +3,7 @@ import { StyleSheet, ActivityIndicator, ViewStyle, Pressable } from 'react-nativ
 import LinearGradient from 'react-native-linear-gradient';
 import { useAppTheme, palette } from '@/theme';
 import Text from './Text';
+import { widthScale } from '@/utils/scaling';
 
 interface ButtonProps {
   title: string;
@@ -33,8 +34,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   // Default primary buttons to the app's own theme gradient (same formula as
   // StatsCard/PulsingFAB) rather than an off-theme brand color.
-  const startColor = theme.colors.primary;
-  const endColor = theme.colors.cardGradEnd;
+  const startColor = palette.primary700;
+  const endColor = theme.colors.primary;
   const themeGradient = isDark ? [endColor, startColor] : [startColor, endColor];
   const buttonGradient = gradient || (isPrimary ? themeGradient : undefined);
 
@@ -95,15 +96,20 @@ export const Button: React.FC<ButtonProps> = ({
       {buttonGradient && !disabled && (
         <LinearGradient
           colors={buttonGradient}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          start={{ x: 0.4, y: 0.3 }}
+          end={{ x: 1, y: 0.8 }}
           style={gradientContainerStyle}
         />
       )}
       {loading ? (
         <ActivityIndicator color={getSpinnerColor()} size="small" />
       ) : (
-        <Text variant="semiBold" color={getTextColor()} style={styles.text}>
+        <Text
+          variant="tiroTamilRegular"
+          color={getTextColor()}
+          style={styles.text}
+          fontSize={widthScale(12)}
+        >
           {title}
         </Text>
       )}
@@ -119,9 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     flexDirection: 'row',
   },
-  text: {
-    fontWeight: '600',
-  },
+  text: {},
 });
 
 export default Button;

@@ -180,7 +180,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
       style={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'dark-content' : 'light-content'}
+      statusBarStyle={isDark ? 'light-content' : 'dark-content'}
     >
       <GradientHeader
         title={order?.eventName || t('viewOrder') || 'Order Details'}

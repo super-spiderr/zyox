@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  ImageSourcePropType,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { ArrowLeft, ArrowUpDown, Filter } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -20,34 +13,19 @@ interface GradientHeaderProps {
   description?: string;
   count?: number;
   countLabel?: string;
-  image: ImageSourcePropType;
   onBackPress?: () => void;
   onSortToggle?: () => void;
   sortActive?: boolean;
   onFilterPress?: () => void;
-  /**
-   * Generic action slot rendered alongside (or instead of) the built-in
-   * sort/filter buttons — e.g. pass a <GradientHeaderAction> wrapping a
-   * "create" icon to swap in a screen-specific action instead of filter.
-   */
   action?: React.ReactNode;
   style?: ViewStyle;
 }
 
-/**
- * Rounded gradient hero header shared across list/create screens (Customers,
- * Products, Packages, ...): back button, title, optional count/description,
- * optional sort+filter actions, and a decorative illustration bleeding off
- * the corner. Extends up behind the status bar — the screen using this must
- * pass `ignoreTopSafeArea` + a matching `statusBarStyle` to its
- * ScreenContainer (see CustomersScreen for the reference implementation).
- */
 export const GradientHeader: React.FC<GradientHeaderProps> = ({
   title,
   description,
   count,
   countLabel,
-  image,
   onBackPress,
   onSortToggle,
   sortActive,
@@ -55,32 +33,32 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
   action,
   style,
 }) => {
-  const { theme, isDark } = useAppTheme();
+  const { theme } = useAppTheme();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
-  // Same theme gradient formula as StatsCard/Button.
-  const startColor = theme.colors.primary;
-  const endColor = theme.colors.cardGradEnd;
-  const colors = isDark ? [endColor, startColor, endColor] : [startColor, endColor, startColor];
-
-  const onGradientText = theme.colors.primaryText;
-  const onGradientMuted = isDark ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.75)';
-  const onGradientChip = isDark ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)';
+  const onGradientText = '#FFFFFF';
+  const onGradientMuted = 'rgba(255,255,255,0.6)';
+  const onGradientChip = 'rgba(255,255,255,0.18)';
 
   const hasActions = Boolean(onSortToggle || onFilterPress || action);
 
   return (
-    <View style={[styles.shadowWrap, style]}>
-      <View style={[styles.gradient, { paddingTop: Math.max(insets.top, 12) + 10 }]}>
-        <LinearGradient
-          colors={colors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[StyleSheet.absoluteFill]}
-        />
-        <Image source={image} style={styles.bannerImage} />
+    <View style={[styles.headerWrapper, style]}>
+      {/* Background Gradient with rounded bottom corners */}
+      <LinearGradient
+        colors={[palette.primary900, palette.primary600]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
 
+      {/* Decorative concentric circles */}
+      <View style={styles.circleLarge} pointerEvents="none" />
+      <View style={styles.circleMedium} pointerEvents="none" />
+
+      <View style={[styles.headerContent, { paddingTop: Math.max(insets.top, 12) + 6 }]}>
+        {/* Top Navigation Row: Back button, Title & Action buttons */}
         <View style={styles.navRow}>
           <View style={styles.headerLeft}>
             <TouchableOpacity
@@ -93,14 +71,14 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
             <View style={styles.headerTitleWrap}>
               <Text
                 variant="bold"
-                color={onGradientText}
-                style={styles.headerTitle}
+                style={[styles.headerTitle, { color: onGradientText }]}
                 numberOfLines={1}
               >
                 {title}
               </Text>
             </View>
           </View>
+
           {hasActions && (
             <View style={styles.headerActions}>
               {onSortToggle && (
@@ -109,7 +87,7 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
                   onPress={onSortToggle}
                   activeOpacity={0.7}
                 >
-                  <ArrowUpDown size={15} color={sortActive ? onGradientText : onGradientMuted} />
+                  <ArrowUpDown size={16} color={sortActive ? onGradientText : onGradientMuted} />
                 </TouchableOpacity>
               )}
               {onFilterPress && (
@@ -122,7 +100,7 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
                   onPress={onFilterPress}
                   activeOpacity={0.7}
                 >
-                  <Filter size={15} color={onGradientText} />
+                  <Filter size={16} color={onGradientText} />
                 </TouchableOpacity>
               )}
               {action}
@@ -130,18 +108,10 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
           )}
         </View>
 
-        {(typeof count === 'number' || description) && (
-          <View style={styles.descWrap}>
-            {typeof count === 'number' && (
-              <Text color={onGradientMuted} style={styles.headerSubtitle}>
-                {count} {countLabel}
-              </Text>
-            )}
-            {description && (
-              <Text variant="medium" color={onGradientMuted} style={styles.descText}>
-                {description}
-              </Text>
-            )}
+        {/* Metadata Info Row below navigation */}
+        {description && (
+          <View style={styles.metaRow}>
+            <Text style={[styles.descText, { color: 'rgba(255,255,255,0.8)' }]}>{description}</Text>
           </View>
         )}
       </View>
@@ -154,14 +124,8 @@ interface GradientHeaderActionProps {
   onPress: () => void;
 }
 
-/**
- * Small circular translucent button matching GradientHeader's built-in
- * sort/filter buttons — use this to build a custom `action` for GradientHeader,
- * e.g. a "create" icon that navigates to a create screen.
- */
 export const GradientHeaderAction: React.FC<GradientHeaderActionProps> = ({ icon, onPress }) => {
-  const { isDark } = useAppTheme();
-  const onGradientChip = isDark ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)';
+  const onGradientChip = 'rgba(255,255,255,0.18)';
 
   return (
     <TouchableOpacity
@@ -175,30 +139,24 @@ export const GradientHeaderAction: React.FC<GradientHeaderActionProps> = ({ icon
 };
 
 const styles = StyleSheet.create({
-  shadowWrap: {
-    marginBottom: heightScale(16),
-    shadowColor: palette.black,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  gradient: {
+  headerWrapper: {
     overflow: 'hidden',
-    paddingHorizontal: widthScale(16),
-    paddingBottom: heightScale(16),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 5,
+    marginBottom: heightScale(16),
   },
-  bannerImage: {
-    position: 'absolute',
-    right: -widthScale(8),
-    bottom: -widthScale(16),
-    width: widthScale(126),
-    height: widthScale(102),
-    resizeMode: 'contain',
+  headerContent: {
+    paddingHorizontal: widthScale(16),
+    paddingBottom: heightScale(18),
   },
   navRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: heightScale(40),
   },
   headerLeft: {
     flexDirection: 'row',
@@ -207,32 +165,28 @@ const styles = StyleSheet.create({
     marginRight: widthScale(8),
   },
   backButton: {
-    width: widthScale(32),
-    height: widthScale(32),
-    borderRadius: widthScale(10),
+    width: widthScale(36),
+    height: widthScale(36),
+    borderRadius: widthScale(18),
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: widthScale(10),
   },
   headerTitleWrap: {
-    flexShrink: 1,
+    flex: 1,
+    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: widthScale(18),
-    flexShrink: 1,
-  },
-  headerSubtitle: {
-    fontSize: widthScale(11),
-    marginTop: heightScale(1),
   },
   headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   actionButton: {
-    width: widthScale(32),
-    height: widthScale(32),
-    borderRadius: widthScale(10),
+    width: widthScale(36),
+    height: widthScale(36),
+    borderRadius: widthScale(18),
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: widthScale(8),
@@ -240,13 +194,35 @@ const styles = StyleSheet.create({
   actionButtonLast: {
     marginRight: 0,
   },
-  descWrap: {
-    maxWidth: '62%',
+  metaRow: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
     marginTop: heightScale(14),
+    gap: heightScale(6),
   },
   descText: {
-    fontSize: widthScale(10),
-    lineHeight: heightScale(17),
+    fontSize: widthScale(12),
+  },
+  descTextWithBadge: {
+    marginTop: heightScale(2),
+  },
+  circleLarge: {
+    position: 'absolute',
+    right: -widthScale(60),
+    bottom: -widthScale(70),
+    width: widthScale(220),
+    height: widthScale(220),
+    borderRadius: widthScale(110),
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  circleMedium: {
+    position: 'absolute',
+    right: -widthScale(20),
+    top: -widthScale(50),
+    width: widthScale(150),
+    height: widthScale(150),
+    borderRadius: widthScale(75),
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
 });
 

@@ -140,7 +140,7 @@ export const PackagesScreen: React.FC = () => {
       contentContainerStyle={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'dark-content' : 'light-content'}
+      statusBarStyle={isDark ? 'light-content' : 'dark-content'}
     >
       <GradientHeader
         title={t('packagesTitle')}

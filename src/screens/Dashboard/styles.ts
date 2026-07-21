@@ -10,7 +10,12 @@ export const getStyles = (theme: Theme) => {
     container: {
       paddingTop: 0,
       paddingBottom: heightScale(20),
-      gap: widthScale(18),
+      gap: widthScale(12),
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });
 };

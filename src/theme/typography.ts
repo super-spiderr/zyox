@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import { Language } from '@/constants/translations';
 
 export type FontWeight = 'thin' | 'light' | 'regular' | 'medium' | 'semiBold' | 'bold';
@@ -50,7 +49,14 @@ export const fonts = legacyFontRegistry;
 // Single source of truth: which family backs each weight, per app language.
 const LANGUAGE_FONT_FAMILY: Record<Language, Record<FontWeight, string>> = {
   en: fontFamilies.urbanist,
-  ta: fontFamilies.muktaMalar,
+  ta: {
+    thin: scriptFonts.tiroTamil.regular,
+    light: scriptFonts.tiroTamil.regular,
+    regular: scriptFonts.tiroTamil.regular,
+    medium: scriptFonts.tiroTamil.regular,
+    semiBold: scriptFonts.tiroTamil.regular,
+    bold: scriptFonts.tiroTamil.regular,
+  },
 };
 
 export const getFontFamily = (weight: FontWeight, language: Language): string =>
@@ -96,6 +102,7 @@ export const variants = {
   regular: { weight: 'regular', fontSize: 16, lineHeight: 24 },
   medium: { weight: 'medium', fontSize: 16, lineHeight: 24 },
   semiBold: { weight: 'semiBold', fontSize: 16, lineHeight: 24 },
+  semibold: { weight: 'semiBold', fontSize: 16, lineHeight: 24 },
   bold: { weight: 'bold', fontSize: 16, lineHeight: 24 },
 } as const satisfies Record<string, AutoVariant>;
 
@@ -106,8 +113,8 @@ export const variants = {
 export const fixedVariants = {
   tamilHeader: { fontFamily: fontFamilies.muktaMalar.bold, fontSize: 24, lineHeight: 32 },
   tamilBody: { fontFamily: fontFamilies.muktaMalar.regular, fontSize: 16, lineHeight: 24 },
-  tiroTamilRegular: { fontFamily: scriptFonts.tiroTamil.regular, fontSize: 16, lineHeight: 24 },
-  tiroTamilItalic: { fontFamily: scriptFonts.tiroTamil.italic, fontSize: 16, lineHeight: 24 },
+  tiroTamilRegular: { fontFamily: scriptFonts.tiroTamil.regular, fontSize: 16, lineHeight: 22 },
+  tiroTamilItalic: { fontFamily: scriptFonts.tiroTamil.italic, fontSize: 16, lineHeight: 22 },
   meeraInimaiRegular: { fontFamily: scriptFonts.meeraInimai.regular, fontSize: 16, lineHeight: 24 },
   muktaMalarThin: { fontFamily: fontFamilies.muktaMalar.thin, fontSize: 16, lineHeight: 24 },
   muktaMalarLight: { fontFamily: fontFamilies.muktaMalar.light, fontSize: 16, lineHeight: 24 },
@@ -126,6 +133,16 @@ export const fixedVariants = {
   anekTamilMedium: { fontFamily: fontFamilies.muktaMalar.medium, fontSize: 16, lineHeight: 24 },
   anekTamilSemiBold: { fontFamily: fontFamilies.muktaMalar.semiBold, fontSize: 16, lineHeight: 24 },
   anekTamilBold: { fontFamily: fontFamilies.muktaMalar.bold, fontSize: 16, lineHeight: 24 },
+
+  // Explicit Urbanist variants (always Urbanist)
+  urbanistRegular: { fontFamily: fontFamilies.urbanist.regular, fontSize: 16, lineHeight: 24 },
+  urbanistMedium: { fontFamily: fontFamilies.urbanist.medium, fontSize: 16, lineHeight: 24 },
+  urbanistSemiBold: { fontFamily: fontFamilies.urbanist.semiBold, fontSize: 16, lineHeight: 24 },
+  urbanistBold: { fontFamily: fontFamilies.urbanist.bold, fontSize: 16, lineHeight: 24 },
+
+  // Explicit Tiro Tamil variants (always Tiro Tamil)
+  tiroRegular: { fontFamily: scriptFonts.tiroTamil.regular, fontSize: 16, lineHeight: 22 },
+  tiroItalic: { fontFamily: scriptFonts.tiroTamil.italic, fontSize: 16, lineHeight: 22 },
 } as const satisfies Record<string, FixedVariant>;
 
 export type AutoTypographyVariant = keyof typeof variants;
@@ -144,6 +161,18 @@ export interface ResolvedTextStyle {
  * language-aware component should call instead of hand-rolling font-family
  * lookups.
  */
+/**
+ * Adjusts font size based on language and platform to keep Tamil and English layout heights balanced.
+ */
+export const adjustFontSizeForLanguage = (fontSize: number, language: Language): number => {
+  if (language === 'ta') {
+    // Tiro Tamil glyphs render visually taller/larger than Urbanist.
+    // Adjust font size slightly for Tamil: -4 on Android, -2 on iOS.
+    return Math.max(8, fontSize - 2);
+  }
+  return fontSize;
+};
+
 export const resolveTextStyle = (
   variant: TypographyVariant,
   language: Language,
@@ -159,26 +188,41 @@ export const resolveTextStyle = (
       lineHeight: auto.lineHeight,
     };
   } else if (fixed) {
-    base = { fontFamily: fixed.fontFamily, fontSize: fixed.fontSize, lineHeight: fixed.lineHeight };
+    let fontFamily = fixed.fontFamily;
+    if (language === 'en') {
+      const isExplicitTiro = variant === 'tiroRegular' || variant === 'tiroItalic';
+      const isExplicitUrbanist = variant.startsWith('urbanist');
+
+      if (!isExplicitTiro && !isExplicitUrbanist) {
+        const lower = variant.toLowerCase();
+        if (lower.includes('bold') || variant === 'tamilHeader') {
+          fontFamily = fontFamilies.urbanist.bold;
+        } else if (lower.includes('semibold')) {
+          fontFamily = fontFamilies.urbanist.semiBold;
+        } else if (lower.includes('medium')) {
+          fontFamily = fontFamilies.urbanist.medium;
+        } else if (lower.includes('light')) {
+          fontFamily = fontFamilies.urbanist.light;
+        } else if (lower.includes('thin')) {
+          fontFamily = fontFamilies.urbanist.thin;
+        } else {
+          fontFamily = fontFamilies.urbanist.regular;
+        }
+      }
+    }
+    base = { fontFamily, fontSize: fixed.fontSize, lineHeight: fixed.lineHeight };
   } else {
     base = {
       fontFamily: getFontFamily('regular', language),
       fontSize: sizes.md,
-      lineHeight: sizes.md * 1.5,
+      lineHeight: sizes.md * 1.8,
     };
   }
 
-  // Tamil glyphs render visually taller than Latin ones on Android; tighten
-  // metrics app-wide while the UI language is Tamil to keep line heights consistent.
-  if (language === 'ta' && Platform.OS === 'android') {
-    return {
-      ...base,
-      fontSize: base.fontSize,
-      lineHeight: base.lineHeight,
-    };
-  }
-
-  return base;
+  return {
+    ...base,
+    fontSize: adjustFontSizeForLanguage(base.fontSize, language),
+  };
 };
 
 export const typography = {
@@ -190,6 +234,7 @@ export const typography = {
   fixedVariants,
   getFontFamily,
   resolveTextStyle,
+  adjustFontSizeForLanguage,
 };
 
 export type Typography = typeof typography;

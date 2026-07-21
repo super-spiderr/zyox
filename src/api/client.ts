@@ -2,7 +2,8 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
 const getBaseURL = () => {
-  return 'https://zyox-api-production.up.railway.app/api/v1';
+  // return 'https://zyox-api-production.up.railway.app/api/v1';
+  return 'https://zyox-api.onrender.com/api/v1';
 };
 
 export const apiClient = axios.create({
@@ -13,23 +14,23 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(
-  (config) => {
+  config => {
     const token = useAuthStore.getState().token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
-  }
+  },
 );
 
 let isRefreshing = false;
 let failedQueue: any[] = [];
 
 const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
+  failedQueue.forEach(prom => {
     if (error) {
       prom.reject(error);
     } else {
@@ -40,10 +41,10 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 apiClient.interceptors.response.use(
-  (response) => {
+  response => {
     return response;
   },
-  async (error) => {
+  async error => {
     const originalRequest = error.config as any;
 
     if (!originalRequest) {
@@ -61,11 +62,11 @@ apiClient.interceptors.response.use(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then((token) => {
+          .then(token => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
             return apiClient(originalRequest);
           })
-          .catch((err) => {
+          .catch(err => {
             return Promise.reject(err);
           });
       }
@@ -88,7 +89,7 @@ apiClient.interceptors.response.use(
             headers: {
               'Content-Type': 'application/json',
             },
-          }
+          },
         );
 
         const { token: newToken, refreshToken: newRefreshToken } = response.data.data;
@@ -110,6 +111,5 @@ apiClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
-

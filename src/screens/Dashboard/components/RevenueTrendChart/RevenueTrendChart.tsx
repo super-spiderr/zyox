@@ -2,20 +2,12 @@ import React from 'react';
 import { View, Dimensions } from 'react-native';
 import { Text } from '@/components';
 import { useLanguage } from '@/context/LanguageContext';
-import { useAppTheme } from '@/theme';
 import { useStyles } from '@/hooks/useStyles';
-import Svg, {
-  Rect,
-  Line,
-  Defs,
-  LinearGradient,
-  Stop,
-  Text as SvgText,
-  G,
-  Path,
-} from 'react-native-svg';
 import getStyles from './styles';
+import Svg, { Line, Defs, LinearGradient, Stop, Path, Circle } from 'react-native-svg';
 import { RevenueTrendPoint } from '@/api/dashboard';
+import { palette } from '@/theme';
+import { widthScale } from '@/utils/scaling';
 
 interface RevenueTrendChartProps {
   data: RevenueTrendPoint[];
@@ -23,24 +15,21 @@ interface RevenueTrendChartProps {
 
 export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] }) => {
   const { t, language } = useLanguage();
-  const { theme } = useAppTheme();
   const styles = useStyles(getStyles);
-  const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
 
   const screenWidth = Dimensions.get('window').width;
-  const chartWidth = screenWidth - 72; // Padding to match dashboard
-  const chartHeight = 135; // Increased to fit tooltip
+  const chartWidth = screenWidth - 64; // Spacing to match Bento Grid card width
+  const chartHeight = 135;
   const paddingBottom = 20;
-  const paddingTop = 25; // Increased to fit tooltip
-  const paddingRight = 24;
+  const paddingTop = 15;
+  const paddingRight = 16;
   const paddingLeft = 40; // Space for Y axis labels
 
-  // Fallback if there is no data
   if (!data || data.length === 0) {
     return (
       <View style={styles.container}>
-        <Text variant="bold" fontSize={16} style={styles.chartTitle}>
-          {t('revenueTrend') || 'Revenue Trend'}
+        <Text style={styles.chartTitle} variant="tiroTamilRegular" fontSize={widthScale(14)}>
+          {t('revenueTrend')}
         </Text>
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText} variant="medium">
@@ -56,7 +45,7 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
   const minRevenue = 0;
   const revenueRange = maxRevenue - minRevenue;
 
-  // X Coordinate calculation (center of each bar slot)
+  // X Coordinate calculation
   const getX = (index: number) => {
     const availableWidth = chartWidth - paddingLeft - paddingRight;
     if (data.length <= 1) return paddingLeft + availableWidth / 2;
@@ -70,11 +59,7 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
     return chartHeight - paddingBottom - ratio * availableHeight;
   };
 
-  // Determine bar width dynamically
-  const availableWidth = chartWidth - paddingLeft - paddingRight;
-  const barWidth = Math.min(22, availableWidth / (data.length * 1.6));
-
-  // Formatting date to clean display
+  // Formatting date helper
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
@@ -103,25 +88,38 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
     }
   };
 
+  // Path data constructor (Linear line segments)
+  const pathData = data
+    .map((pt, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(pt.revenue)}`)
+    .join(' ');
+
+  // Gradient area path data constructor
+  const areaData =
+    data.length > 0
+      ? `${pathData} L ${getX(data.length - 1)} ${chartHeight - paddingBottom} L ${getX(0)} ${
+          chartHeight - paddingBottom
+        } Z`
+      : '';
+
   const gridLines = [0, 0.5, 1];
 
   return (
     <View style={styles.container}>
-      <Text variant="bold" fontSize={16} style={styles.chartTitle}>
-        {t('revenueTrend') || 'Revenue Trend'}
+      <Text style={styles.chartTitle} variant="tiroTamilRegular" fontSize={widthScale(16)}>
+        {t('revenueTrend')}
       </Text>
 
       <View style={styles.chartCard}>
-        {/* Y Axis Labels (Native) */}
+        {/* Y Axis Labels */}
         {gridLines.map(percent => {
           const value = minRevenue + percent * revenueRange;
           const y = getY(value);
           return (
             <Text
               key={`y-label-${percent}`}
-              style={[styles.yAxisLabel, { top: y + 16 - 7 }]} // 16px is container padding, -7px is half of standard lineHeight to center text
+              style={[styles.yAxisLabel, { top: y + 16 - 7 }]} // 16px padding inside card, -7px is offset to center text
               variant="semiBold"
-              fontSize={10}
+              fontSize={widthScale(9)}
             >
               ₹{Math.round(value)}
             </Text>
@@ -130,20 +128,14 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
 
         <Svg width={chartWidth} height={chartHeight}>
           <Defs>
-            <LinearGradient
-              id="barGradient"
-              x1="0"
-              x2="0"
-              gradientUnits="userSpaceOnUse"
-              y1={paddingTop}
-              y2={chartHeight - paddingBottom}
-            >
-              <Stop offset="0%" stopColor={theme.colors.primary} stopOpacity={1} />
-              <Stop offset="100%" stopColor={theme.colors.primary} stopOpacity={0.3} />
+            {/* Glowing fill gradient under the line chart */}
+            <LinearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0%" stopColor={palette.primary500} stopOpacity={0.25} />
+              <Stop offset="100%" stopColor={palette.primary500} stopOpacity={0.0} />
             </LinearGradient>
           </Defs>
 
-          {/* Grid lines */}
+          {/* Dotted horizontal grid lines */}
           {gridLines.map(percent => {
             const y = getY(minRevenue + percent * revenueRange);
             return (
@@ -153,136 +145,79 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
                 y1={y}
                 x2={chartWidth - paddingRight}
                 y2={y}
-                stroke={theme.colors.border}
-                strokeWidth="1"
-                strokeDasharray="4, 4"
+                stroke="rgba(0, 0, 0, 0.05)"
+                strokeWidth={1}
+                strokeDasharray="4 4"
               />
             );
           })}
 
-          {/* Render Bars */}
-          {data.map((d, i) => {
-            const x = getX(i) - barWidth / 2;
-            const y = getY(d.revenue);
-            const height = chartHeight - paddingBottom - y;
-            const barHeight = Math.max(4, height);
+          {/* Glowing Area Fill */}
+          {areaData ? <Path d={areaData} fill="url(#areaGradient)" /> : null}
 
-            // Round corners at top only using overlap hack
-            const cornerRadius = Math.min(barWidth / 2, 6);
+          {/* Chart Line Path */}
+          {pathData ? (
+            <Path
+              d={pathData}
+              fill="none"
+              stroke={palette.primary500}
+              strokeWidth={3.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          ) : null}
 
-            return (
-              <G key={`bar-group-${d.date}`}>
-                {/* Main rounded bar */}
-                <Rect
-                  x={x}
-                  y={y}
-                  width={barWidth}
-                  height={barHeight}
-                  rx={cornerRadius}
-                  ry={cornerRadius}
-                  fill="url(#barGradient)"
-                  opacity={activeIndex === null || activeIndex === i ? 1 : 0.6}
-                />
-                {/* Bottom flat bar overlap (only draw if height is sufficient) */}
-                {barHeight > cornerRadius * 2 && (
-                  <Rect
-                    x={x}
-                    y={y + cornerRadius}
-                    width={barWidth}
-                    height={barHeight - cornerRadius}
-                    fill="url(#barGradient)"
-                    opacity={activeIndex === null || activeIndex === i ? 1 : 0.6}
-                  />
-                )}
-              </G>
-            );
-          })}
-
-          {/* Transparent hitboxes for touch area overlay */}
-          {data.map((d, i) => {
-            const x = getX(i) - availableWidth / (data.length * 2);
-            const width = availableWidth / data.length;
-            return (
-              <Rect
-                key={`hitbox-${d.date}`}
-                x={x}
-                y={0}
-                width={width}
-                height={chartHeight}
-                fill="black"
-                opacity={0}
-                onPress={() => {
-                  setActiveIndex(activeIndex === i ? null : i);
-                }}
-              />
-            );
-          })}
-
-          {/* Tooltip Overlay */}
-          {activeIndex !== null &&
-            (() => {
-              const activePoint = data[activeIndex];
-              const pt = { x: getX(activeIndex), y: getY(activePoint.revenue) };
-              const tooltipWidth = 64;
-              const tooltipHeight = 20;
-
-              return (
-                <G>
-                  {/* Downward triangle/caret pointing to the top of the bar */}
-                  <Path
-                    d={`M ${pt.x - 5} ${pt.y - 6} L ${pt.x} ${pt.y - 1} L ${pt.x + 5} ${
-                      pt.y - 6
-                    } Z`}
-                    fill={theme.colors.text}
-                  />
-                  {/* Tooltip body rectangle */}
-                  <Rect
-                    x={pt.x - tooltipWidth / 2}
-                    y={pt.y - tooltipHeight - 6}
-                    width={tooltipWidth}
-                    height={tooltipHeight}
-                    rx={5}
-                    ry={5}
-                    fill={theme.colors.text}
-                  />
-                  {/* Tooltip text */}
-                  <SvgText
-                    x={pt.x - 12}
-                    y={pt.y - 12}
-                    fill={theme.colors.card}
-                    fontSize="10"
-                    fontWeight="bold"
-                  >
-                    ₹{activePoint.revenue}
-                  </SvgText>
-                </G>
-              );
-            })()}
+          {/* Dots on data points */}
+          {data.map((pt, i) => (
+            <Circle
+              key={`point-${pt.date}`}
+              cx={getX(i)}
+              cy={getY(pt.revenue)}
+              r={4.5}
+              fill="#FFFFFF"
+              stroke={palette.primary500}
+              strokeWidth={2.5}
+            />
+          ))}
 
           {/* X Axis Labels */}
-          {data.map((d, i) => {
-            const x = getX(i);
-            const y = chartHeight - 4;
-            const shouldShowLabel =
-              data.length <= 5 || i % Math.ceil(data.length / 4) === 0 || i === data.length - 1;
-
-            if (!shouldShowLabel) return null;
-
-            return (
-              <SvgText
-                key={`x-label-${d.date}`}
-                x={x}
-                y={y}
-                fill={theme.colors.textMuted}
-                fontSize="9"
-                textAnchor="middle"
-                fontWeight="600"
-              >
-                {formatDate(d.date)}
-              </SvgText>
-            );
+          {data.map((pt, i) => {
+            // Display label for start, middle, and end to avoid crowding
+            if (i === 0 || i === Math.floor(data.length / 2) || i === data.length - 1) {
+              return (
+                <Line
+                  key={`tick-${pt.date}`}
+                  x1={getX(i)}
+                  y1={chartHeight - paddingBottom}
+                  x2={getX(i)}
+                  y2={chartHeight - paddingBottom + 4}
+                  stroke="rgba(0, 0, 0, 0.15)"
+                  strokeWidth={1}
+                />
+              );
+            }
+            return null;
           })}
         </Svg>
+
+        {/* X Axis Dates Row */}
+        <View style={styles.xAxisRow}>
+          {data.map((pt, i) => {
+            if (i === 0 || i === Math.floor(data.length / 2) || i === data.length - 1) {
+              return (
+                <Text
+                  key={`x-label-${pt.date}`}
+                  variant="bold"
+                  fontSize={widthScale(10)}
+                  color="textSecondary"
+                >
+                  {formatDate(pt.date)}
+                </Text>
+              );
+            }
+            return null;
+          })}
+        </View>
       </View>
     </View>
   );

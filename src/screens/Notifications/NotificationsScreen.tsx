@@ -14,7 +14,7 @@ export const NotificationsScreen: React.FC = () => {
   const styles = useStyles(getStyles);
   const navigation = useNavigation<any>();
 
-  const { data: orders = [], isLoading, refetch, isFetching } = useOrders();
+  const { data: orders = [] } = useOrders();
 
   // Helper to format date in local timezone
   const getLocalDateString = () => {

@@ -199,7 +199,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
       style={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'dark-content' : 'light-content'}
+      statusBarStyle={isDark ? 'light-content' : 'dark-content'}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

@@ -84,7 +84,7 @@ export const OrdersScreen: React.FC = () => {
       contentContainerStyle={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'dark-content' : 'light-content'}
+      statusBarStyle={'light-content'}
     >
       <GradientHeader
         title={t('ordersTitle')}

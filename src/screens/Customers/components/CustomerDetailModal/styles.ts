@@ -11,101 +11,197 @@ export const getStyles = (theme: Theme) => {
     },
     detailModalContainer: {
       backgroundColor: theme.colors.card,
-      borderTopLeftRadius: widthScale(24),
-      borderTopRightRadius: widthScale(24),
+      borderTopLeftRadius: widthScale(28),
+      borderTopRightRadius: widthScale(28),
       padding: widthScale(20),
-      paddingBottom: heightScale(30),
-      maxHeight: '75%',
+      paddingBottom: heightScale(40),
+      maxHeight: '85%',
+      position: 'relative',
     },
     grabber: {
       alignSelf: 'center',
-      width: widthScale(40),
+      width: widthScale(36),
       height: 4,
       borderRadius: 2,
       backgroundColor: theme.colors.border,
       marginBottom: heightScale(14),
     },
-    modalHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: heightScale(16),
-      paddingBottom: heightScale(14),
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-    },
-    modalTitle: {
-      fontSize: widthScale(17),
-      color: theme.colors.text,
-    },
     closeButton: {
+      position: 'absolute',
+      top: heightScale(16),
+      right: widthScale(16),
       width: widthScale(28),
       height: widthScale(28),
       borderRadius: widthScale(14),
       backgroundColor: theme.colors.surface,
       justifyContent: 'center',
       alignItems: 'center',
+      zIndex: 10,
     },
-    detailModalContent: {
-      paddingVertical: heightScale(4),
-    },
-    detailRow: {
+    profileHeader: {
       flexDirection: 'row',
-      alignItems: 'flex-start',
-      paddingVertical: heightScale(10),
-      borderBottomWidth: 0.5,
-      borderBottomColor: theme.colors.border,
+      alignItems: 'center',
+      marginTop: heightScale(8),
+      marginBottom: heightScale(16),
     },
-    detailRowLast: {
-      borderBottomWidth: 0,
-    },
-    detailIconWrap: {
-      width: widthScale(32),
-      height: widthScale(32),
-      borderRadius: widthScale(9),
-      backgroundColor: theme.colors.infoSurfaceBg,
+    avatarContainer: {
+      width: widthScale(48),
+      height: widthScale(48),
+      borderRadius: widthScale(24),
       justifyContent: 'center',
       alignItems: 'center',
       marginRight: widthScale(12),
     },
-    detailTextWrap: {
+    avatarText: {
+      fontSize: widthScale(16),
+    },
+    profileInfo: {
       flex: 1,
       justifyContent: 'center',
     },
-    detailLabel: {
-      fontSize: widthScale(11),
-      color: theme.colors.textSecondary,
-      marginBottom: heightScale(2),
-    },
-    detailValue: {
-      fontSize: widthScale(14),
+    customerNameText: {
+      fontSize: widthScale(18),
       color: theme.colors.text,
     },
-    statusPill: {
-      alignSelf: 'flex-start',
-      paddingHorizontal: widthScale(10),
-      paddingVertical: heightScale(3),
-      borderRadius: widthScale(12),
+    customerSubtitleText: {
+      fontSize: widthScale(13),
+      color: theme.colors.textSecondary,
+      marginTop: heightScale(2),
+    },
+    actionButtonsRow: {
+      flexDirection: 'row',
+      gap: widthScale(8),
+      marginBottom: heightScale(18),
+    },
+    actionBtn: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: heightScale(40),
+      borderRadius: widthScale(10),
+      gap: widthScale(6),
+    },
+    waBtn: {
+      backgroundColor: '#E6F4EA',
+    },
+    waBtnText: {
+      color: '#137333',
+      fontSize: widthScale(12),
+    },
+    callBtn: {
+      backgroundColor: '#EAE8FF',
+    },
+    callBtnText: {
+      color: '#431DB0',
+      fontSize: widthScale(12),
+    },
+    editBtn: {
       borderWidth: 1,
+      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.card,
     },
-    statusPillActive: {
-      backgroundColor: theme.colors.successBg,
-      borderColor: theme.colors.successBorder,
+    editBtnText: {
+      color: theme.colors.text,
+      fontSize: widthScale(12),
     },
-    statusPillInactive: {
-      backgroundColor: theme.colors.neutralSurfaceBg,
-      borderColor: theme.colors.mutedBorder,
+    statsRow: {
+      flexDirection: 'row',
+      gap: widthScale(8),
+      marginBottom: heightScale(20),
     },
-    statusPillTextActive: {
-      color: theme.colors.successText,
+    statsCard: {
+      flex: 1,
+      backgroundColor: theme.colors.surface,
+      borderRadius: widthScale(12),
+      paddingVertical: heightScale(12),
+      paddingHorizontal: widthScale(8),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    statsCardWarning: {
+      backgroundColor: '#FFFBE0',
+    },
+    statsValueText: {
+      fontSize: widthScale(18),
+      color: theme.colors.text,
+    },
+    statsLabelText: {
       fontSize: widthScale(11),
+      color: theme.colors.textSecondary,
+      marginTop: heightScale(2),
     },
-    statusPillTextInactive: {
-      color: theme.colors.mutedText,
+    warningValueText: {
+      color: '#7A5101',
+    },
+    warningLabelText: {
+      color: '#7A5101',
+    },
+    ordersSectionTitle: {
       fontSize: widthScale(11),
+      color: theme.colors.textMuted,
+      letterSpacing: 0.8,
+      marginBottom: heightScale(10),
     },
-    modalCloseBtn: {
-      marginTop: heightScale(16),
+    ordersScroll: {
+      flexGrow: 0,
+      maxHeight: heightScale(200),
+    },
+    ordersContent: {
+      paddingBottom: heightScale(10),
+    },
+    emptyOrdersState: {
+      paddingVertical: heightScale(24),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    emptyOrdersText: {
+      color: theme.colors.textMuted,
+      fontSize: widthScale(13),
+    },
+    orderCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: theme.colors.surface,
+      borderRadius: widthScale(12),
+      padding: widthScale(12),
+      marginBottom: heightScale(8),
+    },
+    orderInfoCol: {
+      flex: 1,
+      marginRight: widthScale(12),
+    },
+    orderEventTitle: {
+      fontSize: widthScale(13),
+      color: theme.colors.text,
+    },
+    orderDateIdSub: {
+      fontSize: widthScale(11),
+      color: theme.colors.textSecondary,
+      marginTop: heightScale(2),
+    },
+    orderStatusBadge: {
+      paddingHorizontal: widthScale(8),
+      paddingVertical: heightScale(4),
+      borderRadius: widthScale(8),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    statusPaidBg: {
+      backgroundColor: '#E6F4EA',
+    },
+    statusPaidText: {
+      color: '#137333',
+    },
+    statusDueBg: {
+      backgroundColor: '#FFFBE0',
+    },
+    statusDueText: {
+      color: '#7A5101',
+    },
+    statusBadgeText: {
+      fontSize: widthScale(10),
     },
   });
 };

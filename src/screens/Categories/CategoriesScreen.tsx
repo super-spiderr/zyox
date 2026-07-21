@@ -122,7 +122,7 @@ export const CategoriesScreen: React.FC = () => {
       contentContainerStyle={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'dark-content' : 'light-content'}
+      statusBarStyle={isDark ? 'light-content' : 'dark-content'}
     >
       <GradientHeader
         title={t('categoriesTitle')}

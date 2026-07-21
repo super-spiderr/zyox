@@ -8,13 +8,22 @@ export const getStyles = (theme: Theme) => {
       flex: 1,
       backgroundColor: theme.colors.background,
     },
+    listWrapper: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+    flatList: {
+      flex: 1,
+    },
     list: {
       flexGrow: 1,
       paddingBottom: heightScale(80),
-      marginHorizontal: widthScale(16),
+      paddingLeft: widthScale(16),
+      paddingRight: widthScale(16),
     },
+
     cardWrapper: {
-      marginBottom: heightScale(10),
+      marginBottom: heightScale(8),
     },
     card: {
       flexDirection: 'row',
@@ -22,9 +31,12 @@ export const getStyles = (theme: Theme) => {
       paddingVertical: heightScale(12),
       paddingHorizontal: widthScale(14),
       borderRadius: widthScale(14),
-      borderWidth: 1,
-      borderColor: theme.colors.border,
       backgroundColor: theme.colors.card,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.04,
+      shadowRadius: 6,
+      elevation: 2,
     },
     skeletonRow: {
       flexDirection: 'row',

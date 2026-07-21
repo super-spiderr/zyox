@@ -58,7 +58,7 @@ export const Input: React.FC<InputProps> = ({
   const isLight = variant === 'light';
   // 'light' forces a fixed appearance regardless of theme mode, so this is
   // intentionally palette.loginPlaceholder rather than theme.colors.textMuted.
-  const mutedIconColor = isLight ? palette.loginPlaceholder : theme.colors.textMuted;
+  const mutedIconColor = isLight ? palette.primary900 : theme.colors.textMuted;
 
   const containerStyle = [
     styles.inputContainer,
@@ -79,7 +79,7 @@ export const Input: React.FC<InputProps> = ({
   const inputStyle: TextStyle = {
     color: isLight ? palette.black : theme.colors.text,
     fontSize: theme.typography.sizes.md,
-    fontFamily: theme.typography.getFontFamily('regular', language),
+    fontFamily: theme.typography.getFontFamily('medium', language),
   };
 
   return (

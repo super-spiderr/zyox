@@ -16,6 +16,7 @@ interface AppTextProps extends TextProps {
     | 'white'
     | (string & {});
   fontSize?: number;
+  lineHeight?: number;
   style?: StyleProp<TextStyle>;
 }
 
@@ -23,6 +24,7 @@ export const Text: React.FC<AppTextProps> = ({
   variant = 'bodyMedium',
   color = 'text',
   fontSize,
+  lineHeight,
   style,
   children,
   ...props
@@ -33,8 +35,12 @@ export const Text: React.FC<AppTextProps> = ({
   const {
     fontFamily,
     fontSize: resolvedFontSize,
-    lineHeight,
+    lineHeight: resolvedLineHeight,
   } = theme.typography.resolveTextStyle(variant, language);
+
+  const targetFontSize = fontSize !== undefined
+    ? theme.typography.adjustFontSizeForLanguage(fontSize, language)
+    : resolvedFontSize;
 
   const baseStyle: TextStyle = {
     color:
@@ -42,8 +48,8 @@ export const Text: React.FC<AppTextProps> = ({
         ? palette.white
         : theme.colors[color as keyof typeof theme.colors] || color || theme.colors.text,
     fontFamily,
-    fontSize: fontSize ?? resolvedFontSize,
-    lineHeight: fontSize !== undefined ? Math.round(fontSize * 1.4) : lineHeight,
+    fontSize: targetFontSize,
+    lineHeight: lineHeight ?? (fontSize !== undefined ? Math.round(targetFontSize * 1.2) : resolvedLineHeight),
   };
 
   const resolvedStyle = StyleSheet.flatten([baseStyle, style]);
