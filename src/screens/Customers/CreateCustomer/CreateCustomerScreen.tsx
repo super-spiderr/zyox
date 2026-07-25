@@ -1,66 +1,59 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
-  TouchableOpacity,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Switch,
   PermissionsAndroid,
+  Linking,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ScreenContainer, Text, Button, Input, GradientHeader } from '@/components';
+import {
+  ScreenContainer,
+  Text,
+  Button,
+  Input,
+  GradientHeader,
+  GradientHeaderAction,
+} from '@/components';
+import { CustomerTypeCard } from '../components/CustomerTypeCard';
 import { useAppTheme } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
-import getStyles from './CreateCustomerScreen.styles';
-import { CustomerType } from '@/store/customerStore';
-import { useCustomers, useCreateCustomer, useUpdateCustomer } from '@/hooks/queries';
+import getStyles from './styles';
+import { CustomerType } from '@/enums/customer';
+import { useCustomer, useCreateCustomer, useUpdateCustomer } from '@/hooks/queries';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
 import { UserPlus, User, Building2, Phone, MapPin, FileText } from 'lucide-react-native';
 import Contacts from 'react-native-contacts';
-
-const customersIcon = require('@/assets/images/customers_icon.png');
+import type { AxiosError } from 'axios';
+import { CustomerFormState, CustomerFormErrors } from '../types';
+import { isValidIndianMobileNumber } from '@/utils/validation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateCustomer'>;
 
 export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { theme, isDark } = useAppTheme();
+  const { theme } = useAppTheme();
   const { t } = useLanguage();
   const styles = useStyles(getStyles);
   const insets = useSafeAreaInsets();
 
   const editCustomerId = route.params?.editCustomerId;
-  const { data: customers = [] } = useCustomers();
-  const editCustomer = useMemo(() => {
-    if (!editCustomerId) return null;
-    return customers.find(c => (c._id || c.id) === editCustomerId) || null;
-  }, [customers, editCustomerId]);
-
-  interface CustomerFormState {
-    customerName: string;
-    phoneNumber: string;
-    customerType: CustomerType;
-    address: string;
-    alternatePhoneNumber: string;
-    specialNotes: string;
-    isActive: boolean;
-  }
+  const { data: editCustomer = null } = useCustomer(editCustomerId);
 
   const initialFormState: CustomerFormState = {
     customerName: '',
     phoneNumber: '',
-    customerType: 'INDIVIDUAL',
+    customerType: CustomerType.INDIVIDUAL,
     address: '',
     alternatePhoneNumber: '',
     specialNotes: '',
-    isActive: true,
   };
 
   const [form, setForm] = useState<CustomerFormState>(initialFormState);
-  const [errors, setErrors] = useState<{ customerName?: string; phoneNumber?: string }>({});
+  const [errors, setErrors] = useState<CustomerFormErrors>({});
   const [initialized, setInitialized] = useState(false);
 
   // Monitor returned contact selection from SelectContact screen
@@ -73,7 +66,7 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
         phoneNumber: selectedContact.phone,
       }));
       // Clear the params so they don't re-trigger on subsequent mounts
-      navigation.setParams({ selectedContact: undefined } as any);
+      navigation.setParams({ selectedContact: undefined });
     }
   }, [route.params?.selectedContact, navigation]);
 
@@ -86,44 +79,41 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
         address: editCustomer.address || '',
         alternatePhoneNumber: editCustomer.alternatePhoneNumber || '',
         specialNotes: editCustomer.specialNotes || '',
-        isActive: editCustomer.isActive,
       });
       setInitialized(true);
     }
   }, [editCustomer, initialized]);
 
+  const navigateToSuccessScreen = (message: string) => {
+    navigation.navigate('Success', {
+      title: t('success'),
+      message,
+      buttonTitle: t('ok'),
+      navigateTo: 'Main',
+      navigationParams: { screen: 'Customers' },
+    });
+  };
+
   const createMutation = useCreateCustomer({
     onSuccess: () => {
-      navigation.navigate('Success', {
-        title: t('success') || 'Success!',
-        message: 'Customer created successfully!',
-        buttonTitle: t('ok') || 'OK',
-        navigateTo: 'Main',
-        navigationParams: { screen: 'Customers' },
-      });
+      navigateToSuccessScreen(t('customerCreatedSuccess'));
     },
-    onError: (err: any) => {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to create customer');
+    onError: (err: AxiosError<{ message?: string }>) => {
+      Alert.alert(t('error'), err.response?.data?.message || t('failedToCreateCustomer'));
     },
   });
 
   const updateMutation = useUpdateCustomer({
     onSuccess: () => {
-      navigation.navigate('Success', {
-        title: t('success') || 'Success!',
-        message: 'Customer updated successfully!',
-        buttonTitle: t('ok') || 'OK',
-        navigateTo: 'Main',
-        navigationParams: { screen: 'Customers' },
-      });
+      navigateToSuccessScreen(t('customerUpdatedSuccess'));
     },
-    onError: (err: any) => {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to update customer');
+    onError: (err: AxiosError<{ message?: string }>) => {
+      Alert.alert(t('error'), err.response?.data?.message || t('failedToUpdateCustomer'));
     },
   });
 
   const handleSave = () => {
-    const newErrors: { customerName?: string; phoneNumber?: string } = {};
+    const newErrors: CustomerFormErrors = {};
 
     const trimmedName = form.customerName.trim();
     if (!trimmedName) {
@@ -135,7 +125,7 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
     const trimmedPhone = form.phoneNumber.trim();
     if (!trimmedPhone) {
       newErrors.phoneNumber = t('fieldRequired');
-    } else if (!/^[6-9]\d{9}$/.test(trimmedPhone)) {
+    } else if (!isValidIndianMobileNumber(trimmedPhone)) {
       newErrors.phoneNumber = t('validationPhone');
     }
 
@@ -151,7 +141,6 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
       address: form.address.trim() || undefined,
       alternatePhoneNumber: form.alternatePhoneNumber.trim() || undefined,
       specialNotes: form.specialNotes.trim() || undefined,
-      isActive: form.isActive,
     };
 
     if (editCustomerId) {
@@ -164,19 +153,24 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
     }
   };
 
+  const showContactsPermissionDeniedAlert = () => {
+    Alert.alert(t('permissionDenied'), t('permissionDeniedMessage'), [
+      { text: t('cancel'), style: 'cancel' },
+      { text: t('openSettings'), onPress: () => Linking.openSettings() },
+    ]);
+  };
+
   const handleAddFromContacts = () => {
     if (Platform.OS === 'android') {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-        title: t('contactsPermissionTitle') || 'Contacts Permission',
-        message:
-          t('contactsPermissionMessage') ||
-          'This app requires access to your contacts to allow you to prefill client details.',
-        buttonPositive: t('allow') || 'Allow',
+        title: t('contactsPermissionTitle'),
+        message: t('contactsPermissionMessage'),
+        buttonPositive: t('allow'),
       }).then(granted => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           navigation.navigate('SelectContact');
         } else {
-          Alert.alert('Permission Denied', 'Permission to access contacts was denied.');
+          showContactsPermissionDeniedAlert();
         }
       });
     } else {
@@ -185,7 +179,7 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
         if (permission === 'authorized') {
           navigation.navigate('SelectContact');
         } else {
-          Alert.alert('Permission Denied', 'Permission to access contacts was denied.');
+          showContactsPermissionDeniedAlert();
         }
       });
     }
@@ -207,12 +201,15 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
         {/* Header — shared with the Customers list */}
         <GradientHeader
           title={editCustomerId ? `${t('edit')} ${t('tabCustomers')}` : t('createCustomer')}
-          description={
-            editCustomerId
-              ? "Update this customer's information"
-              : 'Fill in the details to add a new client'
+          description={editCustomerId ? t('editCustomerDesc') : t('createCustomerDesc')}
+          action={
+            !editCustomerId ? (
+              <GradientHeaderAction
+                icon={<UserPlus size={16} color={theme.colors.primaryText} />}
+                onPress={handleAddFromContacts}
+              />
+            ) : undefined
           }
-          image={customersIcon}
         />
 
         <ScrollView
@@ -220,17 +217,9 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
           contentContainerStyle={styles.formScrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Quick Add from Contacts */}
-          {!editCustomerId && (
-            <TouchableOpacity style={styles.addFromContactsBtn} onPress={handleAddFromContacts}>
-              <UserPlus size={16} color={theme.colors.primary} />
-              <Text variant="bold" style={styles.addFromContactsText}>
-                {t('addFromContacts')}
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          <Text style={styles.sectionTitle}>Contact Info</Text>
+          <Text variant="semiBold" fontSize={20} style={styles.sectionTitle}>
+            {t('clientInfo')}
+          </Text>
 
           <Input
             label={`${t('customerName')} *`}
@@ -272,47 +261,27 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
             icon={<Phone size={16} color={theme.colors.textMuted} />}
           />
 
-          <Text style={styles.sectionTitle}>{t('customerType')}</Text>
+          <Text variant="semiBold" fontSize={20} style={styles.sectionTitle}>
+            {t('customerType')}
+          </Text>
           <View style={styles.typeRow}>
-            <TouchableOpacity
-              style={[styles.typeCard, form.customerType === 'INDIVIDUAL' && styles.typeCardActive]}
-              onPress={() => setForm(prev => ({ ...prev, customerType: 'INDIVIDUAL' }))}
-              activeOpacity={0.7}
-            >
-              <View style={styles.typeCardIconWrap}>
-                <User size={16} color={theme.colors.primary} />
-              </View>
-              <Text
-                variant={form.customerType === 'INDIVIDUAL' ? 'bold' : 'medium'}
-                style={[
-                  styles.typeCardText,
-                  form.customerType === 'INDIVIDUAL' && styles.typeCardTextActive,
-                ]}
-              >
-                {t('individual')}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.typeCard, form.customerType === 'BUSINESS' && styles.typeCardActive]}
-              onPress={() => setForm(prev => ({ ...prev, customerType: 'BUSINESS' }))}
-              activeOpacity={0.7}
-            >
-              <View style={styles.typeCardIconWrap}>
-                <Building2 size={16} color={theme.colors.primary} />
-              </View>
-              <Text
-                variant={form.customerType === 'BUSINESS' ? 'bold' : 'medium'}
-                style={[
-                  styles.typeCardText,
-                  form.customerType === 'BUSINESS' && styles.typeCardTextActive,
-                ]}
-              >
-                {t('business')}
-              </Text>
-            </TouchableOpacity>
+            <CustomerTypeCard
+              icon={<User size={16} color={theme.colors.primary} />}
+              label={t('individual')}
+              active={form.customerType === CustomerType.INDIVIDUAL}
+              onPress={() => setForm(prev => ({ ...prev, customerType: CustomerType.INDIVIDUAL }))}
+            />
+            <CustomerTypeCard
+              icon={<Building2 size={16} color={theme.colors.primary} />}
+              label={t('business')}
+              active={form.customerType === CustomerType.BUSINESS}
+              onPress={() => setForm(prev => ({ ...prev, customerType: CustomerType.BUSINESS }))}
+            />
           </View>
 
-          <Text style={styles.sectionTitle}>Additional Details</Text>
+          <Text variant="semiBold" fontSize={20} style={styles.sectionTitle}>
+            {t('additionalDetails')}
+          </Text>
 
           <Input
             label={t('address')}
@@ -333,19 +302,6 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
             numberOfLines={3}
             icon={<FileText size={16} color={theme.colors.textMuted} />}
           />
-
-          <View style={styles.switchRow}>
-            <View style={styles.switchLabelWrap}>
-              <Text style={styles.switchLabel}>{t('isActive')}</Text>
-              <Text style={styles.switchHint}>{form.isActive ? t('active') : t('inactive')}</Text>
-            </View>
-            <Switch
-              value={form.isActive}
-              onValueChange={val => setForm(prev => ({ ...prev, isActive: val }))}
-              trackColor={{ false: theme.colors.border, true: theme.colors.primaryLight }}
-              thumbColor={form.isActive ? theme.colors.primary : theme.colors.textSecondary}
-            />
-          </View>
         </ScrollView>
 
         {/* Fixed footer — always visible, doesn't scroll with the form */}

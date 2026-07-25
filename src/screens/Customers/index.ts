@@ -1,4 +1,4 @@
-export { default } from './CustomersScreen';
-export * from './CustomersScreen';
-export * from './CreateCustomerScreen';
-export * from './SelectContactScreen';
+export { default } from './Customer/CustomersScreen';
+export * from './Customer/CustomersScreen';
+export * from './CreateCustomer/CreateCustomerScreen';
+export * from './SelectContact/SelectContactScreen';

@@ -17,6 +17,7 @@ interface AppTextProps extends TextProps {
     | (string & {});
   fontSize?: number;
   lineHeight?: number;
+  letterSpacing?: number;
   style?: StyleProp<TextStyle>;
 }
 
@@ -25,6 +26,7 @@ export const Text: React.FC<AppTextProps> = ({
   color = 'text',
   fontSize,
   lineHeight,
+  letterSpacing,
   style,
   children,
   ...props
@@ -42,14 +44,15 @@ export const Text: React.FC<AppTextProps> = ({
     ? theme.typography.adjustFontSizeForLanguage(fontSize, language)
     : resolvedFontSize;
 
+  const themeColorValue = theme.colors[color as keyof typeof theme.colors];
+  const resolvedColor = typeof themeColorValue === 'string' ? themeColorValue : undefined;
+
   const baseStyle: TextStyle = {
-    color:
-      color === 'white'
-        ? palette.white
-        : theme.colors[color as keyof typeof theme.colors] || color || theme.colors.text,
+    color: color === 'white' ? palette.white : resolvedColor || color || theme.colors.text,
     fontFamily,
     fontSize: targetFontSize,
     lineHeight: lineHeight ?? (fontSize !== undefined ? Math.round(targetFontSize * 1.2) : resolvedLineHeight),
+    ...(letterSpacing !== undefined && { letterSpacing }),
   };
 
   const resolvedStyle = StyleSheet.flatten([baseStyle, style]);

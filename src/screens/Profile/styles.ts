@@ -82,20 +82,20 @@ export const getStyles = (_theme: Theme) =>
       paddingHorizontal: 10,
       paddingVertical: 4,
       borderRadius: 12,
-      backgroundColor: `${palette.emerald500}15`,
+      backgroundColor: _theme.colors.successBg,
       borderWidth: 1,
-      borderColor: `${palette.emerald500}30`,
+      borderColor: _theme.colors.successBorder,
     },
     statusDot: {
       width: 6,
       height: 6,
       borderRadius: 3,
-      backgroundColor: palette.emerald500,
+      backgroundColor: _theme.colors.successText,
       marginRight: 6,
     },
     statusText: {
       fontSize: 11,
-      color: palette.emerald500,
+      color: _theme.colors.successText,
     },
     card: {
       backgroundColor: _theme.colors.surface,
@@ -147,6 +147,35 @@ export const getStyles = (_theme: Theme) =>
       borderColor: _theme.colors.border,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    skeletonAvatar: {
+      alignSelf: 'center',
+      marginBottom: heightScale(16),
+    },
+    skeletonName: {
+      alignSelf: 'center',
+      marginBottom: heightScale(8),
+    },
+    skeletonEmail: {
+      alignSelf: 'center',
+      marginBottom: heightScale(16),
+    },
+    skeletonBadges: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: 8,
+    },
+    headerSpacer: {
+      width: widthScale(34),
+    },
+    skeletonCard: {
+      backgroundColor: _theme.colors.surface,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: _theme.colors.surfaceBorder,
+      marginBottom: heightScale(24),
+      padding: 16,
+      gap: 16,
     },
   });
 

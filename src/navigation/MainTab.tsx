@@ -20,7 +20,7 @@ import CustomersScreen from '@/screens/Customers';
 import SettingsScreen from '@/screens/Settings';
 import { useAppTheme, Theme, palette } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
-import { useOrders, useCustomers } from '@/hooks/queries';
+import { useOrders } from '@/hooks/queries';
 
 import { Home, ShoppingCart, Settings, Plus, X, Users, Sparkles } from 'lucide-react-native';
 import { Text } from '@/components';
@@ -237,11 +237,7 @@ const PulsingFAB = ({
           angle={180}
           style={[
             StyleSheet.absoluteFill,
-            {
-              borderRadius: 88,
-              justifyContent: 'center',
-              alignItems: 'center',
-            },
+            styles.plusButtonGradient,
           ]}
         >
           <Plus color={theme.colors.primaryText} size={26} strokeWidth={2.5} />
@@ -264,10 +260,8 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({
 
   // Read orders and customers from React Query cache
   const { data: orders = [] } = useOrders();
-  const { data: customers = [] } = useCustomers();
 
   const activeOrdersCount = orders.filter(order => order.orderStatus !== 'CANCELLED').length;
-  const activeCustomersCount = customers.filter(customer => customer.isActive !== false).length;
   const draftCount = orders.filter(order => order.orderStatus === 'PENDING').length;
   const hasDrafts = draftCount > 0;
 
@@ -320,7 +314,6 @@ const CustomTabBar: React.FC<CustomTabBarProps> = ({
 
         const getBadgeCount = () => {
           if (route.name === 'Orders') return activeOrdersCount;
-          if (route.name === 'Customers') return activeCustomersCount;
           return 0;
         };
 
@@ -388,11 +381,16 @@ export const MainTab = () => {
     navigation.navigate(screen);
   };
 
+  const renderTabBar = React.useCallback(
+    (props: any) => <CustomTabBar {...props} onPlusPress={() => setModalVisible(true)} />,
+    [],
+  );
+
   return (
     <>
       <Tab.Navigator
         initialRouteName="Home"
-        tabBar={props => <CustomTabBar {...props} onPlusPress={() => setModalVisible(true)} />}
+        tabBar={renderTabBar}
         screenOptions={{
           headerShown: false,
         }}
@@ -622,6 +620,11 @@ const getStyles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 10,
+    },
+    plusButtonGradient: {
+      borderRadius: 88,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     pulseRing: {
       position: 'absolute',

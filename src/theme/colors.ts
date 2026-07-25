@@ -68,7 +68,7 @@ export const palette = {
 };
 
 export const lightColors = {
-  background: '#EDEDF7',
+  background: '#efeff7ff',
   surface: '#F6F6F6',
   surfaceBorder: '#E2E2E2',
   text: '#000000',
@@ -152,6 +152,28 @@ export const lightColors = {
   primaryTint950: palette.primaryTint950,
   dashboardTitle: '#1B194B',
   inactiveChipText: '#1B194B',
+
+  // WhatsApp brand action (bg/text theme-aware, icon keeps brand green)
+  whatsappBg: '#E6F4EA',
+  whatsappText: '#137333',
+  whatsappIcon: '#25D366',
+
+  // Call action (purple family)
+  callBg: palette.primary100,
+  callText: palette.primary700,
+  callIcon: palette.primary700,
+
+  // Order payment status badges
+  paidBg: '#E6F4EA',
+  paidText: '#137333',
+
+  // Deterministic avatar background/text pairs
+  avatarPalette: [
+    { bg: palette.primary100, text: palette.primary700 },
+    { bg: palette.yellow100, text: palette.yellow900 },
+    { bg: '#E6F4EA', text: '#137333' },
+    { bg: '#E2F0FD', text: '#0B57D0' },
+  ],
 };
 
 export const darkColors = {
@@ -239,6 +261,28 @@ export const darkColors = {
   primaryTint950: palette.primaryTint950,
   dashboardTitle: palette.white,
   inactiveChipText: '#A6A6A6',
+
+  // WhatsApp brand action (bg/text theme-aware, icon keeps brand green)
+  whatsappBg: 'rgba(19, 115, 51, 0.18)',
+  whatsappText: '#4ADE80',
+  whatsappIcon: '#25D366',
+
+  // Call action (purple family)
+  callBg: palette.primaryTint900,
+  callText: palette.primary300,
+  callIcon: palette.primary300,
+
+  // Order payment status badges
+  paidBg: 'rgba(19, 115, 51, 0.18)',
+  paidText: '#4ADE80',
+
+  // Deterministic avatar background/text pairs
+  avatarPalette: [
+    { bg: palette.primaryTint900, text: palette.primary300 },
+    { bg: 'rgba(254, 191, 27, 0.15)', text: palette.yellow300 },
+    { bg: 'rgba(19, 115, 51, 0.18)', text: '#4ADE80' },
+    { bg: 'rgba(11, 87, 208, 0.18)', text: '#7CACF8' },
+  ],
 };
 
 export type Colors = typeof lightColors;

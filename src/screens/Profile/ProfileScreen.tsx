@@ -1,27 +1,26 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { ScreenContainer, Text, Button, Skeleton } from '@/components';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
+import { ScreenContainer, Text, Button, Skeleton, GradientHeader } from '@/components';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
-import getStyles from './ProfileScreen.styles';
+import getStyles from './styles';
 import { useProfile } from '@/hooks/queries';
 import { useAppTheme } from '@/theme';
-import { Sun, Moon, ArrowLeft } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { Sun, Moon } from 'lucide-react-native';
+import { getInitials } from '@/utils/avatar';
 
 export const ProfileScreen: React.FC = () => {
   const { logout } = useAuth();
   const { t } = useLanguage();
   const styles = useStyles(getStyles);
   const { theme, isDark, themeMode, setThemeMode } = useAppTheme();
-  const navigation = useNavigation<any>();
 
   const toggleTheme = () => {
     setThemeMode(themeMode === 'light' ? 'dark' : 'light');
   };
 
-  const { data: profile, isLoading, error, refetch, isFetching } = useProfile();
+  const { data: profile, isLoading, error, refetch } = useProfile();
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -37,62 +36,32 @@ export const ProfileScreen: React.FC = () => {
     }
   };
 
-  const getInitials = (name?: string) => {
-    if (!name) return 'U';
-    return name.charAt(0).toUpperCase();
-  };
-
   if (isLoading) {
     return (
-      <ScreenContainer contentContainerStyle={styles.container}>
-        <View style={styles.topBar}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <ArrowLeft size={20} color={theme.colors.text} />
-          </TouchableOpacity>
-          <Text variant="h3" color="text">
-            {t('profileTitle')}
-          </Text>
-          <View style={{ width: 34 }} />
-        </View>
-        <View style={styles.header}>
-          {/* Avatar Circle Skeleton */}
-          <Skeleton
-            variant="circle"
-            width={80}
-            height={80}
-            style={{ alignSelf: 'center', marginBottom: 16 }}
-          />
-          {/* Name skeleton */}
-          <Skeleton
-            variant="text"
-            width={150}
-            height={24}
-            style={{ alignSelf: 'center', marginBottom: 8 }}
-          />
-          {/* Email skeleton */}
-          <Skeleton
-            variant="text"
-            width={200}
-            height={14}
-            style={{ alignSelf: 'center', marginBottom: 16 }}
-          />
-          {/* Badges skeleton */}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 8 }}>
-            <Skeleton variant="rect" width={60} height={20} borderRadius={10} />
-            <Skeleton variant="rect" width={80} height={20} borderRadius={10} />
+      <ScreenContainer statusBarBgColor="transparent" ignoreTopSafeArea>
+        <GradientHeader title={t('profileTitle') || 'User Profile'} />
+        <View style={styles.container}>
+          <View style={styles.header}>
+            {/* Avatar Circle Skeleton */}
+            <Skeleton variant="circle" width={80} height={80} style={styles.skeletonAvatar} />
+            {/* Name skeleton */}
+            <Skeleton variant="text" width={150} height={24} style={styles.skeletonName} />
+            {/* Email skeleton */}
+            <Skeleton variant="text" width={200} height={14} style={styles.skeletonEmail} />
+            {/* Badges skeleton */}
+            <View style={styles.skeletonBadges}>
+              <Skeleton variant="rect" width={60} height={20} borderRadius={10} />
+              <Skeleton variant="rect" width={80} height={20} borderRadius={10} />
+            </View>
           </View>
-        </View>
 
-        {/* Card skeleton */}
-        <View style={[styles.card, { padding: 16, gap: 16 }]}>
-          <Skeleton variant="text" width="95%" height={16} />
-          <Skeleton variant="text" width="85%" height={16} />
-          <Skeleton variant="text" width="90%" height={16} />
-          <Skeleton variant="text" width="80%" height={16} />
+          {/* Card skeleton */}
+          <View style={styles.skeletonCard}>
+            <Skeleton variant="text" width="95%" height={16} />
+            <Skeleton variant="text" width="85%" height={16} />
+            <Skeleton variant="text" width="90%" height={16} />
+            <Skeleton variant="text" width="80%" height={16} />
+          </View>
         </View>
       </ScreenContainer>
     );
@@ -100,55 +69,37 @@ export const ProfileScreen: React.FC = () => {
 
   if (error || !profile) {
     return (
-      <ScreenContainer contentContainerStyle={styles.container}>
-        <View style={styles.topBar}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <ArrowLeft size={20} color={theme.colors.text} />
-          </TouchableOpacity>
-          <Text variant="h3" color="text">
-            {t('profileTitle')}
-          </Text>
-          <View style={{ width: 34 }} />
-        </View>
-        <View style={styles.errorContainer}>
-          <Text variant="h3" color="error" style={styles.errorTitle}>
-            {t('profileFetchFailed')}
-          </Text>
-          <Text variant="bodyMedium" color="textSecondary" style={styles.errorText}>
-            {error?.message || 'Please check your connection and try again.'}
-          </Text>
-          <Button title={t('profileRetry')} onPress={() => refetch()} style={styles.errorButton} />
+      <ScreenContainer statusBarBgColor="transparent" ignoreTopSafeArea>
+        <GradientHeader title={t('profileTitle') || 'User Profile'} />
+        <View style={styles.container}>
+          <View style={styles.errorContainer}>
+            <Text variant="h3" color="error" style={styles.errorTitle}>
+              {t('profileFetchFailed')}
+            </Text>
+            <Text variant="bodyMedium" color="textSecondary" style={styles.errorText}>
+              {error?.message || 'Please check your connection and try again.'}
+            </Text>
+            <Button
+              title={t('profileRetry')}
+              onPress={() => refetch()}
+              style={styles.errorButton}
+            />
+          </View>
         </View>
       </ScreenContainer>
     );
   }
 
   return (
-    <ScreenContainer scrollable={true} contentContainerStyle={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-          activeOpacity={0.7}
-        >
-          <ArrowLeft size={20} color={theme.colors.text} />
-        </TouchableOpacity>
-        <Text variant="h3" color="text">
-          {t('profileTitle') || 'User Profile'}
-        </Text>
-        <View style={{ width: 34 }} /> {/* balance spacing */}
-      </View>
+    <ScreenContainer statusBarBgColor="transparent" ignoreTopSafeArea>
+      <GradientHeader title={t('profileTitle') || 'User Profile'} />
 
-      <View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
         {/* User Header Profile Card */}
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
             <Text variant="bold" color="white" style={styles.avatarText}>
-              {getInitials(profile.firstName)}
+              {getInitials(profile?.firstName, 'U')}
             </Text>
           </View>
           <Text variant="h2" color="text" style={styles.name}>
@@ -226,14 +177,14 @@ export const ProfileScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
 
-      <Button
-        title={t('signOut')}
-        variant="outline"
-        onPress={logout}
-        style={styles.signOutButton}
-      />
+        <Button
+          title={t('signOut')}
+          variant="outline"
+          onPress={logout}
+          style={styles.signOutButton}
+        />
+      </ScrollView>
     </ScreenContainer>
   );
 };

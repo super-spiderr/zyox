@@ -52,20 +52,11 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
       marginRight: widthScale(12),
     },
-    avatarText: {
-      fontSize: widthScale(16),
-    },
     profileInfo: {
       flex: 1,
       justifyContent: 'center',
     },
-    customerNameText: {
-      fontSize: widthScale(18),
-      color: theme.colors.text,
-    },
     customerSubtitleText: {
-      fontSize: widthScale(13),
-      color: theme.colors.textSecondary,
       marginTop: heightScale(2),
     },
     actionButtonsRow: {
@@ -83,27 +74,15 @@ export const getStyles = (theme: Theme) => {
       gap: widthScale(6),
     },
     waBtn: {
-      backgroundColor: '#E6F4EA',
-    },
-    waBtnText: {
-      color: '#137333',
-      fontSize: widthScale(12),
+      backgroundColor: theme.colors.whatsappBg,
     },
     callBtn: {
-      backgroundColor: '#EAE8FF',
-    },
-    callBtnText: {
-      color: '#431DB0',
-      fontSize: widthScale(12),
+      backgroundColor: theme.colors.callBg,
     },
     editBtn: {
       borderWidth: 1,
       borderColor: theme.colors.border,
       backgroundColor: theme.colors.card,
-    },
-    editBtnText: {
-      color: theme.colors.text,
-      fontSize: widthScale(12),
     },
     statsRow: {
       flexDirection: 'row',
@@ -120,27 +99,12 @@ export const getStyles = (theme: Theme) => {
       justifyContent: 'center',
     },
     statsCardWarning: {
-      backgroundColor: '#FFFBE0',
-    },
-    statsValueText: {
-      fontSize: widthScale(18),
-      color: theme.colors.text,
+      backgroundColor: theme.colors.warningBg,
     },
     statsLabelText: {
-      fontSize: widthScale(11),
-      color: theme.colors.textSecondary,
       marginTop: heightScale(2),
     },
-    warningValueText: {
-      color: '#7A5101',
-    },
-    warningLabelText: {
-      color: '#7A5101',
-    },
     ordersSectionTitle: {
-      fontSize: widthScale(11),
-      color: theme.colors.textMuted,
-      letterSpacing: 0.8,
       marginBottom: heightScale(10),
     },
     ordersScroll: {
@@ -155,10 +119,6 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    emptyOrdersText: {
-      color: theme.colors.textMuted,
-      fontSize: widthScale(13),
-    },
     orderCard: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -172,13 +132,7 @@ export const getStyles = (theme: Theme) => {
       flex: 1,
       marginRight: widthScale(12),
     },
-    orderEventTitle: {
-      fontSize: widthScale(13),
-      color: theme.colors.text,
-    },
     orderDateIdSub: {
-      fontSize: widthScale(11),
-      color: theme.colors.textSecondary,
       marginTop: heightScale(2),
     },
     orderStatusBadge: {
@@ -189,19 +143,30 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
     },
     statusPaidBg: {
-      backgroundColor: '#E6F4EA',
-    },
-    statusPaidText: {
-      color: '#137333',
+      backgroundColor: theme.colors.paidBg,
     },
     statusDueBg: {
-      backgroundColor: '#FFFBE0',
+      backgroundColor: theme.colors.warningBg,
     },
-    statusDueText: {
-      color: '#7A5101',
+    deleteBottomBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: widthScale(6),
+      marginTop: heightScale(16),
+      paddingVertical: heightScale(12),
+      borderRadius: widthScale(10),
+      backgroundColor: theme.colors.errorLight,
     },
-    statusBadgeText: {
-      fontSize: widthScale(10),
+    reactivateBottomBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: widthScale(6),
+      marginTop: heightScale(16),
+      paddingVertical: heightScale(12),
+      borderRadius: widthScale(10),
+      backgroundColor: theme.colors.paidBg,
     },
   });
 };

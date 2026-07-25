@@ -33,11 +33,6 @@ export const getStyles = (theme: Theme) => {
       borderBottomColor: theme.colors.border,
       marginBottom: heightScale(8),
     },
-    bottomSheetName: {
-      fontSize: widthScale(16),
-      fontFamily: theme.typography.fonts.urbanist.bold,
-      color: theme.colors.text,
-    },
     closeButton: {
       width: widthScale(28),
       height: widthScale(28),
@@ -47,9 +42,6 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
     },
     filterSectionTitle: {
-      fontSize: widthScale(13),
-      fontFamily: theme.typography.fonts.urbanist.bold,
-      color: theme.colors.textSecondary,
       marginTop: heightScale(12),
       marginBottom: heightScale(6),
     },
@@ -71,15 +63,6 @@ export const getStyles = (theme: Theme) => {
     filterOptionBtnActive: {
       borderColor: theme.colors.primary,
       backgroundColor: theme.colors.primaryLight,
-    },
-    filterOptionText: {
-      fontSize: widthScale(12),
-      fontFamily: theme.typography.fonts.urbanist.medium,
-      color: theme.colors.textSecondary,
-    },
-    filterOptionTextActive: {
-      color: theme.colors.primary,
-      fontFamily: theme.typography.fonts.urbanist.bold,
     },
   });
 };
