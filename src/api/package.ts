@@ -29,6 +29,22 @@ export interface PackagePayload {
 export interface PackagesResponse {
   success: boolean;
   data: Package[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface PaginatedPackages {
+  packages: Package[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export interface PackageDetailResponse {
@@ -37,10 +53,28 @@ export interface PackageDetailResponse {
   data: Package;
 }
 
-// Fetch all packages from backend API
+// Fetch all packages from backend API.
+// The backend rejects `limit` above 100, so that's the highest page size we can request.
 export const getPackagesApi = async (): Promise<Package[]> => {
-  const response = await apiClient.get<PackagesResponse>('/package');
+  const response = await apiClient.get<PackagesResponse>('/package', {
+    params: { limit: 100 },
+  });
   return response.data.data;
+};
+
+// Fetch packages with pagination metadata
+export const getPackagesPaginatedApi = async (
+  page?: number,
+  limit?: number,
+  search?: string,
+): Promise<PaginatedPackages> => {
+  const response = await apiClient.get<PackagesResponse>('/package', {
+    params: { page, limit, search },
+  });
+  return {
+    packages: response.data.data,
+    pagination: response.data.pagination,
+  };
 };
 
 // Create a new package in backend API

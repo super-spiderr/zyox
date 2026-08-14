@@ -49,7 +49,7 @@ export const OrdersScreen: React.FC = () => {
     return orders.filter(o => {
       const custName = getCustomerName(o.customerId)?.toLowerCase();
       const matchesSearch =
-        o.attributes.eventName?.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        o.attributes?.eventName?.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
         custName.includes(searchQuery.trim().toLowerCase());
       const matchesStatus =
         selectedStatusFilter === 'ALL' || o.orderStatus === selectedStatusFilter;
@@ -89,8 +89,6 @@ export const OrdersScreen: React.FC = () => {
       <GradientHeader
         title={t('ordersTitle')}
         description={t('ordersDesc') || 'Manage, search, and track customer catering orders.'}
-        count={isOrdersLoading ? undefined : filteredOrders.length}
-        countLabel={filteredOrders.length === 1 ? 'Order' : 'Orders'}
         image={ordersIcon}
         action={
           <GradientHeaderAction

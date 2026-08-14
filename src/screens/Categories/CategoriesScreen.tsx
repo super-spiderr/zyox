@@ -1,23 +1,33 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { View, TouchableOpacity, FlatList, Image, ActivityIndicator } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  Alert,
-  Image,
-} from 'react-native';
-import { ScreenContainer, Text, Skeleton, GradientHeader, GradientHeaderAction } from '@/components';
+  ScreenContainer,
+  Text,
+  Skeleton,
+  GradientHeader,
+  GradientHeaderAction,
+  SearchBar,
+  EmptyState,
+} from '@/components';
 import { useAppTheme } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import getStyles from './CategoriesScreen.styles';
 import { Category } from '@/api/category';
-import { useCategories, useDeleteCategory } from '@/hooks/queries';
+import { useInfiniteCategories } from '@/hooks/queries';
 import { useNavigation } from '@react-navigation/native';
-import { Search, Plus, Layers, Edit, Trash2, X } from 'lucide-react-native';
+import { Plus, Layers, Edit } from 'lucide-react-native';
+import { CATEGORIES_PAGE_SIZE } from '@/constants/category';
 
-const categoriesIcon = require('@/assets/images/categories_icon.png');
+const TILE_ACCENTS = (theme: ReturnType<typeof useAppTheme>['theme']) => [
+  { bg: theme.colors.infoBg, icon: theme.colors.infoText },
+  { bg: theme.colors.purpleBg, icon: theme.colors.purpleText },
+  { bg: theme.colors.warningBg, icon: theme.colors.warningText },
+  { bg: theme.colors.successBg, icon: theme.colors.successText },
+  { bg: theme.colors.skyBg, icon: theme.colors.skyText },
+];
 
 export const CategoriesScreen: React.FC = () => {
   const { theme, isDark } = useAppTheme();
@@ -26,95 +36,117 @@ export const CategoriesScreen: React.FC = () => {
   const navigation = useNavigation<any>();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedSearch(searchQuery);
 
-  // Fetch categories using centralized hooks
   const {
-    data: categories = [],
+    data: categoriesData,
     isLoading,
     refetch,
-  } = useCategories();
+    fetchNextPage,
+    hasNextPage,
+    isRefetching,
+    isFetchingNextPage,
+  } = useInfiniteCategories(CATEGORIES_PAGE_SIZE, debouncedSearch);
 
-  // Delete mutation using centralized hooks
-  const deleteMutation = useDeleteCategory({
-    onError: (err: any) => {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to delete category');
-    },
-  });
+  const categories = useMemo(() => {
+    return categoriesData?.pages.flatMap(page => page.categories) ?? [];
+  }, [categoriesData]);
 
-  const filteredCategories = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return categories;
-    return categories.filter(c => c.categoryName.toLowerCase().includes(query));
-  }, [categories, searchQuery]);
+  // Bento mosaic: alternate a full-width hero tile with a row of two smaller
+  // tiles so the grid reads as varied tiles instead of a uniform card list.
+  const rows = useMemo(() => {
+    const result: { item: Category; index: number }[][] = [];
+    let isHero = true;
+    let i = 0;
+    while (i < categories.length) {
+      if (isHero) {
+        result.push([{ item: categories[i], index: i }]);
+        i += 1;
+      } else {
+        result.push(
+          categories.slice(i, i + 2).map((item, offset) => ({ item, index: i + offset })),
+        );
+        i += 2;
+      }
+      isHero = !isHero;
+    }
+    return result;
+  }, [categories]);
 
-  const handleDelete = (id: string) => {
-    Alert.alert(
-      t('deleteConfirmTitle') || 'Delete Category',
-      t('deleteConfirmMessage') || 'Are you sure you want to delete this category?',
-      [
-        { text: t('cancel'), style: 'cancel' },
-        {
-          text: t('delete'),
-          style: 'destructive',
-          onPress: () => deleteMutation.mutate(id),
-        },
-      ]
+  const accents = useMemo(() => TILE_ACCENTS(theme), [theme]);
+
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const renderCategoryTile = (item: Category, index: number, isLarge: boolean) => {
+    const accent = accents[index % accents.length];
+
+    return (
+      <TouchableOpacity
+        key={item._id}
+        style={[styles.tileBase, isLarge ? styles.tileLarge : styles.tileSmall]}
+        activeOpacity={0.85}
+        onPress={() =>
+          navigation.navigate('CategoryDetail', {
+            categoryId: item._id,
+            categoryName: item.categoryName,
+          })
+        }
+      >
+        {item.imageUrl ? (
+          <Image source={{ uri: item.imageUrl }} style={styles.tileImage} />
+        ) : (
+          <View style={[styles.tilePlaceholder, { backgroundColor: accent.bg }]}>
+            {isLarge && (
+              <>
+                <View style={styles.tileDecorCircleLeft} pointerEvents="none" />
+                <View style={styles.tileDecorCircleRight} pointerEvents="none" />
+              </>
+            )}
+            <Layers size={isLarge ? 40 : 32} color={accent.icon} />
+          </View>
+        )}
+
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.75)']}
+          style={styles.tileGradient}
+          pointerEvents="none"
+        />
+
+        <View style={styles.tileActions}>
+          <TouchableOpacity
+            style={styles.tileActionButton}
+            onPress={() => navigation.navigate('CreateCategory', { editCategoryId: item._id })}
+            activeOpacity={0.7}
+          >
+            <Edit size={13} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.tileLabelWrap}>
+          <Text style={isLarge ? styles.tileLabelLarge : styles.tileLabel} numberOfLines={1}>
+            {item.categoryName}
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
-  const renderCategoryItem = ({ item }: { item: Category }) => (
-    <View style={styles.card}>
-      {item.imageUrl ? (
-        <Image source={{ uri: item.imageUrl }} style={styles.categoryImage} />
-      ) : (
-        <View style={styles.placeholderImage}>
-          <Layers size={20} color={theme.colors.primary} />
-        </View>
-      )}
-
-      <View style={styles.categoryInfo}>
-        <Text style={styles.categoryName}>{item.categoryName}</Text>
-        <View style={styles.categoryMetaRow}>
-          {item.createdBy ? (
-            <Text style={styles.creatorText}>By {item.createdBy}</Text>
-          ) : null}
-
-          <View
-            style={[
-              styles.statusBadge,
-              item.isActive ? styles.statusActive : styles.statusInactive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.statusText,
-                item.isActive ? { color: styles.statusActive.color } : { color: styles.statusInactive.color },
-              ]}
-            >
-              {item.isActive ? t('active') : t('inactive')}
-            </Text>
-          </View>
-        </View>
+  const renderRow = ({ item: row }: { item: { item: Category; index: number }[] }) => {
+    if (row.length === 1) {
+      return (
+        <View style={styles.rowLarge}>{renderCategoryTile(row[0].item, row[0].index, true)}</View>
+      );
+    }
+    return (
+      <View style={styles.rowPair}>
+        {row.map(({ item, index }) => renderCategoryTile(item, index, false))}
       </View>
-
-      <View style={styles.actions}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => navigation.navigate('CreateCategory', { editCategoryId: item._id })}
-          activeOpacity={0.7}
-        >
-          <Edit size={16} color={theme.colors.primary} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => handleDelete(item._id)}
-          activeOpacity={0.7}
-        >
-          <Trash2 size={16} color={theme.colors.error} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <ScreenContainer
@@ -127,9 +159,6 @@ export const CategoriesScreen: React.FC = () => {
       <GradientHeader
         title={t('categoriesTitle')}
         description={t('categoriesDesc') || 'Manage, search, and update product categories.'}
-        count={isLoading ? undefined : filteredCategories.length}
-        countLabel={filteredCategories.length === 1 ? 'Category' : 'Categories'}
-        image={categoriesIcon}
         action={
           <GradientHeaderAction
             icon={<Plus size={16} color={theme.colors.primaryText} />}
@@ -138,67 +167,45 @@ export const CategoriesScreen: React.FC = () => {
         }
       />
 
-      <View style={styles.body}>
-        {/* Search Input */}
-        <View style={styles.searchContainer}>
-          <Search size={18} color={theme.colors.textSecondary} style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder={t('searchCategoriesPlaceholder') || 'Search categories...'}
-            placeholderTextColor={theme.colors.textMuted}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery ? (
-            <TouchableOpacity style={styles.clearButton} onPress={() => setSearchQuery('')}>
-              <X size={16} color={theme.colors.textSecondary} />
-            </TouchableOpacity>
-          ) : null}
-        </View>
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder={t('searchCategoriesPlaceholder') || 'Search categories...'}
+        style={styles.searchBar}
+      />
 
+      <View style={styles.body}>
         {isLoading ? (
-          <FlatList
-            data={[1, 2, 3, 4]}
-            keyExtractor={(item, index) => String(index)}
-            contentContainerStyle={styles.list}
-            renderItem={() => (
-              <View style={[styles.card, { padding: 12, alignItems: 'center' }]}>
-                <Skeleton
-                  variant="rect"
-                  width={50}
-                  height={50}
-                  borderRadius={8}
-                  style={{ marginRight: 12 }}
-                />
-                <View style={{ flex: 1, gap: 8 }}>
-                  <Skeleton variant="text" width="60%" height={16} />
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Skeleton variant="text" width="30%" height={12} />
-                    <Skeleton
-                      variant="rect"
-                      width={40}
-                      height={16}
-                      borderRadius={6}
-                      style={{ marginLeft: 8 }}
-                    />
-                  </View>
-                </View>
-              </View>
-            )}
-          />
+          <View style={styles.list}>
+            <Skeleton variant="rect" style={styles.skeletonHero} />
+            <View style={styles.rowPair}>
+              <Skeleton variant="rect" style={styles.skeletonSmall} />
+              <Skeleton variant="rect" style={styles.skeletonSmall} />
+            </View>
+          </View>
         ) : (
           <FlatList
-            data={filteredCategories}
-            keyExtractor={item => item._id}
-            renderItem={renderCategoryItem}
+            data={rows}
+            keyExtractor={row => row.map(({ item }) => item._id).join('-')}
+            renderItem={renderRow}
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.list}
-            refreshing={isLoading}
+            refreshing={isRefetching}
             onRefresh={refetch}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
             ListEmptyComponent={
-              <View style={styles.emptyState}>
-                <Layers size={48} color={theme.colors.textMuted} />
-                <Text style={styles.emptyStateText}>{t('noCategoriesFound')}</Text>
-              </View>
+              <EmptyState
+                icon={<Layers size={48} color={theme.colors.textMuted} />}
+                description={t('noCategoriesFound')}
+              />
+            }
+            ListFooterComponent={
+              isFetchingNextPage ? (
+                <View style={styles.endLoader}>
+                  <ActivityIndicator size="small" color={theme.colors.primary} />
+                </View>
+              ) : null
             }
           />
         )}

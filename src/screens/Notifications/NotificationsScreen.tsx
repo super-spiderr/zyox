@@ -29,8 +29,8 @@ export const NotificationsScreen: React.FC = () => {
 
   // Filter today's active orders
   const todayOrders = orders.filter(order => {
-    if (!order.eventDate) return false;
-    return order.eventDate.split('T')[0] === todayStr && order.orderStatus !== 'CANCELLED';
+    if (!order.deliveryDate) return false;
+    return order.deliveryDate.split('T')[0] === todayStr && order.orderStatus !== 'CANCELLED';
   });
 
   // System-wide drafts count
@@ -72,8 +72,8 @@ export const NotificationsScreen: React.FC = () => {
       description:
         t('notificationsDraftWarning', { count: draftCount }) ||
         `You have ${draftCount} pending drafts that require action.`,
-      icon: <Clock size={20} color={palette.warning500} />,
-      iconBg: `${palette.warning500}15`,
+      icon: <Clock size={20} color={palette.yellow500} />,
+      iconBg: `${palette.yellow500}15`,
       action: () => navigation.navigate('Orders'),
       actionLabel: t('viewOrders') || 'View Orders',
     });
@@ -87,8 +87,8 @@ export const NotificationsScreen: React.FC = () => {
       description:
         t('notificationsTodayOrders', { count: todayOrders.length }) ||
         `You have ${todayOrders.length} active orders scheduled for today.`,
-      icon: <Calendar size={20} color={palette.emerald500} />,
-      iconBg: `${palette.emerald500}15`,
+      icon: <Calendar size={20} color={palette.green500} />,
+      iconBg: `${palette.green500}15`,
       action: () => navigation.navigate('Home'),
       actionLabel: t('goToDashboard') || 'Go to Dashboard',
     });

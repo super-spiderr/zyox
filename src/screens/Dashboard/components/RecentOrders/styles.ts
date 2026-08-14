@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { Theme, palette } from '@/theme';
+import { Theme } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme) => {
+  const isDark = theme.isDark;
+
   return StyleSheet.create({
     container: {
       marginTop: heightScale(4),
@@ -31,71 +33,6 @@ export const getStyles = (theme: Theme) => {
     countText: {
       color: theme.colors.textSecondary,
     },
-    followUpCard: {
-      backgroundColor: theme.colors.card,
-      borderRadius: widthScale(20),
-      padding: widthScale(16),
-      marginHorizontal: widthScale(16),
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderWidth: 0.5,
-      borderColor: theme.colors.border,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
-      shadowRadius: 2,
-      elevation: 2,
-      marginBottom: heightScale(16),
-    },
-    cardContentRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: widthScale(12),
-      flex: 1,
-    },
-    avatarStack: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    stackCircle: {
-      width: widthScale(32),
-      height: widthScale(32),
-      borderRadius: widthScale(16),
-      borderWidth: 1.5,
-      borderColor: '#FFFFFF',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    infoColumn: {
-      flex: 1,
-    },
-    followUpTitle: {
-      color: theme.colors.dashboardTitle,
-      lineHeight: widthScale(20),
-    },
-    followUpSub: {
-      color: theme.colors.textSecondary,
-      marginTop: heightScale(2),
-    },
-    plusCircle: {
-      width: widthScale(36),
-      height: widthScale(36),
-      borderRadius: widthScale(18),
-      backgroundColor: palette.yellow500,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    plusText: {
-      color: '#1B194B',
-      lineHeight: widthScale(24),
-    },
-    recentOrdersSubTitle: {
-      color: theme.colors.dashboardTitle,
-      paddingHorizontal: widthScale(16),
-      marginTop: heightScale(18),
-      marginBottom: heightScale(10),
-    },
     listContainer: {
       paddingHorizontal: widthScale(16),
       backgroundColor: theme.colors.card,
@@ -104,6 +41,11 @@ export const getStyles = (theme: Theme) => {
       borderColor: theme.colors.border,
       marginHorizontal: widthScale(16),
       paddingVertical: widthScale(6),
+      shadowColor: theme.colors.text,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDark ? 0.15 : 0.04,
+      shadowRadius: 6,
+      elevation: 2,
     },
     compactItem: {
       flexDirection: 'row',
@@ -131,22 +73,22 @@ export const getStyles = (theme: Theme) => {
     },
     calendarHeader: {
       height: widthScale(14),
-      backgroundColor: palette.primary600,
+      backgroundColor: theme.colors.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
     calendarMonth: {
-      color: '#FFFFFF',
+      color: theme.colors.primaryText,
       fontSize: widthScale(8),
     },
     calendarBody: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: palette.white,
+      backgroundColor: theme.colors.card,
     },
     calendarDay: {
-      color: '#1B194B',
+      color: theme.colors.dashboardTitle,
       fontSize: widthScale(14),
     },
     infoCol: {
@@ -195,6 +137,11 @@ export const getStyles = (theme: Theme) => {
       paddingVertical: heightScale(32),
       alignItems: 'center',
       justifyContent: 'center',
+      shadowColor: theme.colors.text,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDark ? 0.15 : 0.04,
+      shadowRadius: 6,
+      elevation: 2,
     },
     emptyText: {
       color: theme.colors.textSecondary,

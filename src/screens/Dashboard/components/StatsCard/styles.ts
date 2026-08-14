@@ -3,6 +3,8 @@ import { Theme, palette } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme) => {
+  const isDark = theme.isDark;
+
   return StyleSheet.create({
     bentoGrid: {
       paddingHorizontal: widthScale(16),
@@ -36,25 +38,29 @@ export const getStyles = (theme: Theme) => {
       backgroundColor: theme.colors.card,
     },
     activeChip: {
-      backgroundColor: palette.yellow500,
-      borderColor: palette.yellow500,
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
     },
     chipText: {
       color: theme.colors.inactiveChipText,
     },
     activeChipText: {
-      color: '#1B194B',
+      color: theme.colors.primaryText,
     },
     gridContainer: {
       flexDirection: 'column',
       gap: widthScale(12),
     },
-    row1: {
-      width: '100%',
-    },
     revenueTile: {
-      backgroundColor: palette.primary600,
       borderRadius: widthScale(16),
+      overflow: 'hidden',
+      shadowColor: theme.colors.text,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: isDark ? 0.3 : 0.15,
+      shadowRadius: 10,
+      elevation: 4,
+    },
+    revenueTileGradient: {
       padding: widthScale(14),
       height: widthScale(115),
       justifyContent: 'space-between',
@@ -86,23 +92,31 @@ export const getStyles = (theme: Theme) => {
     },
     tileTitle: {
       fontSize: widthScale(13),
-      color: '#E4D9FB',
+      color: 'rgba(255, 255, 255, 0.85)',
     },
-    arrowCircle: {
+    arrowCircleOnDark: {
       width: widthScale(28),
       height: widthScale(28),
       borderRadius: widthScale(14),
-      backgroundColor: palette.yellow500,
+      backgroundColor: 'rgba(255, 255, 255, 0.18)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    arrowCircleOnLight: {
+      width: widthScale(28),
+      height: widthScale(28),
+      borderRadius: widthScale(14),
+      backgroundColor: theme.colors.primaryLight,
       justifyContent: 'center',
       alignItems: 'center',
     },
     revenueValue: {
       fontSize: widthScale(28),
-      color: '#FFFFFF',
+      color: palette.white,
       lineHeight: widthScale(32),
     },
     revenueSub: {
-      color: '#E4D9FB',
+      color: 'rgba(255, 255, 255, 0.85)',
     },
     row2: {
       flexDirection: 'row',
@@ -115,24 +129,29 @@ export const getStyles = (theme: Theme) => {
       height: widthScale(95),
       justifyContent: 'space-between',
       borderWidth: 0.5,
+      shadowColor: theme.colors.text,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDark ? 0.2 : 0.05,
+      shadowRadius: 6,
+      elevation: 2,
     },
     pendingTile: {
-      backgroundColor: palette.primary100,
-      borderColor: palette.primary100,
+      backgroundColor: theme.colors.primaryLight,
+      borderColor: theme.colors.primaryLight,
     },
     pendingTitle: {
-      color: palette.primary700,
+      color: theme.colors.primary,
     },
     pendingValue: {
       fontSize: widthScale(20),
-      color: '#1B194B',
+      color: theme.colors.dashboardTitle,
       lineHeight: widthScale(24),
     },
     pendingSub: {
-      color: palette.primary300,
+      color: theme.colors.primary,
     },
     nextEventTile: {
-      backgroundColor: palette.white,
+      backgroundColor: theme.colors.card,
       borderColor: theme.colors.border,
     },
     nextEventTitle: {
@@ -140,7 +159,7 @@ export const getStyles = (theme: Theme) => {
     },
     nextEventValue: {
       fontSize: widthScale(20),
-      color: '#1B194B',
+      color: theme.colors.dashboardTitle,
       lineHeight: widthScale(24),
     },
     nextEventSub: {

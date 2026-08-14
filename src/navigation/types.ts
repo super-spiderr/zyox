@@ -16,8 +16,15 @@ export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   Main: NavigatorScreenParams<MainTabParamList>;
   Categories: undefined;
+  CategoryDetail: {
+    categoryId: string;
+    categoryName: string;
+  };
   Products: undefined;
   Packages: undefined;
+  Manage: undefined;
+  OrdersList: undefined;
+  CustomersList: undefined;
   Profile: undefined;
   Notifications: undefined;
   CreateOrder: {

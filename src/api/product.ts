@@ -24,6 +24,22 @@ export interface ProductPayload {
 export interface ProductsResponse {
   success: boolean;
   data: Product[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface PaginatedProducts {
+  products: Product[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export interface ProductDetailResponse {
@@ -32,10 +48,28 @@ export interface ProductDetailResponse {
   data: Product;
 }
 
-// Fetch all products from backend API
+// Fetch all products from backend API.
+// The backend rejects `limit` above 100, so that's the highest page size we can request.
 export const getProductsApi = async (): Promise<Product[]> => {
-  const response = await apiClient.get<ProductsResponse>('/product');
+  const response = await apiClient.get<ProductsResponse>('/product', {
+    params: { limit: 100 },
+  });
   return response.data.data;
+};
+
+// Fetch products with pagination metadata
+export const getProductsPaginatedApi = async (
+  page?: number,
+  limit?: number,
+  search?: string,
+): Promise<PaginatedProducts> => {
+  const response = await apiClient.get<ProductsResponse>('/product', {
+    params: { page, limit, search },
+  });
+  return {
+    products: response.data.data,
+    pagination: response.data.pagination,
+  };
 };
 
 // Create a new product in backend API

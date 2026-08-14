@@ -12,7 +12,7 @@ const slotFromHour = (hour: number): DeliverySlot => {
 
 const slotFromKeywords = (order: Order): DeliverySlot | null => {
   const notes = (order.notes || '').toLowerCase();
-  const eventName = (order.eventName || '').toLowerCase();
+  const eventName = (order.attributes?.eventName || '').toLowerCase();
 
   if (notes.includes('morning') || eventName.includes('morning')) return 'Morning';
   if (notes.includes('afternoon') || eventName.includes('afternoon')) return 'Afternoon';
@@ -21,7 +21,7 @@ const slotFromKeywords = (order: Order): DeliverySlot | null => {
 };
 
 const slotFromEventDate = (order: Order): DeliverySlot | null => {
-  const timePart = order.eventDate?.includes('T') ? order.eventDate.split('T')[1] : undefined;
+  const timePart = order.deliveryDate?.includes('T') ? order.deliveryDate.split('T')[1] : undefined;
   if (!timePart) return null;
   return slotFromHour(Number.parseInt(timePart.split(':')[0], 10));
 };

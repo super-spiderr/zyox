@@ -36,7 +36,7 @@ export interface Order {
 export interface OrderPayload {
   customerId: string;
   eventName: string;
-  eventDate: string;
+  deliveryDate: string;
   guestCount: number;
   orderItems: OrderItem[];
   discountAmount: number;

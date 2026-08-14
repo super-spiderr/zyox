@@ -1,17 +1,20 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { Theme, palette } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme) => {
-  const isDark = theme.isDark;
+  const { width } = Dimensions.get('window');
+  const tileGap = widthScale(12);
+  const tileWidth = (width - widthScale(16) * 2 - tileGap) / 2;
 
-  const statusColors = {
-    muted: {
-      bg: theme.colors.mutedBg,
-      border: theme.colors.mutedBorder,
-      text: theme.colors.mutedText,
-    },
+  const tileBaseStyle = {
+    borderRadius: widthScale(20),
+    overflow: 'hidden' as const,
+    backgroundColor: theme.colors.card,
+    position: 'relative' as const,
   };
+  const tileSmallStyle = { width: tileWidth, height: tileWidth * 1.05 };
+  const tileLargeStyle = { width: '100%' as const, height: tileWidth * 0.95 };
 
   return StyleSheet.create({
     container: {
@@ -35,118 +38,115 @@ export const getStyles = (theme: Theme) => {
       borderTopColor: theme.colors.border,
       backgroundColor: theme.colors.background,
     },
-    searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.colors.inputBg,
-      borderRadius: widthScale(12),
-      paddingHorizontal: widthScale(14),
-      marginBottom: heightScale(16),
-      height: heightScale(44),
-    },
-    searchIcon: {
-      marginRight: widthScale(8),
-    },
-    searchInput: {
-      flex: 1,
-      color: theme.colors.text,
-      fontFamily: theme.typography.fonts.urbanist.regular,
-      fontSize: widthScale(13),
-      padding: 0,
-    },
-    clearButton: {
-      padding: widthScale(4),
+    searchBar: {
+      marginHorizontal: widthScale(16),
+      marginBottom: heightScale(12),
     },
     list: {
       paddingBottom: heightScale(40),
     },
-    emptyState: {
+    endLoader: {
+      paddingVertical: heightScale(16),
       alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: heightScale(60),
     },
-    emptyStateText: {
+    rowPair: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: tileGap,
+    },
+    rowLarge: {
+      marginBottom: tileGap,
+    },
+    tileBase: tileBaseStyle,
+    tileSmall: tileSmallStyle,
+    tileLarge: tileLargeStyle,
+    skeletonHero: {
+      ...tileBaseStyle,
+      ...tileLargeStyle,
+      marginBottom: tileGap,
+    },
+    skeletonSmall: {
+      ...tileBaseStyle,
+      ...tileSmallStyle,
+    },
+    tileDecorCircleLeft: {
+      position: 'absolute',
+      left: -widthScale(30),
+      top: -widthScale(40),
+      width: widthScale(140),
+      height: widthScale(140),
+      borderRadius: widthScale(70),
+      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    },
+    tileDecorCircleRight: {
+      position: 'absolute',
+      right: -widthScale(20),
+      bottom: -widthScale(50),
+      width: widthScale(120),
+      height: widthScale(120),
+      borderRadius: widthScale(60),
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    tileImage: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      resizeMode: 'cover',
+    },
+    tilePlaceholder: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    tileGradient: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      height: '55%',
+    },
+    tileActions: {
+      position: 'absolute',
+      top: widthScale(8),
+      right: widthScale(8),
+      flexDirection: 'row',
+      gap: widthScale(6),
+    },
+    tileActionButton: {
+      width: widthScale(26),
+      height: widthScale(26),
+      borderRadius: widthScale(13),
+      backgroundColor: 'rgba(0,0,0,0.35)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    tileLabelWrap: {
+      position: 'absolute',
+      bottom: widthScale(10),
+      left: widthScale(10),
+      right: widthScale(10),
+    },
+    tileLabel: {
       fontSize: widthScale(14),
-      fontFamily: theme.typography.fonts.urbanist.regular,
-      color: theme.colors.textSecondary,
-      marginTop: heightScale(10),
-    },
-    card: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.colors.card,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      borderRadius: widthScale(16),
-      padding: widthScale(14),
-      marginBottom: heightScale(12),
-      shadowColor: theme.colors.text,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: isDark ? 0.15 : 0.04,
-      shadowRadius: 6,
-      elevation: 2,
-    },
-    categoryImage: {
-      width: widthScale(54),
-      height: widthScale(54),
-      borderRadius: widthScale(12),
-      backgroundColor: theme.colors.imagePlaceholderBg,
-    },
-    placeholderImage: {
-      width: widthScale(54),
-      height: widthScale(54),
-      borderRadius: widthScale(12),
-      backgroundColor: theme.colors.purpleBg,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    categoryInfo: {
-      flex: 1,
-      marginLeft: widthScale(14),
-    },
-    categoryName: {
-      fontSize: widthScale(15),
       fontFamily: theme.typography.fonts.urbanist.bold,
-      color: theme.colors.text,
+      color: palette.white,
     },
-    categoryMetaRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: heightScale(4),
+    tileLabelLarge: {
+      fontSize: widthScale(20),
+      fontFamily: theme.typography.fonts.urbanist.bold,
+      color: palette.white,
     },
-    creatorText: {
-      fontSize: widthScale(11),
-      fontFamily: theme.typography.fonts.urbanist.regular,
-      color: theme.colors.textMuted,
-    },
-    statusBadge: {
-      paddingVertical: heightScale(2),
-      paddingHorizontal: widthScale(6),
-      borderRadius: widthScale(6),
-      borderWidth: 0.5,
-      marginLeft: widthScale(8),
-    },
-    statusText: {
+    tileSubLabel: {
       fontSize: widthScale(10),
-      fontFamily: theme.typography.fonts.urbanist.medium,
-    },
-    statusActive: {
-      backgroundColor: theme.colors.successBg,
-      borderColor: theme.colors.successBorder,
-      color: theme.colors.successText,
-    },
-    statusInactive: {
-      backgroundColor: statusColors.muted.bg,
-      borderColor: statusColors.muted.border,
-      color: statusColors.muted.text,
-    },
-    actions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    actionButton: {
-      padding: widthScale(6),
-      marginLeft: widthScale(4),
+      fontFamily: theme.typography.fonts.urbanist.regular,
+      color: 'rgba(255,255,255,0.75)',
+      marginTop: heightScale(2),
     },
     modalOverlay: {
       flex: 1,
@@ -258,27 +258,6 @@ export const getStyles = (theme: Theme) => {
     },
     removePreviewButton: {
       padding: widthScale(6),
-    },
-    switchRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginVertical: heightScale(10),
-      paddingVertical: heightScale(4),
-    },
-    switchLabelContainer: {
-      flex: 1,
-    },
-    switchLabel: {
-      fontSize: widthScale(13),
-      fontFamily: theme.typography.fonts.urbanist.medium,
-      color: theme.colors.textSecondary,
-    },
-    switchSubText: {
-      fontSize: widthScale(11),
-      fontFamily: theme.typography.fonts.urbanist.regular,
-      color: theme.colors.textMuted,
-      marginTop: heightScale(2),
     },
     modalFooter: {
       flexDirection: 'row',

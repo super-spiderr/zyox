@@ -5,8 +5,12 @@ import { RootStackParamList } from './types';
 import AuthStack from './AuthStack';
 import MainTab from './MainTab';
 import CategoriesScreen from '@/screens/Categories/CategoriesScreen';
+import CategoryDetailScreen from '@/screens/Categories/CategoryDetailScreen';
 import ProductsScreen from '@/screens/Products/ProductsScreen';
 import PackagesScreen from '@/screens/Packages/PackagesScreen';
+import ManageScreen from '@/screens/Manage/ManageScreen';
+import OrdersScreen from '@/screens/Orders/OrdersScreen';
+import CustomersScreen from '@/screens/Customers';
 import CreateOrderScreen from '@/screens/Orders/create-order/CreateOrderScreen';
 import OrderDetailScreen from '@/screens/Orders/OrderDetailScreen';
 import ApplyCouponScreen from '@/screens/Orders/ApplyCouponScreen';
@@ -20,8 +24,10 @@ import SelectContactScreen from '@/screens/Customers/SelectContact/SelectContact
 import SuccessScreen from '@/screens/common/SuccessScreen';
 import { useAuth } from '@/context/AuthContext';
 import { useAppTheme } from '@/theme';
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, View, StyleSheet, Image } from 'react-native';
 import SplashScreen from '@/screens/Splash/SplashScreen';
+
+const zyoxLogo = require('@/assets/images/zyox logo.png');
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -49,6 +55,11 @@ export const AppNavigator = () => {
   if (isLoading) {
     return (
       <View style={[styles.loading, { backgroundColor: theme.colors.background }]}>
+        <Image
+          source={zyoxLogo}
+          style={[styles.loadingLogo, { tintColor: theme.colors.primary }]}
+          resizeMode="contain"
+        />
         <ActivityIndicator size="large" color={theme.colors.primary} />
       </View>
     );
@@ -61,8 +72,12 @@ export const AppNavigator = () => {
           <>
             <Stack.Screen name="Main" component={MainTab} />
             <Stack.Screen name="Categories" component={CategoriesScreen} />
+            <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} />
             <Stack.Screen name="Products" component={ProductsScreen} />
             <Stack.Screen name="Packages" component={PackagesScreen} />
+            <Stack.Screen name="Manage" component={ManageScreen} />
+            <Stack.Screen name="OrdersList" component={OrdersScreen} />
+            <Stack.Screen name="CustomersList" component={CustomersScreen} />
             <Stack.Screen name="CreateOrder" component={CreateOrderScreen} />
             <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
             <Stack.Screen name="ApplyCoupon" component={ApplyCouponScreen} />
@@ -88,6 +103,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingLogo: {
+    width: 56,
+    height: 62,
+    marginBottom: 20,
   },
 });
 

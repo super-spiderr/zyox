@@ -145,7 +145,7 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
                 {
                   backgroundColor: theme.colors.card,
                   borderColor: isCurrentlyApplied
-                    ? palette.secondary500
+                    ? palette.green500
                     : isEligible
                     ? theme.colors.border
                     : theme.colors.border,
@@ -159,19 +159,19 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
                     styles.badgeContainer,
                     {
                       backgroundColor: isCurrentlyApplied
-                        ? palette.secondary100
+                        ? palette.green100
                         : isEligible
                         ? theme.colors.couponEligibleBg
                         : theme.colors.couponInactiveBg,
-                      borderColor: isCurrentlyApplied ? palette.secondary500 : theme.colors.border,
+                      borderColor: isCurrentlyApplied ? palette.green500 : theme.colors.border,
                     },
                   ]}
                 >
-                  <Ticket size={16} color={isCurrentlyApplied ? palette.secondary600 : theme.colors.primary} />
+                  <Ticket size={16} color={isCurrentlyApplied ? palette.green600 : theme.colors.primary} />
                   <Text
                     style={[
                       styles.badgeText,
-                      { color: isCurrentlyApplied ? palette.secondary700 : theme.colors.primary },
+                      { color: isCurrentlyApplied ? palette.green700 : theme.colors.primary },
                     ]}
                     variant="bold"
                   >
@@ -181,7 +181,7 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
 
                 {isCurrentlyApplied ? (
                   <View style={styles.appliedRow}>
-                    <CheckCircle2 size={16} color={palette.secondary500} />
+                    <CheckCircle2 size={16} color={palette.green500} />
                     <Text style={styles.appliedText} variant="semiBold">
                       Applied
                     </Text>
@@ -190,13 +190,13 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
                   <TouchableOpacity
                     style={[
                       styles.cardApplyBtn,
-                      { borderColor: isEligible ? palette.secondary500 : theme.colors.border },
+                      { borderColor: isEligible ? palette.green500 : theme.colors.border },
                     ]}
                     onPress={() => handleApplyCoupon(coupon)}
                     disabled={!isEligible && !isCurrentlyApplied}
                   >
                     <Text
-                      style={{ color: isEligible ? palette.secondary600 : theme.colors.textMuted }}
+                      style={{ color: isEligible ? palette.green600 : theme.colors.textMuted }}
                       variant="bold"
                     >
                       APPLY
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     gap: widthScale(4),
   },
   appliedText: {
-    color: palette.secondary500,
+    color: palette.green500,
     fontSize: widthScale(14),
   },
   couponDesc: {

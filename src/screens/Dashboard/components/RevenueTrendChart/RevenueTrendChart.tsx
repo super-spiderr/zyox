@@ -6,7 +6,7 @@ import { useStyles } from '@/hooks/useStyles';
 import getStyles from './styles';
 import Svg, { Line, Defs, LinearGradient, Stop, Path, Circle } from 'react-native-svg';
 import { RevenueTrendPoint } from '@/api/dashboard';
-import { palette } from '@/theme';
+import { palette, useAppTheme } from '@/theme';
 import { widthScale } from '@/utils/scaling';
 
 interface RevenueTrendChartProps {
@@ -15,6 +15,7 @@ interface RevenueTrendChartProps {
 
 export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] }) => {
   const { t, language } = useLanguage();
+  const { theme } = useAppTheme();
   const styles = useStyles(getStyles);
 
   const screenWidth = Dimensions.get('window').width;
@@ -145,7 +146,7 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
                 y1={y}
                 x2={chartWidth - paddingRight}
                 y2={y}
-                stroke="rgba(0, 0, 0, 0.05)"
+                stroke={theme.colors.border}
                 strokeWidth={1}
                 strokeDasharray="4 4"
               />
@@ -174,7 +175,7 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
               cx={getX(i)}
               cy={getY(pt.revenue)}
               r={4.5}
-              fill="#FFFFFF"
+              fill={theme.colors.card}
               stroke={palette.primary500}
               strokeWidth={2.5}
             />
@@ -191,7 +192,7 @@ export const RevenueTrendChart: React.FC<RevenueTrendChartProps> = ({ data = [] 
                   y1={chartHeight - paddingBottom}
                   x2={getX(i)}
                   y2={chartHeight - paddingBottom + 4}
-                  stroke="rgba(0, 0, 0, 0.15)"
+                  stroke={theme.colors.border}
                   strokeWidth={1}
                 />
               );

@@ -3,6 +3,8 @@ import { Theme } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme) => {
+  const isDark = theme.isDark;
+
   return StyleSheet.create({
     container: {
       paddingHorizontal: widthScale(16),
@@ -22,6 +24,11 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
+      shadowColor: theme.colors.text,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: isDark ? 0.15 : 0.04,
+      shadowRadius: 6,
+      elevation: 2,
     },
     yAxisLabel: {
       position: 'absolute',

@@ -6,7 +6,12 @@ import { useStyles } from '@/hooks/useStyles';
 import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import getStyles from './styles';
 import { Customer } from '@/store/customerStore';
-import { useDeleteCustomer, useUpdateCustomer, useOrders, useInfiniteCustomers } from '@/hooks/queries';
+import {
+  useDeleteCustomer,
+  useUpdateCustomer,
+  useOrders,
+  useInfiniteCustomers,
+} from '@/hooks/queries';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppTheme } from '@/theme';
@@ -110,37 +115,29 @@ export const CustomersScreen: React.FC = () => {
 
   const handleDeactivate = () => {
     if (!selectedCustomer) return;
-    Alert.alert(
-      t('deleteConfirmTitle'),
-      t('deleteConfirmMessage'),
-      [
-        { text: t('cancel'), style: 'cancel' },
-        {
-          text: t('delete'),
-          style: 'destructive',
-          onPress: () => deactivateMutation.mutate(getCustomerId(selectedCustomer)),
-        },
-      ],
-    );
+    Alert.alert(t('deleteConfirmTitle'), t('deleteConfirmMessage'), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('delete'),
+        style: 'destructive',
+        onPress: () => deactivateMutation.mutate(getCustomerId(selectedCustomer)),
+      },
+    ]);
   };
 
   const handleReactivate = () => {
     if (!selectedCustomer) return;
-    Alert.alert(
-      t('reactivateConfirmTitle'),
-      t('reactivateConfirmMessage'),
-      [
-        { text: t('cancel'), style: 'cancel' },
-        {
-          text: t('reactivateCustomerAction'),
-          onPress: () =>
-            reactivateMutation.mutate({
-              id: getCustomerId(selectedCustomer),
-              payload: { isActive: true },
-            }),
-        },
-      ],
-    );
+    Alert.alert(t('reactivateConfirmTitle'), t('reactivateConfirmMessage'), [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('reactivateCustomerAction'),
+        onPress: () =>
+          reactivateMutation.mutate({
+            id: getCustomerId(selectedCustomer),
+            payload: { isActive: true },
+          }),
+      },
+    ]);
   };
 
   return (
@@ -186,13 +183,13 @@ export const CustomersScreen: React.FC = () => {
       ) : (
         <FlatList
           data={processedCustomers}
-          keyExtractor={item => getCustomerId(item as Customer)}
+          keyExtractor={item => getCustomerId(item)}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.list}
           refreshing={isRefetching}
           onRefresh={refetch}
           renderItem={({ item }) => {
-            const customer = item as Customer;
+            const customer = item;
             return <CustomerCard customer={customer} onPress={() => handleCardPress(customer)} />;
           }}
           ListEmptyComponent={

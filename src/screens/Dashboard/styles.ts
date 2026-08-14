@@ -9,13 +9,43 @@ export const getStyles = (theme: Theme) => {
     },
     container: {
       paddingTop: 0,
-      paddingBottom: heightScale(20),
+      // Extra clearance so scroll content never sits behind the floating
+      // tab-bar "+" FAB, which renders ~64px above the tab bar itself.
+      paddingBottom: heightScale(170),
       gap: widthScale(12),
     },
     loadingContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    skeletonHeader: {
+      paddingHorizontal: widthScale(16),
+      paddingTop: heightScale(20),
+    },
+    skeletonButtonRow: {
+      flexDirection: 'row',
+      gap: widthScale(12),
+      marginTop: heightScale(16),
+    },
+    skeletonSection: {
+      paddingHorizontal: widthScale(16),
+      marginTop: heightScale(20),
+    },
+    skeletonRow2: {
+      flexDirection: 'row',
+      gap: widthScale(12),
+      marginTop: heightScale(12),
+    },
+    skeletonListItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: widthScale(12),
+      paddingVertical: heightScale(10),
+    },
+    skeletonListInfo: {
+      flex: 1,
+      gap: heightScale(6),
     },
   });
 };

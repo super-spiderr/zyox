@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Switch,
   Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -51,7 +50,6 @@ export const CreateCategoryScreen: React.FC<Props> = ({ route, navigation }) => 
   }, [categories, editCategoryId]);
 
   const [categoryName, setCategoryName] = useState('');
-  const [isActive, setIsActive] = useState(true);
   const [imageUrl, setImageUrl] = useState('');
   const [createdBy, setCreatedBy] = useState(currentUserName);
 
@@ -65,7 +63,6 @@ export const CreateCategoryScreen: React.FC<Props> = ({ route, navigation }) => 
   useEffect(() => {
     if (editCategory && !initialized) {
       setCategoryName(editCategory.categoryName);
-      setIsActive(editCategory.isActive);
       setImageUrl(editCategory.imageUrl || '');
       setCreatedBy(editCategory.createdBy || currentUserName);
       setInitialized(true);
@@ -154,7 +151,6 @@ export const CreateCategoryScreen: React.FC<Props> = ({ route, navigation }) => 
 
     const payload = {
       categoryName: trimmedName,
-      isActive,
       imageUrl: imageUrl || undefined,
       createdBy: createdBy || currentUserName,
     };
@@ -254,19 +250,6 @@ export const CreateCategoryScreen: React.FC<Props> = ({ route, navigation }) => 
               }}
             />
             {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
-          </View>
-
-          <View style={styles.switchRow}>
-            <View style={styles.switchLabelContainer}>
-              <Text style={styles.switchLabel}>{t('isActive')}</Text>
-              <Text style={styles.switchSubText}>Toggle category visibility</Text>
-            </View>
-            <Switch
-              value={isActive}
-              onValueChange={setIsActive}
-              trackColor={{ false: theme.colors.border, true: theme.colors.primaryLight }}
-              thumbColor={isActive ? theme.colors.primary : theme.colors.textSecondary}
-            />
           </View>
         </ScrollView>
 

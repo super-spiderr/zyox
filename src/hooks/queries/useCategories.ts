@@ -1,11 +1,33 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCategoriesApi, createCategoryApi, updateCategoryApi, deleteCategoryApi, CategoryPayload } from '@/api/category';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import {
+  getCategoriesApi,
+  getCategoriesPaginatedApi,
+  createCategoryApi,
+  updateCategoryApi,
+  deleteCategoryApi,
+  CategoryPayload,
+} from '@/api/category';
 
 export const useCategories = (search?: string) => {
   return useQuery({
     queryKey: ['categories', search],
     queryFn: () => getCategoriesApi(search),
     retry: 1,
+  });
+};
+
+export const useInfiniteCategories = (limit: number = 10, search?: string) => {
+  return useInfiniteQuery({
+    queryKey: ['categories', 'infinite', limit, search],
+    queryFn: ({ pageParam }) => getCategoriesPaginatedApi(pageParam, limit, search),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      const totalPages = lastPage.pagination?.totalPages ?? 0;
+      return pages.length < totalPages ? pages.length + 1 : undefined;
+    },
+    retry: 1,
+    staleTime: 60_000,
+    refetchOnMount: false,
   });
 };
 

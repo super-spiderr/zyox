@@ -1,5 +1,6 @@
 import { Order } from '@/api/order';
 import { palette } from '@/theme';
+import { ZYOX_LOGO_BASE64 } from './zyoxLogoBase64';
 
 interface CustomerDetails {
   name: string;
@@ -10,7 +11,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
   const itemsTotal = order.orderItems?.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0) || 0;
   const grandTotal = Math.max(0, itemsTotal - (order.discountAmount || 0));
   const balanceDue = grandTotal - (order.advanceAmount || 0);
-  const formattedDate = order.eventDate ? order.eventDate.split('T')[0] : '';
+  const formattedDate = order.deliveryDate ? order.deliveryDate.split('T')[0] : '';
   const orderIdShort = order._id ? order._id.substring(order._id.length - 6).toUpperCase() : 'N/A';
 
   const rowsHTML = order.orderItems?.map((item, index) => {
@@ -40,7 +41,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
       <style>
         body {
           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-          color: ${palette.invoiceText};
+          color: ${palette.gray900};
           margin: 0;
           padding: 20px;
           line-height: 1.4;
@@ -51,7 +52,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
           max-width: 800px;
           margin: auto;
           padding: 30px;
-          border: 1px solid ${palette.invoiceBorder};
+          border: 1px solid ${palette.gray200};
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
           background-color: ${palette.white};
           border-radius: 8px;
@@ -64,8 +65,18 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
           padding-bottom: 20px;
           margin-bottom: 25px;
         }
+        .brand-block {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .brand-logo {
+          width: 44px;
+          height: 44px;
+          object-fit: contain;
+        }
         .brand-title {
-          font-size: 28px;
+          font-size: 24px;
           font-weight: bold;
           color: ${palette.primary500};
           margin: 0;
@@ -74,7 +85,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
         }
         .brand-subtitle {
           font-size: 12px;
-          color: ${palette.invoiceMuted};
+          color: ${palette.gray500};
           margin: 4px 0 0 0;
         }
         .invoice-info {
@@ -83,12 +94,12 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
         .invoice-title {
           font-size: 22px;
           font-weight: bold;
-          color: ${palette.invoiceText};
+          color: ${palette.gray900};
           margin: 0 0 8px 0;
         }
         .info-text {
           font-size: 13px;
-          color: ${palette.invoiceSubtle};
+          color: ${palette.gray600};
           margin: 3px 0;
         }
         .details-grid {
@@ -130,12 +141,12 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
           font-weight: bold;
           text-transform: uppercase;
         }
-        .status-pending { background-color: ${palette.warning50}; color: ${palette.warning600}; }
+        .status-pending { background-color: ${palette.yellow50}; color: ${palette.yellow700}; }
         .status-confirmed { background-color: ${palette.primary100}; color: ${palette.primary500}; }
-        .status-completed { background-color: ${palette.mint100}; color: ${palette.emerald600}; }
+        .status-completed { background-color: ${palette.green100}; color: ${palette.green600}; }
         .status-cancelled { background-color: ${palette.error100}; color: ${palette.error600}; }
-        .status-paid { background-color: ${palette.mint100}; color: ${palette.emerald600}; }
-        .status-partial { background-color: ${palette.warning50}; color: ${palette.warning600}; }
+        .status-paid { background-color: ${palette.green100}; color: ${palette.green600}; }
+        .status-partial { background-color: ${palette.yellow50}; color: ${palette.yellow700}; }
         .status-unpaid { background-color: ${palette.error100}; color: ${palette.error600}; }
         table {
           width: 100%;
@@ -155,7 +166,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
         }
         td {
           padding: 12px 10px;
-          border-bottom: 1px solid ${palette.invoiceBorder};
+          border-bottom: 1px solid ${palette.gray200};
           vertical-align: middle;
         }
         .text-center { text-align: center; }
@@ -175,8 +186,8 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
           font-weight: bold;
           vertical-align: middle;
         }
-        .bg-package { background-color: ${palette.purple500}; }
-        .bg-product { background-color: ${palette.emerald500}; }
+        .bg-package { background-color: ${palette.primary500}; }
+        .bg-product { background-color: ${palette.green500}; }
         .summary-wrapper {
           display: flex;
           justify-content: flex-end;
@@ -215,7 +226,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
         }
         .notes-content {
           font-size: 12px;
-          color: ${palette.invoiceMuted};
+          color: ${palette.gray500};
           white-space: pre-line;
         }
         .footer {
@@ -232,9 +243,12 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
       <div class="invoice-box">
         <!-- Logo and Invoice Meta -->
         <div class="header">
-          <div>
-            <h1 class="brand-title">Zyox</h1>
-            <p class="brand-subtitle">Catering & Hospitality Managers</p>
+          <div class="brand-block">
+            <img src="${ZYOX_LOGO_BASE64}" class="brand-logo" alt="Zyox" />
+            <div>
+              <h1 class="brand-title">Zyox</h1>
+              <p class="brand-subtitle">Catering & Hospitality Managers</p>
+            </div>
           </div>
           <div class="invoice-info">
             <h2 class="invoice-title">CATERING BILL</h2>
@@ -266,13 +280,13 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
           <div class="details-block">
             <h3 class="block-title">Event Information</h3>
             <div class="block-row">
-              <span class="block-label">Event:</span> ${order.eventName}
+              <span class="block-label">Event:</span> ${order.attributes?.eventName || ''}
             </div>
             <div class="block-row">
               <span class="block-label">Date:</span> ${formattedDate}
             </div>
             <div class="block-row">
-              <span class="block-label">Guest Count:</span> ${order.guestCount} Pax
+              <span class="block-label">Guest Count:</span> ${order.attributes?.guestCount ?? 0} Pax
             </div>
             <div class="block-row">
               <span class="block-label">Order Status:</span>
@@ -320,7 +334,7 @@ export const generateInvoiceHTML = (order: Order, customer: CustomerDetails): st
               <span>Advance Paid:</span>
               <span>₹${(order.advanceAmount || 0).toLocaleString()}</span>
             </div>
-            <div class="summary-row" style="font-weight: ${balanceDue > 0 ? '600' : 'normal'}; color: ${balanceDue > 0 ? palette.error600 : palette.emerald600};">
+            <div class="summary-row" style="font-weight: ${balanceDue > 0 ? '600' : 'normal'}; color: ${balanceDue > 0 ? palette.error600 : palette.green600};">
               <span>Balance Due:</span>
               <span>₹${balanceDue.toLocaleString()}</span>
             </div>

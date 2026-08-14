@@ -14,6 +14,12 @@ export const getStyles = (theme: Theme) => {
       zIndex: 1,
       marginTop: widthScale(25),
     },
+    footerLogo: {
+      width: widthScale(18),
+      height: widthScale(20),
+      marginBottom: heightScale(4),
+      opacity: 0.6,
+    },
     footerPoweredText: {
       fontSize: widthScale(11),
       color: theme.colors.textSecondary,

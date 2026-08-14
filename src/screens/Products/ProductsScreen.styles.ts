@@ -27,27 +27,9 @@ export const getStyles = (theme: Theme) => {
       borderTopColor: theme.colors.border,
       backgroundColor: theme.colors.background,
     },
-    searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.colors.inputBg,
-      borderRadius: widthScale(12),
-      paddingHorizontal: widthScale(14),
+    searchBar: {
+      marginHorizontal: widthScale(16),
       marginBottom: heightScale(12),
-      height: heightScale(44),
-    },
-    searchIcon: {
-      marginRight: widthScale(8),
-    },
-    searchInput: {
-      flex: 1,
-      color: theme.colors.text,
-      fontFamily: theme.typography.fonts.urbanist.regular,
-      fontSize: widthScale(13),
-      padding: 0,
-    },
-    clearButton: {
-      padding: widthScale(4),
     },
     filtersContainer: {
       flexDirection: 'row',
@@ -71,16 +53,9 @@ export const getStyles = (theme: Theme) => {
     list: {
       paddingBottom: heightScale(40),
     },
-    emptyState: {
+    endLoader: {
+      paddingVertical: heightScale(16),
       alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: heightScale(60),
-    },
-    emptyStateText: {
-      fontSize: widthScale(14),
-      fontFamily: theme.typography.fonts.urbanist.regular,
-      color: theme.colors.textSecondary,
-      marginTop: heightScale(10),
     },
     card: {
       flexDirection: 'row',
@@ -341,6 +316,18 @@ export const getStyles = (theme: Theme) => {
       fontSize: widthScale(13),
       fontFamily: theme.typography.fonts.urbanist.regular,
       color: theme.colors.text,
+    },
+    modalEmptyState: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: heightScale(32),
+      gap: heightScale(8),
+    },
+    modalEmptyStateText: {
+      fontSize: widthScale(13),
+      fontFamily: theme.typography.fonts.urbanist.regular,
+      color: theme.colors.textSecondary,
+      textAlign: 'center',
     },
     modalFooter: {
       flexDirection: 'row',

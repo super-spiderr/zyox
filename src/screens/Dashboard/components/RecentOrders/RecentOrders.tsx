@@ -170,7 +170,7 @@ export const RecentOrders: React.FC<RecentOrdersProps> = ({ orders = [] }) => {
                           {' '}
                           ·{' '}
                         </Text>
-                        <Users size={11} color="#5E5E5E" style={styles.guestIcon} />
+                        <Users size={11} color={theme.colors.textSecondary} style={styles.guestIcon} />
                         <Text style={styles.eventSub} variant="medium" fontSize={widthScale(11)}>
                           {order.attributes.guestCount}
                         </Text>

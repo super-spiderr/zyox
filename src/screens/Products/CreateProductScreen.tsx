@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   Image,
+  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenContainer, Text, Button, GradientHeader } from '@/components';
@@ -18,12 +19,12 @@ import getStyles from './ProductsScreen.styles';
 import { useProducts, useCreateProduct, useUpdateProduct, useCategories } from '@/hooks/queries';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
-import { Image as ImageIcon, X, Check } from 'lucide-react-native';
+import { Image as ImageIcon, X, Check, Plus } from 'lucide-react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { uploadImageToCloudinary } from '@/utils/cloudinary';
 import { heightScale } from '@/utils/scaling';
 
-const productsIcon = require('@/assets/images/products_icon.png');
+const UNIT_OPTIONS = ['Plate', 'Pcs', 'Cup'] as const;
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateProduct'>;
 
@@ -55,6 +56,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [initialized, setInitialized] = useState(false);
+  const [isSelectCategoriesVisible, setIsSelectCategoriesVisible] = useState(false);
 
   useEffect(() => {
     if (editProduct && !initialized) {
@@ -199,7 +201,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
       style={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'light-content' : 'dark-content'}
+      statusBarStyle={'light-content'}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -215,7 +217,6 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
               ? "Update this product's information"
               : 'Fill in the details to add a new product'
           }
-          image={productsIcon}
         />
 
         <ScrollView
@@ -228,14 +229,14 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
             <Text style={styles.formLabel}>{t('categoryImageUrl')}</Text>
             {isUploading ? (
               <View style={styles.uploadImageContainer}>
-                <Text style={styles.uploadImageText}>Uploading to Cloudinary...</Text>
+                <Text style={styles.uploadImageText}>{t('uploadingImage') || 'Uploading to Cloudinary...'}</Text>
               </View>
             ) : imageUrl ? (
               <View style={styles.previewImageContainer}>
                 <Image source={{ uri: imageUrl }} style={styles.previewThumbnail} />
                 <View style={styles.previewInfo}>
                   <Text style={styles.previewName}>
-                    {pickedFile ? pickedFile.name : 'Image Uploaded'}
+                    {pickedFile ? pickedFile.name : t('imageUploaded') || 'Image Uploaded'}
                   </Text>
                   {pickedFile && pickedFile.size > 0 ? (
                     <Text style={styles.previewSize}>{(pickedFile.size / 1024).toFixed(1)} KB</Text>
@@ -258,7 +259,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
                 activeOpacity={0.7}
               >
                 <ImageIcon size={20} color={theme.colors.primary} />
-                <Text style={styles.uploadImageText}>Upload Product Image</Text>
+                <Text style={styles.uploadImageText}>{t('uploadProductImage') || 'Upload Product Image'}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -301,18 +302,29 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
 
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>{t('productUnit')} *</Text>
-            <TextInput
-              style={[styles.formInput, errors.unit ? styles.inputError : null]}
-              placeholder="e.g. Plate, Kg, Liter"
-              placeholderTextColor={theme.colors.textSecondary + '70'}
-              value={unit}
-              onChangeText={text => {
-                setUnit(text);
-                if (errors.unit) {
-                  setErrors(prev => ({ ...prev, unit: undefined }));
-                }
-              }}
-            />
+            <View style={styles.typeButtonContainer}>
+              {UNIT_OPTIONS.map(option => (
+                <TouchableOpacity
+                  key={option}
+                  style={[styles.typeButton, unit === option ? styles.typeButtonActive : null]}
+                  onPress={() => {
+                    setUnit(option);
+                    if (errors.unit) {
+                      setErrors(prev => ({ ...prev, unit: undefined }));
+                    }
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.typeButtonText,
+                      unit === option ? styles.typeButtonTextActive : null,
+                    ]}
+                  >
+                    {option}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
             {errors.unit ? <Text style={styles.errorText}>{errors.unit}</Text> : null}
           </View>
 
@@ -345,7 +357,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
                     productType === 'NON_VEG' ? styles.typeButtonTextActive : null,
                   ]}
                 >
-                  {t('nonveg')}
+                  {t('nonVeg')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -354,8 +366,81 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
           {/* Categories Selector */}
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>{t('categories')} *</Text>
-            <View style={styles.categoryListContainer}>
-              {categories.map(cat => {
+
+            <TouchableOpacity
+              style={styles.uploadImageContainer}
+              onPress={() => setIsSelectCategoriesVisible(true)}
+              activeOpacity={0.7}
+            >
+              <Plus size={18} color={theme.colors.primary} />
+              <Text style={styles.uploadImageText}>
+                {selectedCategoryIds.length > 0
+                  ? t('categoriesSelectedCount', { count: selectedCategoryIds.length }) ||
+                    `${selectedCategoryIds.length} categories selected`
+                  : t('selectCategories') || 'Select Categories'}
+              </Text>
+            </TouchableOpacity>
+
+            {selectedCategoryIds.length > 0 && (
+              <View style={styles.categoryListContainer}>
+                {selectedCategoryIds.map(catId => {
+                  const cat = categories.find(c => c._id === catId);
+                  return (
+                    <View key={catId} style={styles.categorySelectItem}>
+                      <Text style={styles.categorySelectItemText}>
+                        {cat?.categoryName || t('unknownCategory') || 'Unknown category'}
+                      </Text>
+                      <TouchableOpacity onPress={() => handleToggleCategory(catId)}>
+                        <X size={16} color={theme.colors.error} />
+                      </TouchableOpacity>
+                    </View>
+                  );
+                })}
+              </View>
+            )}
+
+            {errors.categoryIds ? <Text style={styles.errorText}>{errors.categoryIds}</Text> : null}
+          </View>
+        </ScrollView>
+
+        {/* Fixed footer — always visible, doesn't scroll with the form */}
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 12) }]}>
+          <Button
+            title={editProductId ? t('saveChanges') : t('create')}
+            onPress={handleSave}
+            loading={isLoading}
+          />
+        </View>
+      </KeyboardAvoidingView>
+
+      {/* Select Categories Modal */}
+      <Modal
+        visible={isSelectCategoriesVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsSelectCategoriesVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('selectCategories') || 'Select Categories'}</Text>
+              <TouchableOpacity
+                style={styles.modalCloseButton}
+                onPress={() => setIsSelectCategoriesVisible(false)}
+              >
+                <X size={20} color={theme.colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
+              {categories.length === 0 ? (
+                <View style={styles.modalEmptyState}>
+                  <Text style={styles.modalEmptyStateText}>
+                    {t('noCategoriesToSelect') || 'No categories yet — create one first.'}
+                  </Text>
+                </View>
+              ) : (
+                categories.map(cat => {
                 const isSelected = selectedCategoryIds.includes(cat._id);
                 return (
                   <TouchableOpacity
@@ -372,21 +457,17 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
                     {isSelected && <Check size={16} color={theme.colors.primary} />}
                   </TouchableOpacity>
                 );
-              })}
-            </View>
-            {errors.categoryIds ? <Text style={styles.errorText}>{errors.categoryIds}</Text> : null}
-          </View>
-        </ScrollView>
+                })
+              )}
+            </ScrollView>
 
-        {/* Fixed footer — always visible, doesn't scroll with the form */}
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 12) }]}>
-          <Button
-            title={editProductId ? t('saveChanges') : t('create')}
-            onPress={handleSave}
-            loading={isLoading}
-          />
+            <Button
+              title={t('done') || 'Done'}
+              onPress={() => setIsSelectCategoriesVisible(false)}
+            />
+          </View>
         </View>
-      </KeyboardAvoidingView>
+      </Modal>
     </ScreenContainer>
   );
 };

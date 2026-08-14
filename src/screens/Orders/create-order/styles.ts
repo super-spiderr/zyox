@@ -32,38 +32,51 @@ export const getStyles = (theme: Theme) => {
     // Step Indicator Styles
     stepsContainer: {
       flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: widthScale(24),
-      paddingVertical: heightScale(12),
+      alignItems: 'flex-start',
+      paddingHorizontal: widthScale(20),
+      paddingTop: heightScale(16),
+      paddingBottom: heightScale(12),
       backgroundColor: theme.colors.panelBg,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.border,
     },
     stepItem: {
-      flexDirection: 'row',
       alignItems: 'center',
-      gap: widthScale(4),
+      width: widthScale(76),
     },
-    stepDot: {
-      width: widthScale(20),
-      height: widthScale(20),
-      borderRadius: widthScale(10),
+    stepDotOuter: {
+      width: widthScale(38),
+      height: widthScale(38),
+      borderRadius: widthScale(19),
       justifyContent: 'center',
       alignItems: 'center',
+      marginBottom: heightScale(6),
+    },
+    stepDot: {
+      width: widthScale(28),
+      height: widthScale(28),
+      borderRadius: widthScale(14),
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: palette.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      elevation: 3,
     },
     stepDotText: {
-      fontSize: widthScale(11),
+      fontSize: widthScale(12),
       color: palette.white,
     },
     stepText: {
       fontSize: widthScale(12),
+      textAlign: 'center',
     },
     stepDivider: {
       flex: 1,
-      height: 1,
-      backgroundColor: theme.colors.border,
-      marginHorizontal: widthScale(8),
+      height: 2,
+      borderRadius: 1,
+      marginTop: widthScale(19),
     },
     // Scroll content
     scrollContent: {
@@ -106,24 +119,15 @@ export const getStyles = (theme: Theme) => {
       fontSize: widthScale(11),
       marginTop: heightScale(4),
     },
-    pickerContainer: {
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      borderRadius: widthScale(8),
-      backgroundColor: theme.colors.card,
-      marginTop: heightScale(4),
-      maxHeight: heightScale(150),
-      overflow: 'hidden',
+    selectTrigger: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
-    pickerItem: {
-      paddingVertical: heightScale(10),
-      paddingHorizontal: widthScale(14),
-      borderBottomWidth: 0.5,
-      borderBottomColor: theme.colors.border,
-    },
-    pickerItemText: {
-      fontSize: widthScale(13),
-      color: theme.colors.text,
+    selectTriggerText: {
+      flex: 1,
+      fontSize: widthScale(14),
+      marginRight: widthScale(8),
     },
     nextButton: {
       marginTop: heightScale(20),
@@ -182,127 +186,87 @@ export const getStyles = (theme: Theme) => {
       width: widthScale(8),
       height: widthScale(8),
       borderRadius: widthScale(4),
-      backgroundColor: palette.secondary500,
+      backgroundColor: palette.green500,
     },
-    // MenuItem Cards
+    // MenuItem Rows (minimal tappable checklist)
     menuList: {
       paddingBottom: heightScale(80),
     },
-    menuItemCard: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      backgroundColor: theme.colors.card,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-      paddingVertical: heightScale(16),
-      paddingHorizontal: widthScale(4),
-    },
-    menuItemLeft: {
-      flex: 1,
-      paddingRight: widthScale(16),
-    },
-    typeBadgeContainer: {
+    menuItemRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: heightScale(6),
-    },
-    vegNonvegBorder: {
-      width: widthScale(14),
-      height: widthScale(14),
+      backgroundColor: theme.colors.card,
       borderWidth: 1.5,
+      borderColor: palette.transparent,
+      borderRadius: widthScale(14),
+      paddingVertical: heightScale(10),
+      paddingHorizontal: widthScale(10),
+      marginBottom: heightScale(8),
+    },
+    menuItemRowSelected: {
+      borderColor: theme.colors.primary,
+      backgroundColor: theme.colors.primaryLight,
+    },
+    menuItemThumb: {
+      width: widthScale(48),
+      height: widthScale(48),
+      borderRadius: widthScale(10),
+    },
+    menuItemThumbPlaceholder: {
+      backgroundColor: theme.colors.inputBg,
       justifyContent: 'center',
       alignItems: 'center',
-      borderRadius: widthScale(2),
     },
-    vegNonvegCircle: {
-      width: widthScale(6),
-      height: widthScale(6),
-      borderRadius: widthScale(3),
+    menuItemInfo: {
+      flex: 1,
+      marginHorizontal: widthScale(12),
+      gap: heightScale(4),
+    },
+    menuItemNameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: widthScale(6),
+    },
+    vegDotSmall: {
+      width: widthScale(8),
+      height: widthScale(8),
+      borderRadius: widthScale(4),
     },
     menuItemName: {
-      fontSize: widthScale(15),
+      flex: 1,
+      fontSize: widthScale(14),
       color: theme.colors.text,
-      marginBottom: heightScale(4),
     },
     menuItemPrice: {
-      fontSize: widthScale(14),
+      fontSize: widthScale(12),
       color: theme.colors.textSecondary,
-      marginBottom: heightScale(4),
     },
-    menuItemRight: {
-      position: 'relative',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    menuItemImgPlaceholder: {
-      width: widthScale(100),
-      height: widthScale(100),
+    checkCircle: {
+      width: widthScale(24),
+      height: widthScale(24),
       borderRadius: widthScale(12),
+      borderWidth: 1.5,
+      borderColor: theme.colors.border,
       justifyContent: 'center',
       alignItems: 'center',
     },
-    menuItemImg: {
-      width: widthScale(100),
-      height: widthScale(100),
-      borderRadius: widthScale(12),
+    checkCircleActive: {
+      borderColor: theme.colors.primary,
+      backgroundColor: theme.colors.primary,
     },
-    // Swiggy Add Button Styles
-    addBtnWrapper: {
-      position: 'absolute',
-      bottom: heightScale(-10),
-      alignSelf: 'center',
-      shadowColor: palette.black,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 3,
-      elevation: 3,
-    },
-    swiggyAddBtn: {
-      width: widthScale(82),
-      height: heightScale(32),
-      borderRadius: widthScale(6),
-      borderWidth: 1,
-      borderColor: palette.secondary500,
-      backgroundColor: palette.white,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    swiggyAddText: {
-      color: palette.secondary500,
-      fontSize: widthScale(12),
-    },
-    swiggyQtyBtn: {
-      width: widthScale(82),
-      height: heightScale(32),
-      borderRadius: widthScale(6),
-      backgroundColor: palette.secondary500,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: widthScale(8),
-    },
-    qtyBtnText: {
-      color: palette.white,
-      fontSize: widthScale(16),
-      paddingHorizontal: widthScale(4),
-    },
-    qtyNumText: {
-      color: palette.white,
-      fontSize: widthScale(12),
-    },
-    // Bottom Cart Bar
+    // Bottom Selection Summary Bar
     cartBarWrapper: {
       position: 'absolute',
       bottom: heightScale(20),
       left: widthScale(16),
       right: widthScale(16),
-      backgroundColor: palette.secondary500,
-      borderRadius: widthScale(12),
+      backgroundColor: theme.colors.primary,
+      borderRadius: widthScale(14),
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingVertical: heightScale(12),
-      paddingHorizontal: widthScale(16),
+      paddingHorizontal: widthScale(18),
       shadowColor: palette.black,
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.2,
@@ -310,9 +274,7 @@ export const getStyles = (theme: Theme) => {
       elevation: 5,
     },
     cartBarLeft: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: widthScale(6),
+      gap: heightScale(2),
     },
     cartBarCount: {
       color: palette.white,
@@ -320,7 +282,8 @@ export const getStyles = (theme: Theme) => {
     },
     cartBarPrice: {
       color: palette.white,
-      fontSize: widthScale(14),
+      fontSize: widthScale(12),
+      opacity: 0.85,
     },
     cartBarRight: {
       flexDirection: 'row',
@@ -340,15 +303,18 @@ export const getStyles = (theme: Theme) => {
       borderBottomWidth: 0.5,
       borderBottomColor: theme.colors.border,
     },
+    checkoutItemInfo: {
+      flex: 1,
+      marginRight: widthScale(8),
+      gap: heightScale(2),
+    },
     checkoutItemName: {
       fontSize: widthScale(13),
       color: theme.colors.text,
-      flex: 1,
     },
-    checkoutItemQty: {
-      fontSize: widthScale(13),
-      color: theme.colors.textSecondary,
-      marginHorizontal: widthScale(10),
+    checkoutItemMeta: {
+      fontSize: widthScale(11),
+      color: theme.colors.textMuted,
     },
     checkoutItemTotal: {
       fontSize: widthScale(13),
@@ -356,13 +322,39 @@ export const getStyles = (theme: Theme) => {
       minWidth: widthScale(60),
       textAlign: 'right',
     },
+    // Shared grouped-section card used across the Checkout step
+    sectionCard: {
+      backgroundColor: theme.colors.card,
+      borderRadius: widthScale(12),
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      padding: widthScale(16),
+      marginBottom: heightScale(16),
+    },
+    sectionCardHeaderRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: heightScale(10),
+    },
+    sectionCardTitle: {
+      fontSize: widthScale(14),
+      color: theme.colors.text,
+    },
+    sectionCardTitleSpaced: {
+      marginBottom: heightScale(10),
+    },
+    sectionCardSubtitle: {
+      fontSize: widthScale(12),
+      color: theme.colors.textSecondary,
+    },
     checkoutSummaryBlock: {
       backgroundColor: theme.colors.card,
       borderRadius: widthScale(12),
       borderWidth: 1,
       borderColor: theme.colors.border,
       padding: widthScale(16),
-      marginVertical: heightScale(16),
+      marginBottom: heightScale(16),
     },
     couponTrigger: {
       flexDirection: 'row',
@@ -382,8 +374,8 @@ export const getStyles = (theme: Theme) => {
       fontSize: widthScale(13),
     },
     couponAppliedBadge: {
-      backgroundColor: palette.secondary100,
-      borderColor: palette.secondary500,
+      backgroundColor: palette.green100,
+      borderColor: palette.green500,
       borderWidth: 1,
       borderRadius: widthScale(6),
       paddingVertical: heightScale(4),
@@ -394,7 +386,7 @@ export const getStyles = (theme: Theme) => {
       marginBottom: heightScale(12),
     },
     couponAppliedText: {
-      color: palette.secondary700,
+      color: palette.green700,
       fontSize: widthScale(12),
     },
     couponRemoveText: {
@@ -429,7 +421,7 @@ export const getStyles = (theme: Theme) => {
     },
     billTotalVal: {
       fontSize: widthScale(15),
-      color: palette.secondary500,
+      color: palette.green500,
     },
     financeInputsRow: {
       flexDirection: 'row',
@@ -461,6 +453,11 @@ export const getStyles = (theme: Theme) => {
       flexWrap: 'wrap',
       gap: widthScale(6),
       marginBottom: heightScale(12),
+    },
+    statusGroupRowLast: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: widthScale(6),
     },
     statusBtn: {
       borderWidth: 1,
@@ -496,13 +493,6 @@ export const getStyles = (theme: Theme) => {
     vegToggleText: {
       fontSize: widthScale(11),
     },
-    dividerPipe: {
-      color: palette.white,
-      opacity: 0.6,
-    },
-    checkoutHeader: {
-      marginBottom: heightScale(12),
-    },
     paymentHeader: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -510,13 +500,35 @@ export const getStyles = (theme: Theme) => {
     },
     notesSection: {
       gap: heightScale(12),
-      marginTop: heightScale(8),
     },
     checkoutButton: {
-      marginTop: heightScale(14),
+      marginTop: heightScale(4),
+      marginBottom: heightScale(16),
     },
-    actionButtonSpacing: {
-      marginTop: heightScale(28),
+    // Sticky Checkout Footer
+    checkoutFooter: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: widthScale(16),
+      paddingTop: heightScale(12),
+      paddingBottom: heightScale(20),
+      backgroundColor: theme.colors.card,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.border,
+    },
+    footerTotalLabel: {
+      fontSize: widthScale(11),
+      color: theme.colors.textSecondary,
+    },
+    footerTotalValue: {
+      fontSize: widthScale(18),
+      color: theme.colors.text,
+    },
+    footerButton: {
+      flex: 1,
+      maxWidth: widthScale(190),
+      marginLeft: widthScale(16),
     },
   });
 };

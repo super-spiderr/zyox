@@ -77,7 +77,7 @@ export const SuccessScreen: React.FC<Props> = ({ route, navigation }) => {
         {/* Animated Checkmark Circle */}
         <Animated.View style={[styles.successRing, animatedIconStyle]}>
           <View style={styles.successCircle}>
-            <Check size={widthScale(42)} color={palette.emerald500} strokeWidth={3.5} />
+            <Check size={widthScale(42)} color={palette.green500} strokeWidth={3.5} />
           </View>
         </Animated.View>
 

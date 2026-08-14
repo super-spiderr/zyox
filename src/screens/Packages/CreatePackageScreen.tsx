@@ -7,8 +7,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Switch,
   Image,
+  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ScreenContainer, Text, Button, GradientHeader } from '@/components';
@@ -20,12 +20,10 @@ import { PackageItem } from '@/api/package';
 import { usePackages, useCreatePackage, useUpdatePackage, useProducts } from '@/hooks/queries';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
-import { Image as ImageIcon, X, Plus, Minus } from 'lucide-react-native';
+import { Image as ImageIcon, X, Plus, Minus, Trash2, Briefcase } from 'lucide-react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { uploadImageToCloudinary } from '@/utils/cloudinary';
 import { heightScale } from '@/utils/scaling';
-
-const packagesIcon = require('@/assets/images/packages_icon.png');
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreatePackage'>;
 
@@ -57,6 +55,7 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [initialized, setInitialized] = useState(false);
+  const [isSelectItemsVisible, setIsSelectItemsVisible] = useState(false);
 
   useEffect(() => {
     if (editPackage && !initialized) {
@@ -65,7 +64,15 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
       setPackageType(editPackage.packageType);
       setIsActive(editPackage.isActive);
       setImageUrl(editPackage.imageUrl || '');
-      setSelectedItems(editPackage.items || []);
+      // The backend sometimes returns `itemId` populated with the full product
+      // object instead of just its id — normalize to a plain id string so
+      // lookups/keys downstream can rely on PackageItem's declared shape.
+      setSelectedItems(
+        (editPackage.items || []).map(item => ({
+          itemId: typeof item.itemId === 'string' ? item.itemId : (item.itemId as any)?._id,
+          qty: item.qty,
+        })),
+      );
       setInitialized(true);
     }
   }, [editPackage, initialized]);
@@ -112,7 +119,7 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
       }
 
       const asset = res.assets?.[0];
-      if (!asset || !asset.uri) {
+      if (!asset?.uri) {
         Alert.alert('Error', 'No image file found');
         return;
       }
@@ -157,6 +164,17 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
       setErrors(prev => ({ ...prev, items: '' }));
     }
   };
+
+  const handleRemoveItem = (productId: string) => {
+    setSelectedItems(prev => prev.filter(item => item.itemId !== productId));
+  };
+
+  const itemsTotal = useMemo(() => {
+    return selectedItems.reduce((sum, item) => {
+      const prod = products.find(p => p._id === item.itemId);
+      return sum + (prod?.price || 0) * item.qty;
+    }, 0);
+  }, [selectedItems, products]);
 
   const handleSave = () => {
     const newErrors: Record<string, string> = {};
@@ -207,7 +225,7 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
     if (isUploading) {
       return (
         <View style={styles.uploadImageContainer}>
-          <Text style={styles.uploadImageText}>Uploading to Cloudinary...</Text>
+          <Text style={styles.uploadImageText}>{t('uploadingImage') || 'Uploading to Cloudinary...'}</Text>
         </View>
       );
     }
@@ -218,7 +236,7 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
           <Image source={{ uri: imageUrl }} style={styles.previewThumbnail} />
           <View style={styles.previewInfo}>
             <Text style={styles.previewName}>
-              {pickedFile ? pickedFile.name : 'Image Uploaded'}
+              {pickedFile ? pickedFile.name : t('imageUploaded') || 'Image Uploaded'}
             </Text>
             {pickedFile && pickedFile.size > 0 ? (
               <Text style={styles.previewSize}>{(pickedFile.size / 1024).toFixed(1)} KB</Text>
@@ -244,7 +262,7 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
         activeOpacity={0.7}
       >
         <ImageIcon size={20} color={theme.colors.primary} />
-        <Text style={styles.uploadImageText}>Upload Package Image</Text>
+        <Text style={styles.uploadImageText}>{t('uploadPackageImage') || 'Upload Package Image'}</Text>
       </TouchableOpacity>
     );
   };
@@ -264,13 +282,14 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
       >
         {/* Header — shared with the Packages list */}
         <GradientHeader
-          title={editPackageId ? `${t('edit')} ${t('packages')}` : t('createPackage') || 'Create Package'}
+          title={
+            editPackageId ? `${t('edit')} ${t('packages')}` : t('createPackage') || 'Create Package'
+          }
           description={
             editPackageId
               ? "Update this package's information"
               : 'Fill in the details to add a new package'
           }
-          image={packagesIcon}
         />
 
         <ScrollView
@@ -359,47 +378,64 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>{t('selectItems') || 'Select Items'} *</Text>
             {errors.items ? <Text style={styles.errorText}>{errors.items}</Text> : null}
-            <View style={styles.productListContainer}>
-              <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
-                {products.map(prod => {
-                  const qty = selectedItems.find(item => item.itemId === prod._id)?.qty || 0;
+
+            <TouchableOpacity
+              style={styles.uploadImageContainer}
+              onPress={() => setIsSelectItemsVisible(true)}
+              activeOpacity={0.7}
+            >
+              <Plus size={18} color={theme.colors.primary} />
+              <Text style={styles.uploadImageText}>
+                {selectedItems.length > 0
+                  ? t('itemsSelectedCount', { count: selectedItems.length }) ||
+                    `${selectedItems.length} items selected`
+                  : t('selectProducts') || 'Select Products'}
+              </Text>
+            </TouchableOpacity>
+
+            {selectedItems.length > 0 && (
+              <View style={styles.productListContainer}>
+                {selectedItems.map(item => {
+                  const prod = products.find(p => p._id === item.itemId);
                   return (
-                    <View key={prod._id} style={styles.productSelectItemRow}>
+                    <View key={item.itemId} style={styles.productSelectItemRow}>
                       <View style={styles.productSelectItemTextWrapper}>
                         <Text style={styles.productSelectItemText} numberOfLines={1}>
-                          {prod.productName}
+                          {prod?.productName || t('unknownProduct') || 'Unknown product'}
                         </Text>
                       </View>
                       <View style={styles.qtySelectorContainer}>
                         <TouchableOpacity
                           style={styles.qtySelectorButton}
-                          onPress={() => handleQtyChange(prod._id, false)}
+                          onPress={() => handleQtyChange(item.itemId, false)}
                         >
                           <Minus size={12} color={theme.colors.text} />
                         </TouchableOpacity>
-                        <Text style={styles.qtySelectorText}>{qty}</Text>
+                        <Text style={styles.qtySelectorText}>{item.qty}</Text>
                         <TouchableOpacity
                           style={styles.qtySelectorButton}
-                          onPress={() => handleQtyChange(prod._id, true)}
+                          onPress={() => handleQtyChange(item.itemId, true)}
                         >
                           <Plus size={12} color={theme.colors.text} />
                         </TouchableOpacity>
                       </View>
+                      <TouchableOpacity
+                        style={styles.removeItemButton}
+                        onPress={() => handleRemoveItem(item.itemId)}
+                      >
+                        <Trash2 size={14} color={theme.colors.error} />
+                      </TouchableOpacity>
                     </View>
                   );
                 })}
-              </ScrollView>
-            </View>
-          </View>
+              </View>
+            )}
 
-          <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>{t('isActive')}</Text>
-            <Switch
-              value={isActive}
-              onValueChange={setIsActive}
-              trackColor={{ false: theme.colors.border, true: theme.colors.primaryLight }}
-              thumbColor={isActive ? theme.colors.primary : theme.colors.textSecondary}
-            />
+            {itemsTotal > 0 && (
+              <Text style={styles.itemsTotalHint}>
+                {t('itemsTotalLabel') || 'Items total'}: ₹{itemsTotal}
+              </Text>
+            )}
           </View>
         </ScrollView>
 
@@ -412,6 +448,69 @@ export const CreatePackageScreen: React.FC<Props> = ({ route, navigation }) => {
           />
         </View>
       </KeyboardAvoidingView>
+
+      {/* Select Products Modal */}
+      <Modal
+        visible={isSelectItemsVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsSelectItemsVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('selectItems') || 'Select Products'}</Text>
+              <TouchableOpacity
+                style={styles.modalCloseButton}
+                onPress={() => setIsSelectItemsVisible(false)}
+              >
+                <X size={20} color={theme.colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
+              {products.length === 0 ? (
+                <View style={styles.modalEmptyState}>
+                  <Briefcase size={32} color={theme.colors.textMuted} />
+                  <Text style={styles.modalEmptyStateText}>
+                    {t('noProductsToSelect') || 'No products yet — create one first.'}
+                  </Text>
+                </View>
+              ) : (
+                products.map(prod => {
+                const qty = selectedItems.find(item => item.itemId === prod._id)?.qty || 0;
+                return (
+                  <View key={prod._id} style={styles.productSelectItemRow}>
+                    <View style={styles.productSelectItemTextWrapper}>
+                      <Text style={styles.productSelectItemText} numberOfLines={1}>
+                        {prod.productName}
+                      </Text>
+                    </View>
+                    <View style={styles.qtySelectorContainer}>
+                      <TouchableOpacity
+                        style={styles.qtySelectorButton}
+                        onPress={() => handleQtyChange(prod._id, false)}
+                      >
+                        <Minus size={12} color={theme.colors.text} />
+                      </TouchableOpacity>
+                      <Text style={styles.qtySelectorText}>{qty}</Text>
+                      <TouchableOpacity
+                        style={styles.qtySelectorButton}
+                        onPress={() => handleQtyChange(prod._id, true)}
+                      >
+                        <Plus size={12} color={theme.colors.text} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                );
+                })
+              )}
+            </ScrollView>
+
+            <Button title={t('done') || 'Done'} onPress={() => setIsSelectItemsVisible(false)} />
+          </View>
+        </View>
+      </Modal>
     </ScreenContainer>
   );
 };

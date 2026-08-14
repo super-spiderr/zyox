@@ -3,12 +3,12 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Calendar, Users, User } from 'lucide-react-native';
 import Text from './Text';
-import { useAppTheme, palette } from '@/theme';
+import { useAppTheme } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export type OrderTicketStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | string;
-export type PaymentTicketStatus = 'PENDING' | 'PARTIAL' | 'PAID' | 'FAILED' | string;
+export type PaymentTicketStatus = 'PENDING' | 'PARTIAL' | 'PAID' | string;
 
 interface OrderTicketCardProps {
   orderId: string;
@@ -27,18 +27,16 @@ interface OrderTicketCardProps {
   onPress: () => void;
 }
 
-const getPaymentStatusColors = (status: string) => {
+const getPaymentStatusColors = (status: string, theme: import('@/theme').Theme) => {
   switch (status) {
     case 'PAID':
-      return { bg: palette.googleGreenBg, text: palette.googleGreenText }; // green
+      return { bg: theme.colors.paidBg, text: theme.colors.paidText };
     case 'PARTIAL':
-      return { bg: palette.googleAmberBg, text: palette.googleAmberText }; // amber/orange
+      return { bg: theme.colors.warningBg, text: theme.colors.warningText };
     case 'PENDING':
-      return { bg: palette.googleBlueBg, text: palette.googleBlueText }; // blue
-    case 'FAILED':
-      return { bg: palette.googleRedBg, text: palette.googleRedText }; // red
+      return { bg: theme.colors.infoBg, text: theme.colors.infoText };
     default:
-      return { bg: palette.gray100, text: palette.gray500 };
+      return { bg: theme.colors.mutedBg, text: theme.colors.mutedText };
   }
 };
 
@@ -67,7 +65,7 @@ export const OrderTicketCard: React.FC<OrderTicketCardProps> = ({
   const startColor = theme.colors.primary;
   const endColor = theme.colors.cardGradEnd;
   const colors = isDark ? [endColor, startColor, endColor] : [startColor, endColor, startColor];
-  const paymentColors = getPaymentStatusColors(paymentStatus);
+  const paymentColors = getPaymentStatusColors(paymentStatus, theme);
 
   const getOrderStatusText = (status: string) => {
     switch (status) {
@@ -278,7 +276,7 @@ export const OrderTicketCard: React.FC<OrderTicketCardProps> = ({
                     <Text
                       variant="bold"
                       fontSize={13}
-                      style={[styles.financialValue, styles.advanceText]}
+                      style={[styles.financialValue, { color: theme.colors.paidText }]}
                     >
                       ₹{advanceAmount}
                     </Text>
@@ -298,7 +296,7 @@ export const OrderTicketCard: React.FC<OrderTicketCardProps> = ({
                 <Text
                   variant="bold"
                   fontSize={13}
-                  style={[styles.financialValue, styles.balanceText]}
+                  style={[styles.financialValue, { color: theme.colors.errorText }]}
                 >
                   ₹{balanceAmount}
                 </Text>
@@ -412,12 +410,6 @@ const styles = StyleSheet.create({
     marginBottom: heightScale(2),
   },
   financialValue: {},
-  advanceText: {
-    color: palette.googleGreenText, // green
-  },
-  balanceText: {
-    color: palette.googleRedText, // red
-  },
 });
 
 export default OrderTicketCard;

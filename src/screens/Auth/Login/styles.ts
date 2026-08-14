@@ -8,73 +8,63 @@ export const getStyles = (theme: Theme) => {
       flex: 1,
       padding: 0,
       backgroundColor: theme.colors.background,
-      overflow: 'hidden',
     },
     screenContent: {
-      paddingTop: widthScale(60),
-    },
-    titleText: {
-      paddingHorizontal: widthScale(8),
-      transform: [{ rotate: '-4deg' }],
-      textAlign: 'center',
-      backgroundColor: palette.primary500,
-      //width: '120%',
-      alignSelf: 'center',
-    },
-    descText: {
-      transform: [{ rotate: '4deg' }],
-      //width: '120%',
-      textAlign: 'center',
-      backgroundColor: palette.yellow,
-      color: palette.black,
-      paddingHorizontal: widthScale(8),
-      alignSelf: 'center',
+      paddingHorizontal: widthScale(24),
+      paddingBottom: heightScale(24),
     },
     floatingLangSelector: {
-      marginBottom: widthScale(15),
-      marginRight: widthScale(20),
       alignSelf: 'flex-end',
     },
-    brandBlock: {
-      marginTop: widthScale(40),
-      marginBottom: heightScale(22),
+    logoRow: {
+      //alignItems: 'center',
+      marginTop: heightScale(8),
+      marginBottom: heightScale(4),
     },
-    subtitle: {
-      marginTop: widthScale(10),
-      paddingHorizontal: widthScale(28),
+    headerLogo: {
+      width: widthScale(64),
+      height: widthScale(70),
+      tintColor: theme.colors.primary,
     },
-    formTitleContainer: { paddingHorizontal: widthScale(20), gap: widthScale(6) },
-    form: {
-      paddingTop: widthScale(16),
-      paddingBottom: widthScale(120),
-      paddingHorizontal: widthScale(20),
+    mascotRow: {
+      alignItems: 'flex-end',
+      marginTop: heightScale(1),
+      marginRight: -widthScale(12),
     },
-    footer: {
-      backgroundColor: palette.primary600,
-      justifyContent: 'center',
-      transform: [{ rotate: '0deg' }],
-      width: '120%',
-      alignSelf: 'center',
+    mascotImage: {
+      width: widthScale(250),
+      height: widthScale(325),
+      transform: [{ rotate: '20deg' }],
     },
-    footer1: {
-      backgroundColor: palette.primary600,
-      justifyContent: 'center',
-      transform: [{ rotate: '-29deg' }],
-      width: '120%',
-      alignSelf: 'center',
+    welcomeBlock: {
+      marginTop: heightScale(18),
+      marginBottom: heightScale(10),
     },
-    fieldLabel: {
-      marginBottom: heightScale(6),
+    welcomeHeading: {
+      marginBottom: heightScale(14),
+    },
+    highlightWord: {
+      backgroundColor: palette.yellow,
+      paddingHorizontal: widthScale(16),
+      borderRadius: widthScale(4),
+      overflow: 'hidden',
     },
     formTitle: {
-      marginTop: widthScale(10),
-      width: '100%',
+      marginBottom: heightScale(4),
+      //textAlign: 'center',
     },
     formDesc: {
-      marginBottom: widthScale(20),
+      //textAlign: 'center',
+    },
+    form: {
+      width: '100%',
+      marginTop: widthScale(10),
+    },
+    fieldLabel: {
+      marginBottom: heightScale(10),
     },
     button: {
-      marginTop: heightScale(16),
+      marginTop: heightScale(10),
     },
     error: {
       marginBottom: heightScale(10),

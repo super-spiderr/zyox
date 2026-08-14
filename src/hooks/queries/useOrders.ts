@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getOrdersApi, createOrderApi, updateOrderApi, deleteOrderApi, OrderPayload } from '@/api/order';
+import { getOrdersApi, createOrderApi, updateOrderApi, deleteOrderApi, Order, OrderPayload } from '@/api/order';
 
 export const useOrders = () => {
   return useQuery({
@@ -9,13 +9,22 @@ export const useOrders = () => {
   });
 };
 
-export const useCreateOrder = (options?: { onSuccess?: () => void; onError?: (err: any) => void }) => {
+export const useCreateOrder = (options?: {
+  onSuccess?: (order: Order) => void;
+  onError?: (err: any) => void;
+}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createOrderApi,
-    onSuccess: () => {
+    onSuccess: (newOrder) => {
+      // Seed the cache immediately so a screen navigating straight to this
+      // order (e.g. OrderDetail) doesn't hit a stale "not found" state
+      // while invalidateQueries' refetch is still in flight.
+      queryClient.setQueryData<Order[]>(['orders'], prev =>
+        prev ? [newOrder, ...prev] : [newOrder],
+      );
       queryClient.invalidateQueries({ queryKey: ['orders'] });
-      options?.onSuccess?.();
+      options?.onSuccess?.(newOrder);
     },
     onError: (err) => {
       options?.onError?.(err);

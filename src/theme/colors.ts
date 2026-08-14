@@ -17,26 +17,24 @@ export const palette = {
   gray700: '#374151',
   gray800: '#1F2937',
   gray900: '#111827',
-  gray950: '#030712',
 
   slate700: '#334155',
   slate800: '#1E293B',
   slate900: '#0F2042',
 
-  // Primary (Hostinger Purple theme — brand base #673DE6)
-  primary50: '#F3EFFD',
-  primary100: '#E4D9FB',
-  primary200: '#C9B3F7',
-  primary300: '#A98CF0',
-  primary400: '#8A66E8',
-  primary500: '#673DE6',
-  primary600: '#5527D6',
-  primary700: '#431DB0',
-  primary800: '#31148C',
-  primary900: '#240E6B',
-  primaryDark900: '#2A1170',
-  primaryTint900: '#241847',
-  primaryTint950: '#101011',
+  // Primary (brand base #53039D)
+  primary50: '#F5ECFD',
+  primary100: '#E9D4FC',
+  primary200: '#D3A8FA',
+  primary300: '#B56CF9',
+  primary400: '#8408F7',
+  primary500: '#53039D',
+  primary600: '#42037D',
+  primary700: '#32035E',
+  primary800: '#250444',
+  primary900: '#1A042F',
+  primaryTint900: '#311849',
+  primaryTint950: '#0F0D12',
 
   // Yellow (based on login accent #febf1b)
   yellow50: '#FFFDF2',
@@ -47,20 +45,24 @@ export const palette = {
   yellow500: '#febf1b',
   yellow600: '#DB9E0D',
   yellow700: '#B78107',
-  yellow800: '#936403',
   yellow900: '#7A5101',
   yellow: '#febf1b',
 
   // Error (red - used on login screen)
   error50: '#FEF2F2',
   error100: '#FEE2E2',
-  error200: '#FECACA',
   error300: '#F87171',
-  error400: '#EF4444',
   error500: '#EF4444',
   error600: '#DC2626',
   error700: '#B91C1C',
   errorDarkBg: '#3B1212',
+
+  // Green (money-in / veg-indicator / CTA accent — kept distinct from the
+  // purple brand so "paid", "veg", and "add to cart" read unambiguously)
+  green100: '#C8E6C9',
+  green500: '#1DA750',
+  green600: '#158F42',
+  green700: '#0F7A38',
 
   // Extra helper tags mapped to standard gray/skeleton
   skeletonDark: '#2D3748',
@@ -81,7 +83,6 @@ export const lightColors = {
 
   secondary: '#5E5E5E',
   secondaryLight: '#F6F6F6',
-  green: palette.primary500,
   error: palette.error500,
   errorLight: palette.error50,
 
@@ -98,18 +99,15 @@ export const lightColors = {
   errorText: palette.error700,
 
   warningBg: palette.yellow50,
-  warningBorder: palette.yellow300,
   warningText: palette.yellow700,
 
   infoBg: palette.primary50,
-  infoBorder: palette.primary100,
   infoText: palette.primary600,
 
   purpleBg: palette.primary50,
   purpleText: palette.primary600,
 
   skyBg: palette.primary50,
-  skyBorder: palette.primary100,
   skyText: palette.primary700,
 
   overlay: 'rgba(0, 0, 0, 0.4)',
@@ -123,20 +121,10 @@ export const lightColors = {
   cardGradEnd: palette.cardGradDarkEnd,
 
   // Per-context tinted surfaces
-  customerInfoBg: palette.primary50,
   infoSurfaceBg: palette.primary50,
-  neutralSurfaceBg: palette.gray100,
   cardAltBg: palette.white,
   mutedBg: palette.gray100,
-  mutedBorder: palette.gray200,
   mutedText: palette.gray500,
-  dangerIconBg: palette.error50,
-  skySurfaceBg: palette.primary50,
-  warningSurfaceBg: palette.yellow50,
-  businessBadgeBorder: palette.yellow400,
-  warningTextStrong: palette.yellow700,
-  infoTextStrong: palette.primary500,
-  packageIconBg: palette.primary50,
   couponEligibleBg: palette.primary50,
   couponInactiveBg: palette.gray100,
   warningBgSoft: palette.yellow50,
@@ -190,7 +178,6 @@ export const darkColors = {
 
   secondary: '#A6A6A6',
   secondaryLight: '#121212',
-  green: palette.primary400,
   error: palette.error500,
   errorLight: palette.errorDarkBg,
 
@@ -207,18 +194,15 @@ export const darkColors = {
   errorText: palette.error300,
 
   warningBg: 'rgba(254, 191, 27, 0.15)',
-  warningBorder: palette.yellow600,
   warningText: palette.yellow300,
 
-  infoBg: 'rgba(103, 61, 230, 0.15)',
-  infoBorder: palette.primary400,
+  infoBg: 'rgba(83, 3, 157, 0.15)',
   infoText: palette.primary400,
 
   purpleBg: palette.primaryTint900,
   purpleText: palette.primary300,
 
   skyBg: palette.primaryTint900,
-  skyBorder: palette.primary400,
   skyText: palette.primary300,
 
   overlay: 'rgba(0, 0, 0, 0.6)',
@@ -232,20 +216,10 @@ export const darkColors = {
   cardGradEnd: palette.cardGradLightEnd,
 
   // Per-context tinted surfaces
-  customerInfoBg: palette.primaryTint900,
   infoSurfaceBg: palette.slate800,
-  neutralSurfaceBg: palette.gray800,
   cardAltBg: palette.gray800,
   mutedBg: palette.gray800,
-  mutedBorder: palette.gray700,
   mutedText: palette.gray400,
-  dangerIconBg: palette.errorDarkBg,
-  skySurfaceBg: palette.primaryTint900,
-  warningSurfaceBg: palette.primaryTint900,
-  businessBadgeBorder: palette.yellow600,
-  warningTextStrong: palette.yellow300,
-  infoTextStrong: palette.primary400,
-  packageIconBg: palette.primaryTint900,
   couponEligibleBg: palette.primary900,
   couponInactiveBg: palette.gray700,
   warningBgSoft: palette.primaryTint900,

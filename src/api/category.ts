@@ -20,6 +20,22 @@ export interface CategoryPayload {
 export interface CategoriesResponse {
   success: boolean;
   data: Category[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface PaginatedCategories {
+  categories: Category[];
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export interface CategoryDetailResponse {
@@ -28,12 +44,28 @@ export interface CategoryDetailResponse {
   data: Category;
 }
 
-// Fetch all categories from backend API
+// Fetch all categories from backend API.
+// The backend rejects `limit` above 100, so that's the highest page size we can request.
 export const getCategoriesApi = async (search?: string): Promise<Category[]> => {
   const response = await apiClient.get<CategoriesResponse>('/category/', {
-    params: search ? { search } : undefined,
+    params: { limit: 100, search },
   });
   return response.data.data;
+};
+
+// Fetch categories with pagination metadata
+export const getCategoriesPaginatedApi = async (
+  page?: number,
+  limit?: number,
+  search?: string,
+): Promise<PaginatedCategories> => {
+  const response = await apiClient.get<CategoriesResponse>('/category/', {
+    params: { page, limit, search },
+  });
+  return {
+    categories: response.data.data,
+    pagination: response.data.pagination,
+  };
 };
 
 // Create a new category in backend API

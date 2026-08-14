@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { Theme, palette } from '@/theme';
+import { Theme } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme, insets: { top: number }) => {
@@ -40,18 +40,20 @@ export const getStyles = (theme: Theme, insets: { top: number }) => {
       width: widthScale(8),
       height: widthScale(8),
       borderRadius: widthScale(4),
-      backgroundColor: palette.error500,
+      backgroundColor: theme.colors.error,
+      borderWidth: 1.5,
+      borderColor: theme.colors.background,
     },
     avatarCircle: {
       height: widthScale(40),
       width: widthScale(40),
-      backgroundColor: palette.primary100,
+      backgroundColor: theme.colors.primaryLight,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: widthScale(20),
     },
     avatarText: {
-      color: palette.primary700,
+      color: theme.colors.primary,
     },
     buttonRow: {
       flexDirection: 'row',
@@ -64,7 +66,7 @@ export const getStyles = (theme: Theme, insets: { top: number }) => {
       flex: 1,
       height: widthScale(46),
       borderRadius: widthScale(23),
-      backgroundColor: palette.primary600,
+      backgroundColor: theme.colors.primary,
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
@@ -76,9 +78,17 @@ export const getStyles = (theme: Theme, insets: { top: number }) => {
       borderColor: theme.colors.border,
     },
     buttonText: {
-      color: '#FFFFFF',
+      color: theme.colors.primaryText,
     },
     customerButtonText: {
+      color: theme.colors.dashboardTitle,
+    },
+    manageButton: {
+      backgroundColor: theme.colors.card,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    manageButtonText: {
       color: theme.colors.dashboardTitle,
     },
   });

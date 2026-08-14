@@ -1,3 +1,2 @@
-// Redundant file. Moved to create-order/styles.ts
-export const getStyles = () => ({});
-export default getStyles;
+// Redundant file styles cleared. Replaced by create-order/styles.ts
+export default () => ({});

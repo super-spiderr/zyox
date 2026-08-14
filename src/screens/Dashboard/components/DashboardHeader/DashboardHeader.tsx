@@ -5,10 +5,11 @@ import { Text } from '@/components';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
 import getStyles from './styles';
-import { Bell, Plus, UserPlus } from 'lucide-react-native';
+import { Bell, Plus, UserPlus, LayoutGrid } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppTheme } from '@/theme';
 import { widthScale } from '@/utils/scaling';
+import { useOrders } from '@/hooks/queries';
 
 interface DashboardHeaderProps {
   firstName: string;
@@ -20,6 +21,19 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ firstName }) =
   const styles = useStyles(theme => getStyles(theme, insets));
   const navigation = useNavigation<any>();
   const { theme } = useAppTheme();
+  const { data: orders = [] } = useOrders();
+
+  // Bell badge reflects real state (aging drafts), matching NotificationsScreen's
+  // own definition of what's alert-worthy - not a permanent decorative dot.
+  const hasAlerts = React.useMemo(() => {
+    const now = Date.now();
+    return orders.some(order => {
+      if (order.orderStatus !== 'PENDING') return false;
+      const dateToUse = order.createdAt || order.updatedAt;
+      if (!dateToUse) return false;
+      return (now - new Date(dateToUse).getTime()) / (1000 * 60) >= 30;
+    });
+  }, [orders]);
 
   // Animation values for cross-fading illustrations
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
@@ -77,7 +91,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ firstName }) =
             accessibilityLabel={t('tabNotifications') || 'Notifications'}
           >
             <Bell size={24} color={theme.colors.dashboardTitle} />
-            <View style={styles.redBadge} />
+            {hasAlerts ? <View style={styles.redBadge} /> : null}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -100,7 +114,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ firstName }) =
           activeOpacity={0.85}
           onPress={() => navigation.navigate('CreateOrder')}
         >
-          <Plus size={16} color="#FFFFFF" style={{ marginRight: widthScale(4) }} />
+          <Plus size={16} color={theme.colors.primaryText} style={{ marginRight: widthScale(4) }} />
           <Text
             style={styles.buttonText}
             variant="bold"
@@ -130,6 +144,27 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ firstName }) =
             adjustsFontSizeToFit
           >
             {t('customer') || 'Customer'}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, styles.manageButton]}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('Manage')}
+        >
+          <LayoutGrid
+            size={16}
+            color={theme.colors.dashboardTitle}
+            style={{ marginRight: widthScale(4) }}
+          />
+          <Text
+            style={styles.manageButtonText}
+            variant="bold"
+            fontSize={widthScale(13)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
+            {t('manageAll') || 'Manage'}
           </Text>
         </TouchableOpacity>
       </View>

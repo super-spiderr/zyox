@@ -1,23 +1,24 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, TouchableOpacity, FlatList, Alert, Image, ActivityIndicator } from 'react-native';
 import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  Alert,
-  Image,
-} from 'react-native';
-import { ScreenContainer, Text, Skeleton, GradientHeader, GradientHeaderAction } from '@/components';
+  ScreenContainer,
+  Text,
+  Skeleton,
+  GradientHeader,
+  GradientHeaderAction,
+  SearchBar,
+  EmptyState,
+} from '@/components';
 import { useAppTheme } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
+import { useDebouncedSearch } from '@/hooks/useDebouncedSearch';
 import getStyles from './ProductsScreen.styles';
 import { Product } from '@/api/product';
-import { useProducts, useDeleteProduct, useCategories } from '@/hooks/queries';
+import { useInfiniteProducts, useDeleteProduct, useCategories, usePackages } from '@/hooks/queries';
 import { useNavigation } from '@react-navigation/native';
-import { Search, Plus, UtensilsCrossed, Edit, Trash2 } from 'lucide-react-native';
-
-const productsIcon = require('@/assets/images/products_icon.png');
+import { Plus, UtensilsCrossed, Edit, Trash2 } from 'lucide-react-native';
+import { PRODUCTS_PAGE_SIZE } from '@/constants/product';
 
 export const ProductsScreen: React.FC = () => {
   const { theme, isDark } = useAppTheme();
@@ -26,49 +27,82 @@ export const ProductsScreen: React.FC = () => {
   const navigation = useNavigation<any>();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearch = useDebouncedSearch(searchQuery);
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<'ALL' | 'VEG' | 'NON_VEG'>('ALL');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('ALL');
 
-  // Query products list via centralized hooks
   const {
-    data: products = [],
-    isLoading: isProductsLoading,
-    refetch: refetchProducts,
-  } = useProducts();
+    data: productsData,
+    isLoading,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isRefetching,
+    isFetchingNextPage,
+  } = useInfiniteProducts(PRODUCTS_PAGE_SIZE, debouncedSearch);
 
-  // Query categories list (for filtering)
+  // Query categories list (for filtering + name lookup)
   const { data: categories = [] } = useCategories();
+  // Full package list (for warning when deleting a product referenced by packages)
+  const { data: packages = [] } = usePackages();
+
+  const products = useMemo(() => {
+    return productsData?.pages.flatMap(page => page.products) ?? [];
+  }, [productsData]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => {
+      const matchesType = selectedTypeFilter === 'ALL' || p.productType === selectedTypeFilter;
+      const matchesCategory =
+        selectedCategoryFilter === 'ALL' || p.categoryIds?.includes(selectedCategoryFilter);
+      return matchesType && matchesCategory;
+    });
+  }, [products, selectedTypeFilter, selectedCategoryFilter]);
+
+  // Type/category filtering happens client-side on already-fetched pages, so
+  // a sparse filtered result can be shorter than the viewport and never
+  // trigger FlatList's onEndReached. Keep pulling more pages until the
+  // filtered set fills a page or there's nothing left to fetch.
+  useEffect(() => {
+    if (!isLoading && hasNextPage && !isFetchingNextPage && filteredProducts.length < PRODUCTS_PAGE_SIZE) {
+      fetchNextPage();
+    }
+  }, [filteredProducts.length, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage]);
 
   // Delete mutation via centralized hooks
   const deleteMutation = useDeleteProduct({
+    onSuccess: () => {
+      Alert.alert(t('success') || 'Success', t('productDeletedSuccess') || 'Product deleted.');
+    },
     onError: (err: any) => {
       Alert.alert('Error', err.response?.data?.message || 'Failed to delete product');
     },
   });
 
-  const filteredProducts = useMemo(() => {
-    return products.filter(p => {
-      const matchesSearch = p.productName.toLowerCase().includes(searchQuery.trim().toLowerCase());
-      const matchesType = selectedTypeFilter === 'ALL' || p.productType === selectedTypeFilter;
-      const matchesCategory =
-        selectedCategoryFilter === 'ALL' || p.categoryIds?.includes(selectedCategoryFilter);
-      return matchesSearch && matchesType && matchesCategory;
-    });
-  }, [products, searchQuery, selectedTypeFilter, selectedCategoryFilter]);
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
 
   const handleDelete = (id: string) => {
-    Alert.alert(
-      t('deleteConfirmTitle') || 'Delete Product',
-      t('deleteConfirmMessage') || 'Are you sure you want to delete this product?',
-      [
-        { text: t('cancel'), style: 'cancel' },
-        {
-          text: t('delete'),
-          style: 'destructive',
-          onPress: () => deleteMutation.mutate(id),
-        },
-      ]
+    const referencingPackages = packages.filter(pkg =>
+      pkg.items?.some(item => item.itemId === id),
     );
+    const message =
+      referencingPackages.length > 0
+        ? t('deleteProductInUseMessage', { count: referencingPackages.length }) ||
+          `This product is used in ${referencingPackages.length} package(s). Deleting it will leave those packages with a missing item. Continue?`
+        : t('deleteConfirmMessage') || 'Are you sure you want to delete this product?';
+
+    Alert.alert(t('deleteConfirmTitle') || 'Delete Product', message, [
+      { text: t('cancel'), style: 'cancel' },
+      {
+        text: t('delete'),
+        style: 'destructive',
+        onPress: () => deleteMutation.mutate(id),
+      },
+    ]);
   };
 
   const getCategoryNames = (catIds: string[]) => {
@@ -145,14 +179,11 @@ export const ProductsScreen: React.FC = () => {
       contentContainerStyle={styles.container}
       statusBarBgColor="transparent"
       ignoreTopSafeArea
-      statusBarStyle={isDark ? 'light-content' : 'dark-content'}
+      statusBarStyle={'light-content'}
     >
       <GradientHeader
         title={t('productsTitle')}
         description={t('productsDesc') || 'Manage, search, and update products.'}
-        count={isProductsLoading ? undefined : filteredProducts.length}
-        countLabel={filteredProducts.length === 1 ? 'Product' : 'Products'}
-        image={productsIcon}
         action={
           <GradientHeaderAction
             icon={<Plus size={16} color={theme.colors.primaryText} />}
@@ -161,19 +192,14 @@ export const ProductsScreen: React.FC = () => {
         }
       />
 
-      <View style={styles.body}>
-        {/* Search Input */}
-        <View style={styles.searchContainer}>
-          <Search size={18} color={theme.colors.textSecondary} style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder={t('searchProductsPlaceholder') || 'Search products...'}
-            placeholderTextColor={theme.colors.textMuted}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder={t('searchProductsPlaceholder') || 'Search products...'}
+        style={styles.searchBar}
+      />
 
+      <View style={styles.body}>
         {/* Filters */}
         <View style={styles.filtersContainer}>
           <TouchableOpacity
@@ -187,25 +213,26 @@ export const ProductsScreen: React.FC = () => {
             }}
           >
             <Text style={styles.filterText}>
-              Type: {selectedTypeFilter === 'ALL' ? 'All' : selectedTypeFilter === 'VEG' ? t('veg') : t('nonVeg')}
+              Type:{' '}
+              {selectedTypeFilter === 'ALL'
+                ? 'All'
+                : selectedTypeFilter === 'VEG'
+                ? t('veg')
+                : t('nonVeg')}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.filterDropdown}
             onPress={() => {
-              Alert.alert(
-                t('selectCategory') || 'Filter Category',
-                '',
-                [
-                  { text: 'All', onPress: () => setSelectedCategoryFilter('ALL') },
-                  ...categories.map(c => ({
-                    text: c.categoryName,
-                    onPress: () => setSelectedCategoryFilter(c._id),
-                  })),
-                  { text: t('cancel') || 'Cancel', style: 'cancel' },
-                ]
-              );
+              Alert.alert(t('selectCategory') || 'Filter Category', '', [
+                { text: 'All', onPress: () => setSelectedCategoryFilter('ALL') },
+                ...categories.map(c => ({
+                  text: c.categoryName,
+                  onPress: () => setSelectedCategoryFilter(c._id),
+                })),
+                { text: t('cancel') || 'Cancel', style: 'cancel' },
+              ]);
             }}
           >
             <Text style={styles.filterText} numberOfLines={1}>
@@ -218,7 +245,7 @@ export const ProductsScreen: React.FC = () => {
         </View>
 
         {/* Main List */}
-        {isProductsLoading ? (
+        {isLoading ? (
           <FlatList
             data={[1, 2, 3, 4]}
             keyExtractor={(item, index) => String(index)}
@@ -248,14 +275,24 @@ export const ProductsScreen: React.FC = () => {
             data={filteredProducts}
             keyExtractor={item => item._id}
             renderItem={renderProductItem}
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.list}
-            refreshing={isProductsLoading}
-            onRefresh={refetchProducts}
+            refreshing={isRefetching}
+            onRefresh={refetch}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
             ListEmptyComponent={
-              <View style={styles.emptyState}>
-                <UtensilsCrossed size={48} color={theme.colors.textMuted} />
-                <Text style={styles.emptyStateText}>{t('noProductsFound')}</Text>
-              </View>
+              <EmptyState
+                icon={<UtensilsCrossed size={48} color={theme.colors.textMuted} />}
+                description={t('noProductsFound')}
+              />
+            }
+            ListFooterComponent={
+              isFetchingNextPage ? (
+                <View style={styles.endLoader}>
+                  <ActivityIndicator size="small" color={theme.colors.primary} />
+                </View>
+              ) : null
             }
           />
         )}

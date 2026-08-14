@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { Text } from '@/components';
 import { useStyles } from '@/hooks/useStyles';
 import getStyles from './styles';
@@ -7,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { widthScale } from '@/utils/scaling';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowUpRight } from 'lucide-react-native';
+import { palette, useAppTheme } from '@/theme';
 
 interface StatsCardProps {
   totalCollected: number;
@@ -30,6 +32,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   recentOrders = [],
 }) => {
   const styles = useStyles(getStyles);
+  const { theme } = useAppTheme();
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [selectedFilter, setSelectedFilter] = React.useState<'month' | 'week'>('month');
@@ -150,26 +153,33 @@ export const StatsCard: React.FC<StatsCardProps> = ({
           activeOpacity={0.9}
           onPress={() => navigation.navigate('Orders')}
         >
-          {/* Decorative overlay circles */}
-          <View style={styles.bgCircleLeft} pointerEvents="none" />
-          <View style={styles.bgCircleRight} pointerEvents="none" />
+          <LinearGradient
+            colors={[palette.primary700, theme.colors.primary]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.revenueTileGradient}
+          >
+            {/* Decorative overlay circles */}
+            <View style={styles.bgCircleLeft} pointerEvents="none" />
+            <View style={styles.bgCircleRight} pointerEvents="none" />
 
-          <View style={styles.tileHeader}>
-            <Text style={styles.tileTitle} variant="tiroTamilRegular" fontSize={widthScale(13)}>
-              {t('revenueTrend')}
-            </Text>
-            <View style={styles.arrowCircle}>
-              <ArrowUpRight size={14} color="#1B194B" strokeWidth={2.5} />
+            <View style={styles.tileHeader}>
+              <Text style={styles.tileTitle} variant="tiroTamilRegular" fontSize={widthScale(13)}>
+                {t('revenueTrend')}
+              </Text>
+              <View style={styles.arrowCircleOnDark}>
+                <ArrowUpRight size={14} color={palette.white} strokeWidth={2.5} />
+              </View>
             </View>
-          </View>
 
-          <Text style={styles.revenueValue} variant="semibold">
-            ₹{displayCollected}
-          </Text>
+            <Text style={styles.revenueValue} variant="semibold">
+              ₹{displayCollected}
+            </Text>
 
-          <Text style={styles.revenueSub} variant="tiroTamilRegular" fontSize={widthScale(11)}>
-            {displayOrders} {t('orders').toLowerCase()} · {displaySubText.toLowerCase()}
-          </Text>
+            <Text style={styles.revenueSub} variant="tiroTamilRegular" fontSize={widthScale(11)}>
+              {displayOrders} {t('orders').toLowerCase()} · {displaySubText.toLowerCase()}
+            </Text>
+          </LinearGradient>
         </TouchableOpacity>
 
         {/* Row 2: Pending (Square, Left) + Next Event (Square, Right) */}
@@ -188,8 +198,8 @@ export const StatsCard: React.FC<StatsCardProps> = ({
               >
                 {t('pending')}
               </Text>
-              <View style={styles.arrowCircle}>
-                <ArrowUpRight size={14} color="#1B194B" strokeWidth={2.5} />
+              <View style={styles.arrowCircleOnLight}>
+                <ArrowUpRight size={14} color={theme.colors.primary} strokeWidth={2.5} />
               </View>
             </View>
 
@@ -202,7 +212,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
             </Text>
           </TouchableOpacity>
 
-          {/* Next Event Tile (White/Border) */}
+          {/* Next Event Tile (Card/Border) */}
           <TouchableOpacity
             style={[styles.squareTile, styles.nextEventTile]}
             activeOpacity={0.9}
@@ -216,8 +226,8 @@ export const StatsCard: React.FC<StatsCardProps> = ({
               >
                 {t('nextEvent')}
               </Text>
-              <View style={styles.arrowCircle}>
-                <ArrowUpRight size={14} color="#1B194B" strokeWidth={2.5} />
+              <View style={styles.arrowCircleOnLight}>
+                <ArrowUpRight size={14} color={theme.colors.primary} strokeWidth={2.5} />
               </View>
             </View>
 

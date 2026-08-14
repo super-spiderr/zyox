@@ -1,18 +1,26 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+  Image,
+  ImageSourcePropType,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { ArrowLeft, ArrowUpDown, Filter } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Text from './Text';
-import { useAppTheme, palette } from '@/theme';
+import { palette } from '@/theme';
 import { widthScale, heightScale } from '@/utils/scaling';
 
 interface GradientHeaderProps {
   title: string;
   description?: string;
-  count?: number;
-  countLabel?: string;
+  /** Small module-brand badge (e.g. orders_icon.png) rendered left of the title. */
+  image?: ImageSourcePropType;
+
   onBackPress?: () => void;
   onSortToggle?: () => void;
   sortActive?: boolean;
@@ -24,8 +32,7 @@ interface GradientHeaderProps {
 export const GradientHeader: React.FC<GradientHeaderProps> = ({
   title,
   description,
-  count,
-  countLabel,
+  image,
   onBackPress,
   onSortToggle,
   sortActive,
@@ -33,7 +40,6 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
   action,
   style,
 }) => {
-  const { theme } = useAppTheme();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
@@ -47,7 +53,7 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
     <View style={[styles.headerWrapper, style]}>
       {/* Background Gradient with rounded bottom corners */}
       <LinearGradient
-        colors={[palette.primary900, palette.primary600]}
+        colors={[palette.primary400, palette.primary500]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -68,6 +74,11 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
             >
               <ArrowLeft size={20} color={onGradientText} />
             </TouchableOpacity>
+            {image && (
+              <View style={[styles.logoBadge, { backgroundColor: onGradientChip }]}>
+                <Image source={image} style={styles.logoImage} resizeMode="contain" />
+              </View>
+            )}
             <View style={styles.headerTitleWrap}>
               <Text
                 variant="bold"
@@ -175,6 +186,19 @@ const styles = StyleSheet.create({
   headerTitleWrap: {
     flex: 1,
     justifyContent: 'center',
+  },
+  logoBadge: {
+    width: widthScale(36),
+    height: widthScale(36),
+    borderRadius: widthScale(18),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: widthScale(10),
+    overflow: 'hidden',
+  },
+  logoImage: {
+    width: widthScale(22),
+    height: widthScale(22),
   },
   headerTitle: {
     fontSize: widthScale(18),
