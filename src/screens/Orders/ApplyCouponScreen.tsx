@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
 import { ScreenContainer, Text } from '@/components';
-import { useAppTheme, palette } from '@/theme';
-import { widthScale, heightScale } from '@/utils/scaling';
+import { useAppTheme } from '@/theme';
+import { useStyles } from '@/hooks/useStyles';
+import getStyles from './ApplyCouponScreen.styles';
 import { ArrowLeft, Ticket, CheckCircle2 } from 'lucide-react-native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ApplyCoupon'>;
@@ -39,6 +40,7 @@ const AVAILABLE_COUPONS: Coupon[] = [
 
 export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
   const { theme } = useAppTheme();
+  const styles = useStyles(getStyles);
 
   const { orderTotal, currentCoupon } = route.params;
   const [promoCode, setPromoCode] = useState('');
@@ -77,10 +79,7 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
   return (
     <ScreenContainer
       scrollable={false}
-      contentContainerStyle={StyleSheet.flatten([
-        styles.container,
-        { backgroundColor: theme.colors.background },
-      ])}
+      style={styles.container}
     >
       {/* Header */}
       <View style={styles.headerRow}>
@@ -93,18 +92,11 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
       </View>
 
       {/* Manual Input */}
-      <View style={[styles.inputSection, { borderBottomColor: theme.colors.border }]}>
+      <View style={styles.inputSection}>
         <Text style={styles.sectionLabel}>Enter Promo Code</Text>
         <View style={styles.promoRow}>
           <TextInput
-            style={[
-              styles.textInput,
-              {
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-                backgroundColor: theme.colors.cardAltBg,
-              },
-            ]}
+            style={styles.textInput}
             placeholder="e.g. ZYOX500"
             placeholderTextColor={theme.colors.textMuted}
             value={promoCode}
@@ -114,9 +106,7 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
           <TouchableOpacity
             style={[
               styles.applyBtn,
-              {
-                backgroundColor: promoCode.trim() ? theme.colors.primary : theme.colors.border,
-              },
+              promoCode.trim() ? styles.applyBtnActive : styles.applyBtnDisabled,
             ]}
             onPress={handleManualApply}
             disabled={!promoCode.trim()}
@@ -142,36 +132,29 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
               key={coupon.code}
               style={[
                 styles.couponCard,
-                {
-                  backgroundColor: theme.colors.card,
-                  borderColor: isCurrentlyApplied
-                    ? palette.green500
-                    : isEligible
-                    ? theme.colors.border
-                    : theme.colors.border,
-                  opacity: isEligible ? 1 : 0.6,
-                },
+                isCurrentlyApplied
+                  ? styles.couponCardApplied
+                  : isEligible
+                  ? styles.couponCardEligible
+                  : styles.couponCardInactive,
               ]}
             >
               <View style={styles.couponTop}>
                 <View
                   style={[
                     styles.badgeContainer,
-                    {
-                      backgroundColor: isCurrentlyApplied
-                        ? palette.green100
-                        : isEligible
-                        ? theme.colors.couponEligibleBg
-                        : theme.colors.couponInactiveBg,
-                      borderColor: isCurrentlyApplied ? palette.green500 : theme.colors.border,
-                    },
+                    isCurrentlyApplied
+                      ? styles.badgeContainerApplied
+                      : isEligible
+                      ? styles.badgeContainerEligible
+                      : styles.badgeContainerInactive,
                   ]}
                 >
-                  <Ticket size={16} color={isCurrentlyApplied ? palette.green600 : theme.colors.primary} />
+                  <Ticket size={16} color={isCurrentlyApplied ? theme.colors.paidText : theme.colors.primary} />
                   <Text
                     style={[
                       styles.badgeText,
-                      { color: isCurrentlyApplied ? palette.green700 : theme.colors.primary },
+                      isCurrentlyApplied ? styles.badgeTextApplied : styles.badgeTextEligible,
                     ]}
                     variant="bold"
                   >
@@ -181,7 +164,7 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
 
                 {isCurrentlyApplied ? (
                   <View style={styles.appliedRow}>
-                    <CheckCircle2 size={16} color={palette.green500} />
+                    <CheckCircle2 size={16} color={theme.colors.paidText} />
                     <Text style={styles.appliedText} variant="semiBold">
                       Applied
                     </Text>
@@ -190,13 +173,13 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
                   <TouchableOpacity
                     style={[
                       styles.cardApplyBtn,
-                      { borderColor: isEligible ? palette.green500 : theme.colors.border },
+                      isEligible ? styles.cardApplyBtnEligible : styles.cardApplyBtnInactive,
                     ]}
                     onPress={() => handleApplyCoupon(coupon)}
                     disabled={!isEligible && !isCurrentlyApplied}
                   >
                     <Text
-                      style={{ color: isEligible ? palette.green600 : theme.colors.textMuted }}
+                      style={isEligible ? styles.cardApplyBtnTextEligible : styles.cardApplyBtnTextInactive}
                       variant="bold"
                     >
                       APPLY
@@ -224,122 +207,5 @@ export const ApplyCouponScreen: React.FC<Props> = ({ route, navigation }) => {
     </ScreenContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: heightScale(10),
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: widthScale(16),
-    marginBottom: heightScale(16),
-  },
-  backButton: {
-    padding: widthScale(6),
-    marginRight: widthScale(10),
-  },
-  headerTitle: {
-    fontSize: widthScale(18),
-  },
-  inputSection: {
-    paddingHorizontal: widthScale(16),
-    paddingBottom: heightScale(18),
-    borderBottomWidth: 1,
-  },
-  sectionLabel: {
-    fontSize: widthScale(13),
-    color: palette.gray500,
-    marginBottom: heightScale(8),
-  },
-  promoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  textInput: {
-    flex: 1,
-    height: heightScale(46),
-    borderWidth: 1,
-    borderRadius: widthScale(8),
-    paddingHorizontal: widthScale(14),
-    fontSize: widthScale(14),
-    marginRight: widthScale(10),
-  },
-  applyBtn: {
-    height: heightScale(46),
-    paddingHorizontal: widthScale(18),
-    borderRadius: widthScale(8),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  applyBtnText: {
-    color: palette.white,
-    fontSize: widthScale(13),
-  },
-  listContainer: {
-    paddingHorizontal: widthScale(16),
-    paddingTop: heightScale(18),
-    paddingBottom: heightScale(40),
-  },
-  couponHeading: {
-    fontSize: widthScale(15),
-    marginBottom: heightScale(14),
-  },
-  couponCard: {
-    borderWidth: 1,
-    borderRadius: widthScale(12),
-    padding: widthScale(16),
-    marginBottom: heightScale(16),
-    borderStyle: 'dashed',
-  },
-  couponTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: heightScale(10),
-  },
-  badgeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: widthScale(10),
-    paddingVertical: heightScale(6),
-    borderRadius: widthScale(6),
-    borderWidth: 1,
-    gap: widthScale(6),
-  },
-  badgeText: {
-    fontSize: widthScale(14),
-  },
-  cardApplyBtn: {
-    paddingVertical: heightScale(4),
-    paddingHorizontal: widthScale(12),
-    borderWidth: 1,
-    borderRadius: widthScale(6),
-  },
-  appliedRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: widthScale(4),
-  },
-  appliedText: {
-    color: palette.green500,
-    fontSize: widthScale(14),
-  },
-  couponDesc: {
-    fontSize: widthScale(12),
-    color: palette.gray500,
-    lineHeight: heightScale(18),
-  },
-  minSpendWarning: {
-    marginTop: heightScale(10),
-    paddingTop: heightScale(8),
-    borderTopWidth: 0.5,
-    borderTopColor: palette.gray200,
-  },
-  warningText: {
-    color: palette.error500,
-  },
-});
 
 export default ApplyCouponScreen;

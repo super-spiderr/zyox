@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { ScreenContainer, Text } from '@/components';
+import { ScreenContainer, Text, GradientHeader } from '@/components';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
 import getStyles from './NotificationsScreen.styles';
@@ -94,19 +94,25 @@ export const NotificationsScreen: React.FC = () => {
     });
   }
 
+  const notificationsDesc = notifications.length > 0
+    ? t('notificationsAlerts', { count: notifications.length }) ||
+      `You have ${notifications.length} alerts that require attention`
+    : t('notificationsEmptySub') || 'All caught up!';
+
   return (
-    <ScreenContainer scrollable={true} contentContainerStyle={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title} variant="h1">
-          {t('notificationsTitle') || 'Notifications'}
-        </Text>
-        <Text style={styles.subtitle}>
-          {notifications.length > 0
-            ? t('notificationsAlerts', { count: notifications.length }) ||
-              `You have ${notifications.length} alerts that require attention`
-            : t('notificationsEmptySub') || 'All caught up!'}
-        </Text>
-      </View>
+    <ScreenContainer
+      scrollable={true}
+      style={styles.container}
+      ignoreTopSafeArea
+      statusBarBgColor="transparent"
+      statusBarStyle="light-content"
+    >
+      <GradientHeader
+        title={t('notificationsTitle') || 'Notifications'}
+        description={notificationsDesc}
+        onBackPress={() => navigation.goBack()}
+      />
+      <View style={styles.body}>
 
       {notifications.length === 0 ? (
         <View style={styles.emptyContainer}>
@@ -135,6 +141,7 @@ export const NotificationsScreen: React.FC = () => {
           ))}
         </View>
       )}
+      </View>
     </ScreenContainer>
   );
 };

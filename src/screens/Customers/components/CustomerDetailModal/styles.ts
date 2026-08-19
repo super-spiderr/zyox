@@ -168,6 +168,16 @@ export const getStyles = (theme: Theme) => {
       borderRadius: widthScale(10),
       backgroundColor: theme.colors.paidBg,
     },
+    createOrderBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: widthScale(6),
+      marginTop: heightScale(16),
+      paddingVertical: heightScale(12),
+      borderRadius: widthScale(10),
+      backgroundColor: theme.colors.primary,
+    },
   });
 };
 

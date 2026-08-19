@@ -316,7 +316,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                     <Text
                       style={[
                         styles.overviewStatValue,
-                        { color: balanceDue > 0 ? theme.colors.error : palette.green500 },
+                        balanceDue > 0 ? styles.balanceTextDue : styles.balanceTextPaid,
                       ]}
                       variant="bold"
                     >
@@ -353,7 +353,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                   {customerPhone ? (
                     <View style={styles.quickActionsRow}>
                       <TouchableOpacity
-                        style={[styles.quickActionBtn, { backgroundColor: theme.colors.callBg }]}
+                        style={[styles.quickActionBtn, styles.quickActionCallBtn]}
                         onPress={() => callPhoneNumber(customerPhone)}
                         activeOpacity={0.7}
                       >
@@ -364,10 +364,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                         />
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={[
-                          styles.quickActionBtn,
-                          { backgroundColor: theme.colors.whatsappBg },
-                        ]}
+                        style={[styles.quickActionBtn, styles.quickActionWhatsappBtn]}
                         onPress={() => openWhatsApp(customerPhone)}
                         activeOpacity={0.7}
                       >
@@ -479,7 +476,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
                   <Text
                     style={[
                       styles.billValue,
-                      { color: balanceDue > 0 ? theme.colors.error : palette.green500 },
+                      balanceDue > 0 ? styles.balanceTextDue : styles.balanceTextPaid,
                     ]}
                     variant="bold"
                   >
@@ -528,10 +525,7 @@ export const OrderDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             {/* Sticky Footer */}
             <View style={styles.footer}>
               <TouchableOpacity
-                style={[
-                  styles.footerIconButton,
-                  { borderColor: theme.colors.primary, backgroundColor: theme.colors.primaryLight },
-                ]}
+                style={styles.footerIconButton}
                 onPress={handleSharePdf}
                 disabled={isSharing}
                 activeOpacity={0.7}

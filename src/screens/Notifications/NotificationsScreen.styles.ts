@@ -6,8 +6,10 @@ export const getStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flexGrow: 1,
-      padding: theme.spacing.lg,
       backgroundColor: theme.colors.background,
+    },
+    body: {
+      padding: theme.spacing.lg,
     },
     header: {
       marginTop: heightScale(20),

@@ -172,6 +172,12 @@ export const getStyles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
     },
+    quickActionCallBtn: {
+      backgroundColor: theme.colors.callBg,
+    },
+    quickActionWhatsappBtn: {
+      backgroundColor: theme.colors.whatsappBg,
+    },
 
     // Icon + label + value info rows (Event, Records)
     infoRow: {
@@ -291,6 +297,14 @@ export const getStyles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       borderWidth: 1.5,
+      borderColor: theme.colors.primary,
+      backgroundColor: theme.colors.primaryLight,
+    },
+    balanceTextDue: {
+      color: theme.colors.error,
+    },
+    balanceTextPaid: {
+      color: theme.colors.paidText,
     },
   });
 };

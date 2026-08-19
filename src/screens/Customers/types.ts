@@ -17,6 +17,7 @@ export interface CustomerDetailModalProps {
   onEditDetails: () => void;
   onDeactivate: () => void;
   onReactivate: () => void;
+  onCreateOrder?: () => void;
 }
 
 export interface CustomerFilterModalProps {

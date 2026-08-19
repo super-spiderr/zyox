@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  ViewStyle,
-  Image,
-  ImageSourcePropType,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ViewStyle, ImageSourcePropType } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { ArrowLeft, ArrowUpDown, Filter } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -53,7 +46,7 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
     <View style={[styles.headerWrapper, style]}>
       {/* Background Gradient with rounded bottom corners */}
       <LinearGradient
-        colors={[palette.primary400, palette.primary500]}
+        colors={[palette.primary700, palette.primary500]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -74,11 +67,6 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
             >
               <ArrowLeft size={20} color={onGradientText} />
             </TouchableOpacity>
-            {image && (
-              <View style={[styles.logoBadge, { backgroundColor: onGradientChip }]}>
-                <Image source={image} style={styles.logoImage} resizeMode="contain" />
-              </View>
-            )}
             <View style={styles.headerTitleWrap}>
               <Text
                 variant="bold"

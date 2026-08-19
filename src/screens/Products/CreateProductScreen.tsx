@@ -22,14 +22,298 @@ import { RootStackParamList } from '@/navigation/types';
 import { Image as ImageIcon, X, Check, Plus } from 'lucide-react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { uploadImageToCloudinary } from '@/utils/cloudinary';
-import { heightScale } from '@/utils/scaling';
 
 const UNIT_OPTIONS = ['Plate', 'Pcs', 'Cup'] as const;
+
+interface ProductFormValues {
+  productName: string;
+  price: string;
+  unit: string;
+  selectedCategoryIds: string[];
+}
+
+const validateProductForm = (values: ProductFormValues, t: (key: any) => string) => {
+  const errors: Record<string, string> = {};
+
+  const trimmedName = values.productName.trim();
+  if (!trimmedName) {
+    errors.productName = t('fieldRequired');
+  } else if (trimmedName.length < 3 || trimmedName.length > 40) {
+    errors.productName = t('validationName');
+  }
+
+  const priceNum = Number.parseFloat(values.price);
+  if (!values.price) {
+    errors.price = t('fieldRequired');
+  } else if (Number.isNaN(priceNum) || priceNum <= 0) {
+    errors.price = t('validationPrice');
+  }
+
+  if (!values.unit.trim()) {
+    errors.unit = t('fieldRequired');
+  }
+
+  if (values.selectedCategoryIds.length === 0) {
+    errors.categoryIds = t('validationCategory');
+  }
+
+  return errors;
+};
+
+interface ProductImageSectionProps {
+  isUploading: boolean;
+  imageUrl: string;
+  pickedFile: { name: string; size: number } | null;
+  onPickImage: () => void;
+  onRemoveImage: () => void;
+  theme: any;
+  t: (key: any) => string;
+  styles: any;
+}
+
+const ProductImageSection: React.FC<ProductImageSectionProps> = ({
+  isUploading,
+  imageUrl,
+  pickedFile,
+  onPickImage,
+  onRemoveImage,
+  theme,
+  t,
+  styles,
+}) => {
+  if (isUploading) {
+    return (
+      <View style={styles.uploadImageContainer}>
+        <Text style={styles.uploadImageText}>
+          {t('uploadingImage') || 'Uploading to Cloudinary...'}
+        </Text>
+      </View>
+    );
+  }
+
+  if (imageUrl) {
+    return (
+      <View style={styles.previewImageContainer}>
+        <Image source={{ uri: imageUrl }} style={styles.previewThumbnail} />
+        <View style={styles.previewInfo}>
+          <Text style={styles.previewName}>
+            {pickedFile ? pickedFile.name : t('imageUploaded') || 'Image Uploaded'}
+          </Text>
+          {pickedFile && pickedFile.size > 0 ? (
+            <Text style={styles.previewSize}>{(pickedFile.size / 1024).toFixed(1)} KB</Text>
+          ) : null}
+        </View>
+        <TouchableOpacity style={styles.removePreviewButton} onPress={onRemoveImage}>
+          <X size={18} color={theme.colors.error} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <TouchableOpacity
+      style={styles.uploadImageContainer}
+      onPress={onPickImage}
+      activeOpacity={0.7}
+    >
+      <ImageIcon size={20} color={theme.colors.primary} />
+      <Text style={styles.uploadImageText}>
+        {t('uploadProductImage') || 'Upload Product Image'}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+interface PickImageParams {
+  setIsUploading: (val: boolean) => void;
+  setPickedFile: (file: { name: string; size: number } | null) => void;
+  setImageUrl: (url: string) => void;
+}
+
+const pickAndUploadProductImage = async (params: PickImageParams) => {
+  try {
+    const res = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 1,
+    });
+
+    if (res.didCancel) return;
+    if (res.errorCode) {
+      Alert.alert('Error', res.errorMessage || 'Failed to pick image');
+      return;
+    }
+
+    const asset = res.assets?.[0];
+    if (!asset?.uri) {
+      Alert.alert('Error', 'No image file found');
+      return;
+    }
+
+    params.setPickedFile({
+      name: asset.fileName || 'upload.jpg',
+      size: asset.fileSize || 0,
+    });
+
+    params.setIsUploading(true);
+    const uploadedUrl = await uploadImageToCloudinary(
+      asset.uri,
+      asset.fileName || 'upload.jpg',
+      asset.type || 'image/jpeg',
+    );
+    params.setImageUrl(uploadedUrl);
+  } catch (err) {
+    console.error('Image picker error:', err);
+    Alert.alert('Error', 'Failed to pick image file');
+    params.setPickedFile(null);
+    params.setImageUrl('');
+  } finally {
+    params.setIsUploading(false);
+  }
+};
+
+interface SelectedCategoriesListProps {
+  selectedCategoryIds: string[];
+  categories: any[];
+  onRemoveCategory: (id: string) => void;
+  theme: any;
+  t: (key: any) => string;
+  styles: any;
+}
+
+const SelectedCategoriesList: React.FC<SelectedCategoriesListProps> = ({
+  selectedCategoryIds,
+  categories,
+  onRemoveCategory,
+  theme,
+  t,
+  styles,
+}) => {
+  if (selectedCategoryIds.length === 0) return null;
+
+  return (
+    <View style={styles.categoryListContainer}>
+      {selectedCategoryIds.map(catId => {
+        const cat = categories.find(c => c._id === catId);
+        return (
+          <View key={catId} style={styles.categorySelectItem}>
+            <Text style={styles.categorySelectItemText}>
+              {cat?.categoryName || t('unknownCategory') || 'Unknown category'}
+            </Text>
+            <TouchableOpacity onPress={() => onRemoveCategory(catId)}>
+              <X size={16} color={theme.colors.error} />
+            </TouchableOpacity>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+interface SelectCategoriesModalProps {
+  visible: boolean;
+  onClose: () => void;
+  categories: any[];
+  selectedCategoryIds: string[];
+  onToggleCategory: (id: string) => void;
+  errors: any;
+  setErrors: any;
+  theme: any;
+  t: (key: any) => string;
+  styles: any;
+}
+
+const SelectCategoriesModal: React.FC<SelectCategoriesModalProps> = ({
+  visible,
+  onClose,
+  categories,
+  selectedCategoryIds,
+  onToggleCategory,
+  errors,
+  setErrors,
+  theme,
+  t,
+  styles,
+}) => {
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{t('selectCategories') || 'Select Categories'}</Text>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={onClose}
+            >
+              <X size={20} color={theme.colors.text} />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
+            {categories.length === 0 ? (
+              <View style={styles.modalEmptyState}>
+                <Text style={styles.modalEmptyStateText}>
+                  {t('noCategoriesToSelect') || 'No categories yet — create one first.'}
+                </Text>
+              </View>
+            ) : (
+              categories.map(cat => {
+                const isSelected = selectedCategoryIds.includes(cat._id);
+                return (
+                  <TouchableOpacity
+                    key={cat._id}
+                    style={styles.categorySelectItem}
+                    onPress={() => {
+                      onToggleCategory(cat._id);
+                      if (errors.categoryIds) {
+                        setErrors((prev: any) => ({ ...prev, categoryIds: undefined }));
+                      }
+                    }}
+                  >
+                    <Text style={styles.categorySelectItemText}>{cat.categoryName}</Text>
+                    {isSelected && <Check size={16} color={theme.colors.primary} />}
+                  </TouchableOpacity>
+                );
+              })
+            )}
+          </ScrollView>
+
+          <Button
+            title={t('done') || 'Done'}
+            onPress={onClose}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+const handleMutationSuccess = (
+  navigation: any,
+  title: string,
+  message: string,
+  buttonTitle: string
+) => {
+  navigation.navigate('Success', {
+    title,
+    message,
+    buttonTitle,
+    navigateTo: 'Products',
+  });
+};
+
+const handleMutationError = (err: any, defaultMessage: string) => {
+  Alert.alert('Error', err.response?.data?.message || defaultMessage);
+};
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateProduct'>;
 
 export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { theme, isDark } = useAppTheme();
+  const { theme } = useAppTheme();
   const { t } = useLanguage();
   const styles = useStyles(getStyles);
   const insets = useSafeAreaInsets();
@@ -39,7 +323,6 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
   const { data: categories = [] } = useCategories();
 
   const editProduct = useMemo(() => {
-    if (!editProductId) return null;
     return products.find(p => p._id === editProductId) || null;
   }, [products, editProductId]);
 
@@ -54,7 +337,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [pickedFile, setPickedFile] = useState<{ name: string; size: number } | null>(null);
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [initialized, setInitialized] = useState(false);
   const [isSelectCategoriesVisible, setIsSelectCategoriesVisible] = useState(false);
 
@@ -72,71 +355,28 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const createMutation = useCreateProduct({
     onSuccess: () => {
-      navigation.navigate('Success', {
-        title: t('success') || 'Success!',
-        message: 'Product created successfully!',
-        buttonTitle: t('ok') || 'OK',
-        navigateTo: 'Products',
-      });
+      handleMutationSuccess(navigation, t('success'), 'Product created successfully!', t('ok'));
     },
     onError: (err: any) => {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to create product');
+      handleMutationError(err, 'Failed to create product');
     },
   });
 
   const updateMutation = useUpdateProduct({
     onSuccess: () => {
-      navigation.navigate('Success', {
-        title: t('success') || 'Success!',
-        message: 'Product updated successfully!',
-        buttonTitle: t('ok') || 'OK',
-        navigateTo: 'Products',
-      });
+      handleMutationSuccess(navigation, t('success'), 'Product updated successfully!', t('ok'));
     },
     onError: (err: any) => {
-      Alert.alert('Error', err.response?.data?.message || 'Failed to update product');
+      handleMutationError(err, 'Failed to update product');
     },
   });
 
-  const handlePickImage = async () => {
-    try {
-      const res = await launchImageLibrary({
-        mediaType: 'photo',
-        quality: 1,
-      });
-
-      if (res.didCancel) return;
-      if (res.errorCode) {
-        Alert.alert('Error', res.errorMessage || 'Failed to pick image');
-        return;
-      }
-
-      const asset = res.assets?.[0];
-      if (!asset || !asset.uri) {
-        Alert.alert('Error', 'No image file found');
-        return;
-      }
-
-      setPickedFile({
-        name: asset.fileName || 'upload.jpg',
-        size: asset.fileSize || 0,
-      });
-
-      setIsUploading(true);
-      const uploadedUrl = await uploadImageToCloudinary(
-        asset.uri,
-        asset.fileName || 'upload.jpg',
-        asset.type || 'image/jpeg',
-      );
-      setImageUrl(uploadedUrl);
-    } catch (err) {
-      console.error('Image picker error:', err);
-      Alert.alert('Error', 'Failed to pick image file');
-      setPickedFile(null);
-      setImageUrl('');
-    } finally {
-      setIsUploading(false);
-    }
+  const handlePickImage = () => {
+    pickAndUploadProductImage({
+      setIsUploading,
+      setPickedFile,
+      setImageUrl,
+    });
   };
 
   const handleToggleCategory = (catId: string) => {
@@ -146,38 +386,18 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   const handleSave = () => {
-    const newErrors: Record<string, string> = {};
-
-    const trimmedName = productName.trim();
-    if (!trimmedName) {
-      newErrors.productName = t('fieldRequired');
-    } else if (trimmedName.length < 3 || trimmedName.length > 40) {
-      newErrors.productName = t('validationName');
-    }
-
-    const priceNum = parseFloat(price);
-    if (!price) {
-      newErrors.price = t('fieldRequired');
-    } else if (isNaN(priceNum) || priceNum <= 0) {
-      newErrors.price = t('validationPrice');
-    }
-
-    if (!unit.trim()) {
-      newErrors.unit = t('fieldRequired');
-    }
-
-    if (selectedCategoryIds.length === 0) {
-      newErrors.categoryIds = t('validationCategory');
-    }
+    const newErrors = validateProductForm({ productName, price, unit, selectedCategoryIds }, t);
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    setErrors({});
+
     const payload = {
-      productName: trimmedName,
-      price: priceNum,
+      productName: productName.trim(),
+      price: Number.parseFloat(price),
       unit: unit.trim(),
       productType,
       categoryIds: selectedCategoryIds,
@@ -205,7 +425,7 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
+        style={styles.keyboardAvoidingView}
       >
         {/* Header — shared with the Products list */}
         <GradientHeader
@@ -221,47 +441,25 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
 
         <ScrollView
           style={styles.body}
-          contentContainerStyle={{ paddingBottom: heightScale(24) }}
+          contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
           {/* Image Picker */}
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>{t('categoryImageUrl')}</Text>
-            {isUploading ? (
-              <View style={styles.uploadImageContainer}>
-                <Text style={styles.uploadImageText}>{t('uploadingImage') || 'Uploading to Cloudinary...'}</Text>
-              </View>
-            ) : imageUrl ? (
-              <View style={styles.previewImageContainer}>
-                <Image source={{ uri: imageUrl }} style={styles.previewThumbnail} />
-                <View style={styles.previewInfo}>
-                  <Text style={styles.previewName}>
-                    {pickedFile ? pickedFile.name : t('imageUploaded') || 'Image Uploaded'}
-                  </Text>
-                  {pickedFile && pickedFile.size > 0 ? (
-                    <Text style={styles.previewSize}>{(pickedFile.size / 1024).toFixed(1)} KB</Text>
-                  ) : null}
-                </View>
-                <TouchableOpacity
-                  style={styles.removePreviewButton}
-                  onPress={() => {
-                    setImageUrl('');
-                    setPickedFile(null);
-                  }}
-                >
-                  <X size={18} color={theme.colors.error} />
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity
-                style={styles.uploadImageContainer}
-                onPress={handlePickImage}
-                activeOpacity={0.7}
-              >
-                <ImageIcon size={20} color={theme.colors.primary} />
-                <Text style={styles.uploadImageText}>{t('uploadProductImage') || 'Upload Product Image'}</Text>
-              </TouchableOpacity>
-            )}
+            <ProductImageSection
+              isUploading={isUploading}
+              imageUrl={imageUrl}
+              pickedFile={pickedFile}
+              onPickImage={handlePickImage}
+              onRemoveImage={() => {
+                setImageUrl('');
+                setPickedFile(null);
+              }}
+              theme={theme}
+              t={t}
+              styles={styles}
+            />
           </View>
 
           {/* Form Fields */}
@@ -381,23 +579,14 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
               </Text>
             </TouchableOpacity>
 
-            {selectedCategoryIds.length > 0 && (
-              <View style={styles.categoryListContainer}>
-                {selectedCategoryIds.map(catId => {
-                  const cat = categories.find(c => c._id === catId);
-                  return (
-                    <View key={catId} style={styles.categorySelectItem}>
-                      <Text style={styles.categorySelectItemText}>
-                        {cat?.categoryName || t('unknownCategory') || 'Unknown category'}
-                      </Text>
-                      <TouchableOpacity onPress={() => handleToggleCategory(catId)}>
-                        <X size={16} color={theme.colors.error} />
-                      </TouchableOpacity>
-                    </View>
-                  );
-                })}
-              </View>
-            )}
+            <SelectedCategoriesList
+              selectedCategoryIds={selectedCategoryIds}
+              categories={categories}
+              onRemoveCategory={handleToggleCategory}
+              theme={theme}
+              t={t}
+              styles={styles}
+            />
 
             {errors.categoryIds ? <Text style={styles.errorText}>{errors.categoryIds}</Text> : null}
           </View>
@@ -413,61 +602,18 @@ export const CreateProductScreen: React.FC<Props> = ({ route, navigation }) => {
         </View>
       </KeyboardAvoidingView>
 
-      {/* Select Categories Modal */}
-      <Modal
+      <SelectCategoriesModal
         visible={isSelectCategoriesVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setIsSelectCategoriesVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t('selectCategories') || 'Select Categories'}</Text>
-              <TouchableOpacity
-                style={styles.modalCloseButton}
-                onPress={() => setIsSelectCategoriesVisible(false)}
-              >
-                <X size={20} color={theme.colors.text} />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.modalScrollView} showsVerticalScrollIndicator={false}>
-              {categories.length === 0 ? (
-                <View style={styles.modalEmptyState}>
-                  <Text style={styles.modalEmptyStateText}>
-                    {t('noCategoriesToSelect') || 'No categories yet — create one first.'}
-                  </Text>
-                </View>
-              ) : (
-                categories.map(cat => {
-                const isSelected = selectedCategoryIds.includes(cat._id);
-                return (
-                  <TouchableOpacity
-                    key={cat._id}
-                    style={styles.categorySelectItem}
-                    onPress={() => {
-                      handleToggleCategory(cat._id);
-                      if (errors.categoryIds) {
-                        setErrors(prev => ({ ...prev, categoryIds: undefined }));
-                      }
-                    }}
-                  >
-                    <Text style={styles.categorySelectItemText}>{cat.categoryName}</Text>
-                    {isSelected && <Check size={16} color={theme.colors.primary} />}
-                  </TouchableOpacity>
-                );
-                })
-              )}
-            </ScrollView>
-
-            <Button
-              title={t('done') || 'Done'}
-              onPress={() => setIsSelectCategoriesVisible(false)}
-            />
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setIsSelectCategoriesVisible(false)}
+        categories={categories}
+        selectedCategoryIds={selectedCategoryIds}
+        onToggleCategory={handleToggleCategory}
+        errors={errors}
+        setErrors={setErrors}
+        theme={theme}
+        t={t}
+        styles={styles}
+      />
     </ScreenContainer>
   );
 };

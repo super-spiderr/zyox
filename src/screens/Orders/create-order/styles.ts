@@ -13,22 +13,6 @@ export const getStyles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
     },
-    headerRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: widthScale(16),
-      paddingVertical: heightScale(12),
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.border,
-    },
-    backButton: {
-      padding: widthScale(4),
-      marginRight: widthScale(10),
-    },
-    headerTitle: {
-      fontSize: widthScale(18),
-      color: theme.colors.text,
-    },
     // Step Indicator Styles
     stepsContainer: {
       flexDirection: 'row',
@@ -52,6 +36,9 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
       marginBottom: heightScale(6),
     },
+    stepDotOuterActive: {
+      backgroundColor: theme.colors.primaryLight,
+    },
     stepDot: {
       width: widthScale(28),
       height: widthScale(28),
@@ -60,23 +47,61 @@ export const getStyles = (theme: Theme) => {
       alignItems: 'center',
       shadowColor: palette.black,
       shadowOffset: { width: 0, height: 2 },
+    },
+    stepDotActive: {
+      backgroundColor: theme.colors.primary,
+      borderWidth: 0,
       shadowOpacity: 0.15,
       shadowRadius: 4,
       elevation: 3,
+    },
+    stepDotCompleted: {
+      backgroundColor: theme.colors.paidText,
+      borderWidth: 0,
+      shadowOpacity: 0,
+      elevation: 0,
+    },
+    stepDotInactive: {
+      backgroundColor: theme.colors.card,
+      borderWidth: 1.5,
+      borderColor: theme.colors.border,
+      shadowOpacity: 0,
+      elevation: 0,
     },
     stepDotText: {
       fontSize: widthScale(12),
       color: palette.white,
     },
+    stepDotTextInactive: {
+      color: theme.colors.textMuted,
+    },
     stepText: {
       fontSize: widthScale(12),
       textAlign: 'center',
+    },
+    stepTextActive: {
+      color: theme.colors.text,
+      fontFamily: theme.typography.fonts.urbanist.bold,
+    },
+    stepTextCompleted: {
+      color: theme.colors.paidText,
+      fontFamily: theme.typography.fonts.urbanist.regular,
+    },
+    stepTextInactive: {
+      color: theme.colors.textSecondary,
+      fontFamily: theme.typography.fonts.urbanist.regular,
     },
     stepDivider: {
       flex: 1,
       height: 2,
       borderRadius: 1,
       marginTop: widthScale(19),
+    },
+    stepDividerActive: {
+      backgroundColor: theme.colors.paidText,
+    },
+    stepDividerInactive: {
+      backgroundColor: theme.colors.border,
     },
     // Scroll content
     scrollContent: {
@@ -529,6 +554,51 @@ export const getStyles = (theme: Theme) => {
       flex: 1,
       maxWidth: widthScale(190),
       marginLeft: widthScale(16),
+    },
+    vegIndicatorVeg: {
+      width: 14,
+      height: 14,
+      borderWidth: 1.5,
+      borderColor: theme.colors.paidText,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      marginRight: 6,
+    },
+    vegIndicatorNonVeg: {
+      width: 14,
+      height: 14,
+      borderWidth: 1.5,
+      borderColor: theme.colors.error,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      marginRight: 6,
+    },
+    vegDotVeg: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: theme.colors.paidText,
+    },
+    vegDotNonVeg: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: theme.colors.error,
+    },
+    autoPaymentStatusBtn: {
+      backgroundColor: theme.colors.primaryLight,
+      borderColor: theme.colors.primary,
+    },
+    autoPaymentStatusText: {
+      color: theme.colors.primary,
+    },
+    balanceTextDue: {
+      color: theme.colors.error,
+    },
+    balanceTextPaid: {
+      color: theme.colors.paidText,
     },
   });
 };

@@ -294,12 +294,17 @@ export const CreateCustomerScreen: React.FC<Props> = ({ route, navigation }) => 
           />
 
           <Input
-            label={t('notes')}
+            label={`${t('notes')} (${form.specialNotes.length}/500)`}
             placeholder={t('notes')}
             value={form.specialNotes}
-            onChangeText={text => setForm(prev => ({ ...prev, specialNotes: text }))}
+            onChangeText={text => {
+              if (text.length <= 500) {
+                setForm(prev => ({ ...prev, specialNotes: text }));
+              }
+            }}
             multiline
             numberOfLines={3}
+            maxLength={500}
             icon={<FileText size={16} color={theme.colors.textMuted} />}
           />
         </ScrollView>

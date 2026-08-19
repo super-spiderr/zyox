@@ -113,6 +113,13 @@ export const CustomersScreen: React.FC = () => {
     }
   };
 
+  const handleCreateOrder = () => {
+    setIsDetailModalVisible(false);
+    if (selectedCustomer) {
+      navigation.navigate('CreateOrder', { selectCustomerId: getCustomerId(selectedCustomer) });
+    }
+  };
+
   const handleDeactivate = () => {
     if (!selectedCustomer) return;
     Alert.alert(t('deleteConfirmTitle'), t('deleteConfirmMessage'), [
@@ -221,6 +228,7 @@ export const CustomersScreen: React.FC = () => {
         onEditDetails={handleEditCustomer}
         onDeactivate={handleDeactivate}
         onReactivate={handleReactivate}
+        onCreateOrder={handleCreateOrder}
       />
 
       {/* Filter Options Bottom Sheet */}

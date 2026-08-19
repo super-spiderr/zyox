@@ -10,9 +10,15 @@ export const getStyles = (theme: Theme) => {
       flex: 1,
       backgroundColor: theme.colors.background,
     },
+    keyboardAvoidingView: {
+      flex: 1,
+    },
     body: {
       flex: 1,
       paddingHorizontal: widthScale(16),
+    },
+    scrollContent: {
+      paddingBottom: heightScale(24),
     },
     loadingContainer: {
       flex: 1,

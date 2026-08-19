@@ -4,6 +4,10 @@ import { widthScale, heightScale } from '@/utils/scaling';
 
 export const getStyles = (theme: Theme) => {
   return StyleSheet.create({
+    safeAreaWrapper: {
+      flex: 1,
+      backgroundColor: theme.colors.card,
+    },
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,

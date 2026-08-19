@@ -7,27 +7,17 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Image,
   Share,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
-import { ScreenContainer, Text, Button, DatePickerModal } from '@/components';
+import { ScreenContainer, Text, Button, DatePickerModal, GradientHeader } from '@/components';
 import { useAppTheme, palette } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { useStyles } from '@/hooks/useStyles';
 import getStyles from './styles';
 import { CustomerPickerModal } from './components';
-import {
-  ArrowLeft,
-  Search,
-  ChevronRight,
-  ChevronDown,
-  Tag,
-  ChefHat,
-  Calendar,
-  Check,
-} from 'lucide-react-native';
+import { Search, ChevronRight, ChevronDown, Tag, Calendar, Check } from 'lucide-react-native';
 import { generatePDF } from 'react-native-html-to-pdf';
 import { generateInvoiceHTML } from '@/utils/invoiceTemplate';
 import { Order, OrderItem, OrderPayload, PaymentStatus, OrderStatus } from '@/api/order';
@@ -40,6 +30,14 @@ import {
   useCreateOrder,
   useUpdateOrder,
 } from '@/hooks/queries';
+
+const VegNonVegIndicator = ({ isVeg, styles }: { isVeg: boolean; styles: any }) => {
+  return (
+    <View style={isVeg ? styles.vegIndicatorVeg : styles.vegIndicatorNonVeg}>
+      <View style={isVeg ? styles.vegDotVeg : styles.vegDotNonVeg} />
+    </View>
+  );
+};
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CreateOrder'>;
 
@@ -127,12 +125,12 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
         customerId: selectedCustomerId,
         attributes: {
           eventName: eventName.trim(),
-          guestCount: parseInt(guestCount) || 0,
+          guestCount: Number.parseInt(guestCount, 10) || 0,
         },
         deliveryDate: eventDate.trim(),
         orderItems: items,
-        discountAmount: parseFloat(discountAmount) || 0,
-        advanceAmount: parseFloat(advanceAmount) || 0,
+        discountAmount: Number.parseFloat(discountAmount) || 0,
+        advanceAmount: Number.parseFloat(advanceAmount) || 0,
         paymentStatus,
         orderStatus,
         completedAt: completedAt.trim() || undefined,
@@ -334,14 +332,38 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
   }, [perGuestSubtotal, guestCountNum]);
 
   const grandTotal = useMemo(() => {
-    const disc = parseFloat(discountAmount) || 0;
+    const disc = Number.parseFloat(discountAmount) || 0;
     return Math.max(0, orderItemsTotal - disc);
   }, [orderItemsTotal, discountAmount]);
 
   const remainingBalance = useMemo(() => {
-    const adv = parseFloat(advanceAmount) || 0;
+    const adv = Number.parseFloat(advanceAmount) || 0;
     return grandTotal - adv;
   }, [grandTotal, advanceAmount]);
+
+  // Automated Status logic
+  useEffect(() => {
+    const adv = Number.parseFloat(advanceAmount) || 0;
+    const total = grandTotal;
+
+    // Auto-update Payment Status
+    if (adv === 0) {
+      setPaymentStatus('PENDING');
+    } else if (adv >= total) {
+      setPaymentStatus('PAID');
+    } else {
+      setPaymentStatus('PARTIAL');
+    }
+
+    // Auto-update Order Status if advance is paid
+    if (adv > 0) {
+      if (orderStatus === 'PENDING') {
+        setOrderStatus('CONFIRMED');
+      }
+    } else if (adv === 0 && orderStatus === 'CONFIRMED') {
+      setOrderStatus('PENDING');
+    }
+  }, [advanceAmount, grandTotal, orderStatus]);
 
   // Cart operations
   const handleAddItemToCart = (
@@ -374,8 +396,8 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
     if (!eventName.trim()) {
       newErrors.eventName = t('fieldRequired');
     }
-    const guests = parseInt(guestCount);
-    if (!guestCount.trim() || isNaN(guests) || guests <= 0) {
+    const guests = Number.parseInt(guestCount, 10);
+    if (!guestCount.trim() || Number.isNaN(guests) || guests <= 0) {
       newErrors.guestCount = t('validationGuestCount');
     }
 
@@ -409,10 +431,10 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
       customerId: selectedCustomerId,
       eventName: eventName.trim(),
       deliveryDate: eventDate.trim(),
-      guestCount: parseInt(guestCount),
+      guestCount: Number.parseInt(guestCount, 10),
       orderItems: items,
-      discountAmount: parseFloat(discountAmount) || 0,
-      advanceAmount: parseFloat(advanceAmount) || 0,
+      discountAmount: Number.parseFloat(discountAmount) || 0,
+      advanceAmount: Number.parseFloat(advanceAmount) || 0,
       paymentStatus,
       orderStatus,
       completedAt: completedAt.trim() || undefined,
@@ -434,37 +456,59 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
       const isActive = step === num;
       const isCompleted = step > num;
       return (
-        <View style={styles.stepItem}>
-          <View
-            style={[
-              styles.stepDotOuter,
-              isActive && { backgroundColor: theme.colors.primaryLight },
-            ]}
-          >
+        <TouchableOpacity
+          key={num}
+          style={styles.stepItem}
+          activeOpacity={0.7}
+          onPress={() => {
+            if (num === step) return;
+
+            // Validate step 1 if moving forward
+            if (step === 1 && num > 1) {
+              const newErrors: Record<string, string> = {};
+              if (!selectedCustomerId) {
+                newErrors.customer = t('fieldRequired');
+              }
+              if (!eventName.trim()) {
+                newErrors.eventName = t('fieldRequired');
+              }
+              const guests = Number.parseInt(guestCount, 10);
+               if (!guestCount.trim() || Number.isNaN(guests) || guests <= 0) {
+                newErrors.guestCount = t('validationGuestCount');
+              }
+
+              if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors);
+                return;
+              }
+              setErrors({});
+            }
+
+            // Validate step 2 if moving to step 3
+            if (num === 3 && totalItemsCount === 0) {
+              Alert.alert('Empty Cart', 'Please select at least one item/combo from the menu.');
+              return;
+            }
+
+            setStep(num);
+          }}
+        >
+          <View style={[styles.stepDotOuter, isActive ? styles.stepDotOuterActive : undefined]}>
             <View
               style={[
                 styles.stepDot,
-                {
-                  backgroundColor: isActive
-                    ? theme.colors.primary
-                    : isCompleted
-                    ? palette.green500
-                    : theme.colors.card,
-                  borderWidth: isActive || isCompleted ? 0 : 1.5,
-                  borderColor: theme.colors.border,
-                  shadowOpacity: isActive ? 0.15 : 0,
-                  elevation: isActive ? 3 : 0,
-                },
+                isActive
+                  ? styles.stepDotActive
+                  : isCompleted
+                  ? styles.stepDotCompleted
+                  : styles.stepDotInactive,
               ]}
             >
               {isCompleted ? (
                 <Check size={14} color={palette.white} strokeWidth={3} />
               ) : (
                 <Text
-                  style={[
-                    styles.stepDotText,
-                    !isActive && { color: theme.colors.textMuted },
-                  ]}
+                  style={[styles.stepDotText, !isActive ? styles.stepDotTextInactive : undefined]}
                   variant="bold"
                 >
                   {num}
@@ -475,21 +519,16 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
           <Text
             style={[
               styles.stepText,
-              {
-                color: isActive
-                  ? theme.colors.text
-                  : isCompleted
-                  ? palette.green500
-                  : theme.colors.textSecondary,
-                fontFamily: isActive
-                  ? theme.typography.fonts.urbanist.bold
-                  : theme.typography.fonts.urbanist.regular,
-              },
+              isActive
+                ? styles.stepTextActive
+                : isCompleted
+                ? styles.stepTextCompleted
+                : styles.stepTextInactive,
             ]}
           >
             {label}
           </Text>
-        </View>
+        </TouchableOpacity>
       );
     };
 
@@ -497,7 +536,7 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
       <View
         style={[
           styles.stepDivider,
-          { backgroundColor: step > afterStep ? palette.green500 : theme.colors.border },
+          step > afterStep ? styles.stepDividerActive : styles.stepDividerInactive,
         ]}
       />
     );
@@ -515,99 +554,111 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
 
   // Render Step 1
   const renderStep1Content = () => (
-    <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-      <Text style={styles.formSectionTitle} variant="bold">
-        Customer & Event Info
-      </Text>
+    <View style={styles.flexOne}>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <Text style={styles.formSectionTitle} variant="bold">
+          Customer & Event Info
+        </Text>
 
-      {/* Customer Input */}
-      <View style={styles.formGroup}>
-        <Text style={styles.formLabel}>{t('selectCustomer')} *</Text>
-        <TouchableOpacity
-          style={[styles.formInput, styles.selectTrigger, !!errors.customer && styles.inputError]}
-          activeOpacity={0.7}
-          onPress={() => setShowCustomerPicker(true)}
-        >
-          <Text
-            style={styles.selectTriggerText}
-            color={selectedCustomerName ? 'text' : 'textMuted'}
-            numberOfLines={1}
-          >
-            {selectedCustomerName || 'Search customer name...'}
-          </Text>
-          <ChevronDown size={18} color={theme.colors.textSecondary} />
-        </TouchableOpacity>
-        {errors.customer ? <Text style={styles.errorText}>{errors.customer}</Text> : null}
-      </View>
-
-      {/* Event Name */}
-      <View style={styles.formGroup}>
-        <Text style={styles.formLabel}>{t('eventName')} *</Text>
-        <TextInput
-          style={[styles.formInput, !!errors.eventName && styles.inputError]}
-          placeholder="e.g. Wedding Reception"
-          placeholderTextColor={theme.colors.textMuted}
-          value={eventName}
-          onChangeText={val => {
-            setEventName(val);
-            if (errors.eventName) {
-              setErrors(prev => ({ ...prev, eventName: '' }));
-            }
-          }}
-        />
-        {errors.eventName ? <Text style={styles.errorText}>{errors.eventName}</Text> : null}
-      </View>
-
-      {/* Event Date & Guest Count Row */}
-      <View style={styles.justifyBetweenRow}>
-        <View style={[styles.formGroup, { flex: 0.48 }]}>
-          <Text style={styles.formLabel}>{t('eventDate')} *</Text>
+        {/* Customer Input */}
+        <View style={styles.formGroup}>
+          <Text style={styles.formLabel}>{t('selectCustomer')} *</Text>
           <TouchableOpacity
-            style={[styles.formInput, styles.selectTrigger]}
+            style={[styles.formInput, styles.selectTrigger, !!errors.customer && styles.inputError]}
             activeOpacity={0.7}
-            onPress={() => setShowEventDatePicker(true)}
+            onPress={() => setShowCustomerPicker(true)}
           >
-            <Text style={styles.selectTriggerText} numberOfLines={1}>
-              {eventDate}
+            <Text
+              style={styles.selectTriggerText}
+              color={selectedCustomerName ? 'text' : 'textMuted'}
+              numberOfLines={1}
+            >
+              {selectedCustomerName || 'Search customer name...'}
             </Text>
-            <Calendar size={16} color={theme.colors.textSecondary} />
+            <ChevronDown size={18} color={theme.colors.textSecondary} />
           </TouchableOpacity>
+          {errors.customer ? <Text style={styles.errorText}>{errors.customer}</Text> : null}
         </View>
 
-        <View style={[styles.formGroup, { flex: 0.48 }]}>
-          <Text style={styles.formLabel}>{t('guestCount')} *</Text>
+        {/* Event Name */}
+        <View style={styles.formGroup}>
+          <Text style={styles.formLabel}>{t('eventName')} *</Text>
           <TextInput
-            style={[styles.formInput, !!errors.guestCount && styles.inputError]}
-            placeholder="e.g. 150"
+            style={[styles.formInput, !!errors.eventName && styles.inputError]}
+            placeholder="e.g. Wedding Reception"
             placeholderTextColor={theme.colors.textMuted}
-            keyboardType="numeric"
-            value={guestCount}
+            value={eventName}
             onChangeText={val => {
-              setGuestCount(val);
-              if (errors.guestCount) {
-                setErrors(prev => ({ ...prev, guestCount: '' }));
+              setEventName(val);
+              if (errors.eventName) {
+                setErrors(prev => ({ ...prev, eventName: '' }));
               }
             }}
           />
-          {errors.guestCount ? <Text style={styles.errorText}>{errors.guestCount}</Text> : null}
+          {errors.eventName ? <Text style={styles.errorText}>{errors.eventName}</Text> : null}
         </View>
-      </View>
 
-      {/* Notes */}
-      <View style={styles.formGroup}>
-        <Text style={styles.formLabel}>{t('notes')}</Text>
-        <TextInput
-          style={[styles.formInput, styles.notesInput]}
-          placeholder="Catering guidelines or preferences..."
-          placeholderTextColor={theme.colors.textMuted}
-          multiline
-          value={notes}
-          onChangeText={setNotes}
-        />
-      </View>
+        {/* Event Date & Guest Count Row */}
+        <View style={styles.justifyBetweenRow}>
+          <View style={[styles.formGroup, { flex: 0.48 }]}>
+            <Text style={styles.formLabel}>{t('eventDate')} *</Text>
+            <TouchableOpacity
+              style={[styles.formInput, styles.selectTrigger]}
+              activeOpacity={0.7}
+              onPress={() => setShowEventDatePicker(true)}
+            >
+              <Text style={styles.selectTriggerText} numberOfLines={1}>
+                {eventDate}
+              </Text>
+              <Calendar size={16} color={theme.colors.textSecondary} />
+            </TouchableOpacity>
+          </View>
 
-      <Button title="Choose Menu Items" onPress={handleNextStep1} style={styles.nextButton} />
-    </ScrollView>
+          <View style={[styles.formGroup, { flex: 0.48 }]}>
+            <Text style={styles.formLabel}>{t('guestCount')} *</Text>
+            <TextInput
+              style={[styles.formInput, !!errors.guestCount && styles.inputError]}
+              placeholder="e.g. 150"
+              placeholderTextColor={theme.colors.textMuted}
+              keyboardType="numeric"
+              value={guestCount}
+              onChangeText={val => {
+                setGuestCount(val);
+                if (errors.guestCount) {
+                  setErrors(prev => ({ ...prev, guestCount: '' }));
+                }
+              }}
+            />
+            {errors.guestCount ? <Text style={styles.errorText}>{errors.guestCount}</Text> : null}
+          </View>
+        </View>
+
+        {/* Notes */}
+        <View style={styles.formGroup}>
+          <Text style={styles.formLabel}>
+            {t('notes')} ({notes.length}/500)
+          </Text>
+          <TextInput
+            style={[styles.formInput, styles.notesInput]}
+            placeholder="Catering guidelines or preferences..."
+            placeholderTextColor={theme.colors.textMuted}
+            multiline
+            maxLength={500}
+            value={notes}
+            onChangeText={val => {
+              if (val.length <= 500) {
+                setNotes(val);
+              }
+            }}
+          />
+        </View>
+      </ScrollView>
+
+      {/* Sticky footer for Choose Menu Items button */}
+      <View style={styles.checkoutFooter}>
+        <Button title="Choose Menu Items" onPress={handleNextStep1} style={styles.flexOne} />
+      </View>
+    </View>
   );
 
   // Render Step 2
@@ -717,29 +768,13 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
                   : handleAddItemToCart(item.id, item.name, item.price, item.type, item.productType)
               }
             >
-              {item.imageUrl ? (
-                <Image source={{ uri: item.imageUrl }} style={styles.menuItemThumb} />
-              ) : (
-                <View style={[styles.menuItemThumb, styles.menuItemThumbPlaceholder]}>
-                  <ChefHat size={20} color={theme.colors.textMuted} />
-                </View>
-              )}
+              <VegNonVegIndicator isVeg={isVeg} styles={styles} />
 
               <View style={styles.menuItemInfo}>
-                <View style={styles.menuItemNameRow}>
-                  <View
-                    style={[
-                      styles.vegDotSmall,
-                      { backgroundColor: isVeg ? palette.green500 : palette.error500 },
-                    ]}
-                  />
-                  <Text style={styles.menuItemName} variant="semibold" numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                </View>
-                <Text style={styles.menuItemPrice}>
-                  ₹{item.price.toLocaleString()} / guest
+                <Text style={styles.menuItemName} variant="semibold" numberOfLines={1}>
+                  {item.name}
                 </Text>
+                <Text style={styles.menuItemPrice}>₹{item.price.toLocaleString()} / guest</Text>
               </View>
 
               <View style={[styles.checkCircle, isAdded && styles.checkCircleActive]}>
@@ -811,102 +846,102 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
 
         {/* Financial calculations */}
         <View style={styles.checkoutSummaryBlock}>
-        {/* Coupon trigger */}
-        {appliedCoupon ? (
-          <View style={styles.couponAppliedBadge}>
-            <View style={styles.paymentHeader}>
-              <Tag size={14} color={palette.green600} />
-              <Text style={styles.couponAppliedText} variant="bold">
-                Coupon '{appliedCoupon}' Applied!
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                setAppliedCoupon('');
-                setDiscountAmount('0');
-              }}
-            >
-              <Text style={styles.couponRemoveText} variant="bold">
-                REMOVE
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.couponTrigger}
-            onPress={() =>
-              navigation.navigate('ApplyCoupon', {
-                orderTotal: orderItemsTotal,
-                currentCoupon: appliedCoupon,
-              })
-            }
-          >
-            <View style={styles.couponTriggerLeft}>
-              <Tag size={16} color={theme.colors.primary} />
-              <Text
-                style={[styles.couponTriggerText, { color: theme.colors.primary }]}
-                variant="bold"
+          {/* Coupon trigger */}
+          {appliedCoupon ? (
+            <View style={styles.couponAppliedBadge}>
+              <View style={styles.paymentHeader}>
+                <Tag size={14} color={palette.green600} />
+                <Text style={styles.couponAppliedText} variant="bold">
+                  Coupon '{appliedCoupon}' Applied!
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setAppliedCoupon('');
+                  setDiscountAmount('0');
+                }}
               >
-                Apply Coupon / Offers
+                <Text style={styles.couponRemoveText} variant="bold">
+                  REMOVE
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.couponTrigger}
+              onPress={() =>
+                navigation.navigate('ApplyCoupon', {
+                  orderTotal: orderItemsTotal,
+                  currentCoupon: appliedCoupon,
+                })
+              }
+            >
+              <View style={styles.couponTriggerLeft}>
+                <Tag size={16} color={theme.colors.primary} />
+                <Text
+                  style={[styles.couponTriggerText, { color: theme.colors.primary }]}
+                  variant="bold"
+                >
+                  Apply Coupon / Offers
+                </Text>
+              </View>
+              <ChevronRight size={16} color={theme.colors.primary} />
+            </TouchableOpacity>
+          )}
+
+          <View style={styles.billRow}>
+            <Text style={styles.billLabel}>Items Subtotal</Text>
+            <Text style={styles.billVal}>₹{orderItemsTotal.toLocaleString()}</Text>
+          </View>
+
+          {Number.parseFloat(discountAmount) > 0 && (
+            <View style={styles.billRow}>
+              <Text style={styles.billLabel}>Coupon Discount</Text>
+              <Text style={[styles.billVal, { color: palette.error500 }]}>
+                -₹{Number.parseFloat(discountAmount).toLocaleString()}
               </Text>
             </View>
-            <ChevronRight size={16} color={theme.colors.primary} />
-          </TouchableOpacity>
-        )}
+          )}
 
-        <View style={styles.billRow}>
-          <Text style={styles.billLabel}>Items Subtotal</Text>
-          <Text style={styles.billVal}>₹{orderItemsTotal.toLocaleString()}</Text>
-        </View>
-
-        {parseFloat(discountAmount) > 0 && (
-          <View style={styles.billRow}>
-            <Text style={styles.billLabel}>Coupon Discount</Text>
-            <Text style={[styles.billVal, { color: palette.error500 }]}>
-              -₹{parseFloat(discountAmount).toLocaleString()}
+          <View style={styles.billTotalRow}>
+            <Text style={styles.billTotalLabel} variant="bold">
+              Grand Total
+            </Text>
+            <Text style={styles.billTotalVal} variant="bold">
+              ₹{grandTotal.toLocaleString()}
             </Text>
           </View>
-        )}
 
-        <View style={styles.billTotalRow}>
-          <Text style={styles.billTotalLabel} variant="bold">
-            Grand Total
-          </Text>
-          <Text style={styles.billTotalVal} variant="bold">
-            ₹{grandTotal.toLocaleString()}
-          </Text>
-        </View>
+          {/* Advance & Remaining Balance */}
+          <View style={styles.financeInputsRow}>
+            <View style={styles.financeInputGroup}>
+              <Text style={styles.formLabel}>Advance Paid (₹)</Text>
+              <TextInput
+                style={styles.financeInput}
+                keyboardType="numeric"
+                value={advanceAmount}
+                onChangeText={setAdvanceAmount}
+              />
+            </View>
 
-        {/* Advance & Remaining Balance */}
-        <View style={styles.financeInputsRow}>
-          <View style={styles.financeInputGroup}>
-            <Text style={styles.formLabel}>Advance Paid (₹)</Text>
-            <TextInput
-              style={styles.financeInput}
-              keyboardType="numeric"
-              value={advanceAmount}
-              onChangeText={setAdvanceAmount}
-            />
-          </View>
-
-          <View style={styles.financeInputGroup}>
-            <Text style={[styles.formLabel, styles.balanceLabel]}>Remaining Balance</Text>
-            <View
-              style={[
-                styles.financeInput,
-                { justifyContent: 'center', backgroundColor: theme.colors.inputBg },
-              ]}
-            >
-              <Text
-                style={{ color: remainingBalance > 0 ? theme.colors.error : palette.green500 }}
-                variant="bold"
+            <View style={styles.financeInputGroup}>
+              <Text style={[styles.formLabel, styles.balanceLabel]}>Remaining Balance</Text>
+              <View
+                style={[
+                  styles.financeInput,
+                  { justifyContent: 'center', backgroundColor: theme.colors.inputBg },
+                ]}
               >
-                ₹{remainingBalance.toLocaleString()}
-              </Text>
+                <Text
+                  style={remainingBalance > 0 ? styles.balanceTextDue : styles.balanceTextPaid}
+                  variant="bold"
+                >
+                  ₹{remainingBalance.toLocaleString()}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
 
         {/* Status details */}
         <View style={styles.sectionCard}>
@@ -916,7 +951,7 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
 
           <Text style={styles.statusLabel}>Order Status</Text>
           <View style={styles.statusGroupRow}>
-            {(['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'] as const).map(status => (
+            {(['PENDING', 'CONFIRMED', 'COMPLETED'] as const).map(status => (
               <TouchableOpacity
                 key={status}
                 style={[
@@ -938,78 +973,15 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
             ))}
           </View>
 
-          <Text style={styles.statusLabel}>Payment Status</Text>
-          <View style={styles.statusGroupRowLast}>
-            {(['PENDING', 'PARTIAL', 'PAID'] as const).map(status => (
-              <TouchableOpacity
-                key={status}
-                style={[
-                  styles.statusBtn,
-                  paymentStatus === status ? styles.statusBtnActive : undefined,
-                ]}
-                onPress={() => setPaymentStatus(status)}
+          <Text style={styles.statusLabel}>Payment Status (Calculated Automatically)</Text>
+          <View style={{ flexDirection: 'row', marginTop: 4 }}>
+            <View style={[styles.statusBtn, styles.statusBtnActive, styles.autoPaymentStatusBtn]}>
+              <Text
+                style={[styles.statusText, styles.statusTextActive, styles.autoPaymentStatusText]}
+                variant="bold"
               >
-                <Text
-                  style={[
-                    styles.statusText,
-                    paymentStatus === status ? styles.statusTextActive : undefined,
-                  ]}
-                  variant="semiBold"
-                >
-                  {status}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Additional Details */}
-        <View style={styles.sectionCard}>
-          <Text style={[styles.sectionCardTitle, styles.sectionCardTitleSpaced]} variant="bold">
-            Additional Details
-          </Text>
-
-          <View style={styles.notesSection}>
-            {orderStatus === 'COMPLETED' && (
-              <View>
-                <Text style={styles.formLabel}>Completed At</Text>
-                <TouchableOpacity
-                  style={[styles.formInput, styles.selectTrigger]}
-                  activeOpacity={0.7}
-                  onPress={() => setShowCompletedDatePicker(true)}
-                >
-                  <Text
-                    style={styles.selectTriggerText}
-                    color={completedAt ? 'text' : 'textMuted'}
-                    numberOfLines={1}
-                  >
-                    {completedAt || 'Select date...'}
-                  </Text>
-                  <Calendar size={16} color={theme.colors.textSecondary} />
-                </TouchableOpacity>
-              </View>
-            )}
-
-            <View>
-              <Text style={styles.formLabel}>Quotation Link</Text>
-              <TextInput
-                style={styles.formInput}
-                placeholder="Drive URL link..."
-                placeholderTextColor={theme.colors.textMuted}
-                value={quotationUrl}
-                onChangeText={setQuotationUrl}
-              />
-            </View>
-
-            <View>
-              <Text style={styles.formLabel}>Invoice PDF Link</Text>
-              <TextInput
-                style={styles.formInput}
-                placeholder="PDF document link..."
-                placeholderTextColor={theme.colors.textMuted}
-                value={invoiceUrl}
-                onChangeText={setInvoiceUrl}
-              />
+                {paymentStatus}
+              </Text>
             </View>
           </View>
         </View>
@@ -1044,29 +1016,27 @@ export const CreateOrderScreen: React.FC<Props> = ({ route, navigation }) => {
   );
 
   return (
-    <ScreenContainer scrollable={false} contentContainerStyle={styles.container}>
+    <ScreenContainer
+      scrollable={false}
+      style={styles.container}
+      ignoreTopSafeArea
+      statusBarBgColor="transparent"
+      statusBarStyle="light-content"
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flexOne}
       >
-        {/* Header bar */}
-        <View style={styles.headerRow}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              if (step > 1) {
-                setStep(prev => (prev - 1) as 1 | 2 | 3);
-              } else {
-                navigation.goBack();
-              }
-            }}
-          >
-            <ArrowLeft size={22} color={theme.colors.text} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle} variant="bold">
-            {editOrderId ? t('editOrder') : t('createOrder')}
-          </Text>
-        </View>
+        <GradientHeader
+          title={editOrderId ? t('editOrder') : t('createOrder')}
+          onBackPress={() => {
+            if (step > 1) {
+              setStep(prev => (prev - 1) as 1 | 2 | 3);
+            } else {
+              navigation.goBack();
+            }
+          }}
+        />
 
         {renderStepIndicator()}
 

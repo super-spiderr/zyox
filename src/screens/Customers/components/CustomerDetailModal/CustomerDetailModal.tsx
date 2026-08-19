@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import { X, Phone, Pencil, Trash2, UserCheck } from 'lucide-react-native';
+import { X, Phone, Pencil, Trash2, UserCheck, Plus } from 'lucide-react-native';
 import { Text, WhatsAppIcon } from '@/components';
 import { useAppTheme } from '@/theme';
 import { useLanguage } from '@/context/LanguageContext';
@@ -21,6 +21,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
   onEditDetails,
   onDeactivate,
   onReactivate,
+  onCreateOrder,
 }) => {
   const { theme } = useAppTheme();
   const { t } = useLanguage();
@@ -210,6 +211,20 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
               })
             )}
           </ScrollView>
+
+          {/* Create Order Option */}
+          {customer.isActive && (
+            <TouchableOpacity
+              style={styles.createOrderBtn}
+              onPress={onCreateOrder}
+              activeOpacity={0.7}
+            >
+              <Plus size={16} color={theme.colors.primaryText} />
+              <Text variant="bold" fontSize={14} color={theme.colors.primaryText}>
+                {t('createOrder')}
+              </Text>
+            </TouchableOpacity>
+          )}
 
           {/* Deactivate / Reactivate Customer Option */}
           {customer.isActive ? (

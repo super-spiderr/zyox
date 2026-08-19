@@ -124,18 +124,15 @@ export const OrdersScreen: React.FC = () => {
                 key={status}
                 style={[
                   styles.filterDropdown,
-                  selectedStatusFilter === status && { backgroundColor: theme.colors.primaryLight },
-                  { marginRight: 8, paddingHorizontal: 12, height: 28 },
+                  styles.filterDropdownItem,
+                  selectedStatusFilter === status ? styles.filterDropdownActive : undefined,
                 ]}
                 onPress={() => setSelectedStatusFilter(status)}
               >
                 <Text
                   style={[
                     styles.filterText,
-                    selectedStatusFilter === status && {
-                      color: theme.colors.primary,
-                      fontFamily: theme.typography.fonts.urbanist.bold,
-                    },
+                    selectedStatusFilter === status ? styles.filterTextActive : undefined,
                   ]}
                 >
                   {status}
@@ -148,15 +145,9 @@ export const OrdersScreen: React.FC = () => {
         {isOrdersLoading ? (
           <View style={styles.list}>
             {Array.from({ length: 5 }).map((_, index) => (
-              <View key={index} style={[styles.card, { padding: 16, gap: 10 }]}>
+              <View key={index} style={[styles.card, styles.skeletonCard]}>
                 {/* Header row skeleton */}
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
+                <View style={styles.skeletonHeaderRow}>
                   <Skeleton variant="text" width="60%" height={16} />
                   <Skeleton variant="rect" width={80} height={20} borderRadius={10} />
                 </View>
@@ -165,12 +156,12 @@ export const OrdersScreen: React.FC = () => {
                 <Skeleton variant="text" width="40%" height={14} />
 
                 {/* Meta row skeleton */}
-                <View style={{ flexDirection: 'row', gap: 16, marginTop: 4 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <View style={styles.skeletonMetaRow}>
+                  <View style={styles.skeletonMetaItem}>
                     <Skeleton variant="circle" width={14} height={14} />
                     <Skeleton variant="text" width={80} height={12} />
                   </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <View style={styles.skeletonMetaItem}>
                     <Skeleton variant="circle" width={14} height={14} />
                     <Skeleton variant="text" width={50} height={12} />
                   </View>

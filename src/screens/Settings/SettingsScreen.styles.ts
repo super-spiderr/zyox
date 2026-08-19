@@ -6,8 +6,10 @@ export const getStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flexGrow: 1,
-      padding: theme.spacing.lg,
       backgroundColor: theme.colors.background,
+    },
+    body: {
+      padding: theme.spacing.lg,
     },
     header: {
       marginTop: heightScale(20),
@@ -70,6 +72,15 @@ export const getStyles = (theme: Theme) =>
       borderRadius: widthScale(10),
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    iconWrapperUser: {
+      backgroundColor: theme.colors.primary + '15',
+    },
+    iconWrapperLanguages: {
+      backgroundColor: '#0B57D015',
+    },
+    iconWrapperTheme: {
+      backgroundColor: theme.colors.primary + '15',
     },
     rowLabelContainer: {
       flexDirection: 'column',

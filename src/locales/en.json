@@ -223,6 +223,7 @@
   "saveChanges": "Save Changes",
   "selectItems": "Select Products & Quantities",
   "validationPrice": "Please enter a valid price",
+  "validationCategory": "Please select at least one category",
   "validationItems": "Package must contain at least one item",
   "morning": "Morning",
   "afternoon": "Afternoon",
