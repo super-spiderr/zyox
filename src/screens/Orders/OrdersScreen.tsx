@@ -20,7 +20,7 @@ import { Order, OrderStatus } from '@/api/order';
 const ordersIcon = require('@/assets/images/orders_icon.png');
 
 export const OrdersScreen: React.FC = () => {
-  const { theme, isDark } = useAppTheme();
+  const { theme } = useAppTheme();
   const { t } = useLanguage();
   const styles = useStyles(getStyles);
   const navigation = useNavigation<any>();
